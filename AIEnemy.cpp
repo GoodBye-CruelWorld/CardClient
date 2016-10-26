@@ -16,20 +16,10 @@ CAIEnemy::~CAIEnemy()
 }
 
 float CAIEnemy::AiTurn(){
-	/*bat->runAction(Sequence::create(
-		DelayTime::create(2),
-		CallFunc::create(CC_CALLBACK_0(CAIEnemy::AiCummom, this)),
-		NULL));
-	bat->runAction(Sequence::create(
-		DelayTime::create(4),
-		CallFunc::create(CC_CALLBACK_0(CAIEnemy::AiAttack, this)),
-		NULL));*/
+
 	AiCummom();
 	AiAttack();
-	//delayTime = 5;
-	//for (int i = 0; i < bat->_cardPool[POOL_BATTLE].size(); i++)	
-	//	delayTime += 1;
-	auto dT = bat->_gameboard->getActionQueue()->getDelayTime();/*获取动画序列总延迟时间*/
+	auto dT = bat->_gameboard->getActionQueue()->getDelayTime()+1.5f;/*获取动画序列总延迟时间*/
 	return dT;
 }
 

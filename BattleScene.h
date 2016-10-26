@@ -9,7 +9,7 @@
 #include"GameUI.h"
 #include"Trigger.h";
 *///2D part
-#include"TextCartoon.h"
+
 #include"GameBoard.h"
 #include"Tool2D.h"
 #include"Battle.h"

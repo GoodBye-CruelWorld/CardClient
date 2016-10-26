@@ -30,11 +30,6 @@ bool HelloWorld::init()
     {
         return false;
     }
-    
-
-
-
-
 
 	auto s = Director::getInstance()->getWinSize();
 
@@ -148,13 +143,25 @@ void HelloWorld::loginEvent(Ref*pSender, TouchEventType type)
 		{
 		case TOUCH_EVENT_ENDED:
 		{
-		
+			
+			std::string a = _userName->getText();
+			if (a == "")
+			{
+				log("the name cannot be empty!");
+				return;
+			}
+
+
 			if (!_socket->connect())
 			{
 				log("connect failed!");
-				//return;
+				//return;  //ÎªÁË²âÊÔtest
 			}
-			log("connect success!");
+
+
+			std::string b = "username:" + a;
+			_socket->sendMsg(b);
+
 			Scene* s = new Scene();
 			auto l = new MainLayer();
 			l->setGameSocket(_socket);
@@ -162,11 +169,7 @@ void HelloWorld::loginEvent(Ref*pSender, TouchEventType type)
 			Director::getInstance()->replaceScene(s);
 			s->release();
 			l->release();
-		/*	string a = _userName->getText();
-			if (a == "")
-				return;
-			string b = "username:" + a;
-			_socket->sendMsg(b);*/
+	
 		}
 			break;
 		default:

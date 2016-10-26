@@ -64,6 +64,8 @@ private:
 	float attackHero(int Dest_Camp);
 	float attackCard(int Place, int Dest_Camp);
 	float attackCard(BoardCard* Dest_Card);
+	float getAttackTime(Vec2 pos);
+	float getAttackTime(BoardCard* destCard);
 	//get£¬setº¯Êý¡£¡£¡£ÒÔºó²¹																
 	//void setAttack(int attcak);
 	//int  getAttack();

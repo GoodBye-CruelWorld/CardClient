@@ -1,7 +1,7 @@
 #pragma once
 #include"HelloWorldScene.h"
 
-class MainLayer :public Layer
+class ShopLayer :public Layer
 {
 public:
 	virtual void onEnter() override;
@@ -9,7 +9,7 @@ public:
 public:
 	//start game
 	void startTrainingEvent(Ref*pSender, TouchEventType type); //练习模式
-	void startAdventureEvent(Ref*pSender,TouchEventType type); //冒险模式
+	void startAdventureEvent(Ref*pSender, TouchEventType type); //冒险模式
 	void startVersusEvent(Ref*pSender, TouchEventType type); //对战模式
 	void startShopEvent(Ref*pSender, TouchEventType type); //商店模式
 	void startBookEvent(Ref*pSender, TouchEventType type); //图鉴模式

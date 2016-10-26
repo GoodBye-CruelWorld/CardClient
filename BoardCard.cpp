@@ -97,7 +97,7 @@ void BoardCard::die()
 {
 	auto die_par = ParticleSystemQuad::create("particles/MISS.plist");
 	die_par->setPosition(_frame->getContentSize().width / 2, _frame->getContentSize().height*0.05);
-	die_par->setScale(0.5);
+	die_par->setScale(0.2);
 	addChild(die_par, 2);
 	_state = 0;
 	this->retain();
@@ -219,6 +219,19 @@ float BoardCard::attack(Vec2 Position)
 	return time;
 }
 
+float BoardCard::getAttackTime(Vec2 pos)
+{
+	auto aa = this->getPositionX();
+	int PosX = pos.x - this->getPositionX();
+	int PosY = pos.y - this->getPositionY();
+	float time = sqrt(PosX*PosX + PosY*PosY) / 400;
+	return time;
+}
+
+float BoardCard::getAttackTime(BoardCard* destCard)
+{
+	return getAttackTime(destCard->getPosition());
+}
 
 //*卡牌攻击英雄,参数为目标英雄的阵营
 float BoardCard::attackHero(int Dest_Camp)
@@ -240,7 +253,7 @@ float BoardCard::attackCard(BoardCard* Dest_Card)
 }
 
 
-//*从牌库移到手牌里的动画
+//*从牌库移到手牌里的动画 1s
 float BoardCard::transFromDeckToHand(int PosOrder,int TotalNum,int camp)
 {
 
@@ -281,7 +294,7 @@ float BoardCard::transFromHandToBattle(int PosOrder,int Camp)
 	auto oPos = this->getPosition();
 	auto cPos = Vec2(-155.2 + PosOrder*82.5, -61 + 122 * Camp);
 	float distance = oPos.getDistance(cPos);
-	float speed = 200.0f;
+	float speed = 300.0f;
 	float time = distance / speed;
 	this->runAction(MoveTo::create(time, cPos));
 	this->runAction(ScaleTo::create(time, 1.2));

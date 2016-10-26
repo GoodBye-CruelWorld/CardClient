@@ -97,7 +97,7 @@ public:
 	void Spelling(int spell_num);//发动技能 技能ID号
 //	bool Spelling(int spell_num, CCard &card1);
 	bool Spelling(int spell_num, int srcPool, int srcNum);
-
+	void skillSpelling(int spellNum, int srcPool, int srcNum);
 	int getCardPos(int cardPool,CCard &card);//获取card在数组中的位置,没有则返回-1
 	//void CreatureDead(CCardinBattlefield &creature);
 	void CreatureDead(CCard &card);

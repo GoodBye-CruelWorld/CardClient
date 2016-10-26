@@ -52,8 +52,6 @@ void BattleTool2D::onEnter()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool BattleTool2D::onTouchBegan(Touch* touch, Event* event)
 {
-	if (_battleMy->_gameState != GAME_RUN)
-		return false;
 	_t_battleID = 0;
 
 	_mouseDown = true;
@@ -232,7 +230,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 		//使用技能的效果
 		Skill->useSkill();	
 
-		_t_battleID = 3 * 1000000 + 8 * 10000 + _beginID % 10 * 1000 ;
+		_t_battleID = 3 * 1000000 + 7 * 10000 + _beginID % 10 * 1000 ;
 	}
 	//指向性技能的使用
 	if ((_beginID / 100 == 8) && (_beginID % 100 / 10 == 1))
@@ -244,10 +242,80 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 		//判断技能是否正确指向
 		if ((_endID / 100 == 3) || (_endID / 100 == 4) || (_endID / 100 == 5) || (_endID / 100 == 6) || (_endID / 100 == 7))
 		{
-			//使用技能的效果
+			
+			
+
+			int Number = _battleMy->_cardPool[POOL_BATTLE].size();
+
+			int  result = 0;
+			//判断能否召唤（指向的位置有随从）
+			if (_endID / 100 == 3)
+			{
+				if (_battleMy->_cardPool[POOL_BATTLE].size() == 0)
+				{
+					//移除鼠标的准星
+					//_mouseSprite的图片还原成准星
+					_mouseSprite->setVisible(false);
+					_sight = 0;
+					return;
+				}
+				result = -1;
+				for (int i = 0; i < _battleMy->_cardPool[POOL_BATTLE].size(); i++)
+				{
+
+					if (collisionCheck(Vec2(355 + _endID % 10 * 80, 326), _gameboard->getCard(POOL_BATTLE, i, 0)))
+					{
+						result = i;
+						break;
+					}
+				}
+				if (result == -1)
+				{
+
+					//移除鼠标的准星
+					//_mouseSprite的图片还原成准星
+					_mouseSprite->setVisible(false);
+					_sight = 0;
+					return;
+
+				}
+			}
+
+			//if (_endID / 100 == 4)
+			//{
+			//	if (_battleIt->_cardPool[POOL_BATTLE].size() == 0)
+			//	{
+			//		
+
+			//		//移除鼠标的准星
+			//		//_mouseSprite的图片还原成准星
+			//		_mouseSprite->setVisible(false);
+			//		_sight = 0;
+			//		return;
+			//	}
+			//	result = -1;
+			//	for (int i = 0; i < _battleIt->_cardPool[POOL_BATTLE].size(); i++)
+			//		if (collisionCheck(Vec2(355 + _endID % 10 * 80, 455), _gameboard->getCard(POOL_BATTLE, i, 1)))
+			//		{
+			//			result = i;
+			//			break;
+			//		}
+			//	if (result == -1)
+			//	{
+			//		//移除鼠标的准星
+			//		//_mouseSprite的图片还原成准星
+			//		_mouseSprite->setVisible(false);
+			//		_sight = 0;
+			//		return;
+			//	}
+			//}
+
+			if (_endID / 100 == 6 || _endID / 100 == 7)
+				result = 0;
+
+			//使用技能的动画
 			Skill->useSkill();
-		
-			_t_battleID = 2 * 1000000 + 8 * 10000 + _beginID % 10 * 1000 + _endID/100 * 10 + _endID % 10;
+			_t_battleID = 3 * 1000000 + 8 * 10000 + _beginID % 10 * 1000 + _endID/100 * 10 + result;
 		}		
 	}
 
@@ -336,6 +404,8 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 			{
 				//有错误，应该直接传过去,战吼使用失败的判断在Battle类
 				int Number = _battleMy->_cardPool[POOL_BATTLE].size();
+
+				int  result = 0;
 				//判断能否召唤（指向的位置有随从）
 				if (_endID/100==3)
 				{
@@ -349,29 +419,32 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						_sight = 0;
 						return;
 					}
-					
+					result = -1;
 					for (int i = 0; i < _battleMy->_cardPool[POOL_BATTLE].size(); i++)
 					{
-						bool result = false;
+						
 						if (collisionCheck(Vec2(355 + _endID % 10 * 80, 326), _gameboard->getCard(POOL_BATTLE, i, 0)))
-							result = true;
-						if (!result)
-						{
-							_cardSel = NULL;
+						{ 
+							result = i;
+							break;
+						}						
+					}
+					if (result == -1)
+					{
+						_cardSel = NULL;
 
-							//移除鼠标的准星
-							//_mouseSprite的图片还原成准星
-							_mouseSprite->setVisible(false);
-							_sight = 0;
-							return;
+						//移除鼠标的准星
+						//_mouseSprite的图片还原成准星
+						_mouseSprite->setVisible(false);
+						_sight = 0;
+						return;
 
-						}
 					}
 				}
 
 				if (_endID / 100 == 4)
 				{
-					if (_battleMy->_cardPool[POOL_BATTLE].size() == 0)
+					if (_battleIt->_cardPool[POOL_BATTLE].size() == 0)
 					{
 						_cardSel = NULL;
 
@@ -381,24 +454,24 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						_sight = 0;
 						return;
 					}
+					result = _endID%10;
+					//result = -1;
+					//for (int i = 0; i < _battleIt->_cardPool[POOL_BATTLE].size(); i++)						
+					//	if (collisionCheck(Vec2(355 + _endID % 10 * 80, 455), _gameboard->getCard(POOL_BATTLE, i, 1)))
+					//	{ 
+					//		result = i;						
+					//		break;
+					//	}
+					//if (result==-1)
+					//{
+					//	_cardSel = NULL;
 
-					for (int i = 0; i < _battleIt->_cardPool[POOL_BATTLE].size(); i++)
-					{
-						bool result = false;
-						if (collisionCheck(Vec2(355 + _endID % 10 * 80, 455), _gameboard->getCard(POOL_BATTLE, i, 1)))
-							result = true;
-						if (!result)
-						{
-							_cardSel = NULL;
-
-							//移除鼠标的准星
-							//_mouseSprite的图片还原成准星
-							_mouseSprite->setVisible(false);
-							_sight = 0;
-							return;
-
-						}
-					}
+					//	//移除鼠标的准星
+					//	//_mouseSprite的图片还原成准星
+					//	_mouseSprite->setVisible(false);
+					//	_sight = 0;
+					//	return;
+					//}
 				}
 
 				//判断指向性随从的放置位置
@@ -421,8 +494,8 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						_gameboard->getCard(POOL_HAND,_beginID % 10,0)->setPosition(Vec2(-155 + 80 * j, -65));
 
 						//设置BattleID
-						_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + 03 * 10 + Number % 10;
-						//_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + _endID/100 * 10 + _endID % 10;
+						//_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + 03 * 10 + Number % 10;
+						_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + _endID/100 * 10 +result;
 
 						break;
 					}
@@ -486,7 +559,9 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	_mouseSprite->setVisible(false);
 	_sight = 0;
 
-
+	//还原
+	_beginID = 0;
+	_endID = 0;
 
 
 	//信息交互
@@ -662,10 +737,15 @@ int BattleTool2D::judgeTouchPoint(cocos2d::Point tp, int PartID)
 		bool  Direct = false;
 		switch (SkillID)
 		{
+		
 		default:
 			break;
 		}
 
+		//test
+		/*********************************************************************************************************/
+		Direct = true;
+		/*********************************************************************************************************/
 		if (Direct)
 		{
 			return 800 + 1 * 10 + Number;//1表示指向性
@@ -859,6 +939,8 @@ int BattleTool2D::judgeCard(CCard *_card, int judgeType)
 	{
 	case AIM:	//	判断随从或法术是否是指向性
 	{
+
+		
 		for (int i = 0; i < _card->get_spellID().size(); i++)
 		{
 			if ((_card->get_spellID().at(i) / 100) % 10 == 1)

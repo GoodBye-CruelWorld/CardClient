@@ -214,22 +214,42 @@ void GameBoard::removeCard(int DestPool, int num, int camp, float delay)
 	_cardPools[DestPool].erase(num);
 }
 
-void GameBoard::cardTransfer(int SrcPool, int DestPool, int SrcNum, int DestNum,int camp, CCard &newCard,int battlePlace)
+void GameBoard::cardTransfer(int srcPool, int destPool, int srcNum, int destNum,int camp, CCard &newCard,int battlePlace)
 {
-	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::cardTransferCallBack, this,SrcPool, DestPool, SrcNum,DestNum, camp,newCard,battlePlace));
-	_actionQueue->push(act, this, 2.f);
+	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::cardTransferCallBack, this,srcPool, destPool, srcNum,destNum, camp,newCard,battlePlace));
+	float time=1.5f;
+	if (srcPool == POOL_HAND&&destPool == POOL_BATTLE)
+		time = 2.f;
+	if (destPool == POOL_CEME)
+		time = 0.f;
+	_actionQueue->push(act, this,time);
 	
 }
 void GameBoard::cardAttack(int srcOrder, int srcCamp, int srcHealth, int destOrder, int destCamp, int destHealth)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::cardAttackCallBack, this, srcOrder, srcCamp, srcHealth,destOrder,destCamp,destHealth));
-	_actionQueue->push(act, this, 2.f);
+	
+	//计算攻击时长
+	auto srcPlace = Vec2(-155.2 + srcOrder*82.5, -61 + 122 * srcCamp);
+	auto destPlace = Vec2(-155.2 + destOrder*82.5, -61 + 122 * destCamp);
+
+
+	if (srcOrder == -1)
+		srcPlace = _role[0]->getPosition();
+	if (destOrder == -1)
+		destPlace = _role[1]->getPosition();
+
+	auto X = srcPlace.x - destPlace.x;
+	auto Y = srcPlace.y - destPlace.y;
+	auto time = sqrt(X*X + Y*Y) / 400.0;
+	_actionQueue->push(act, this,time+0.1);
 }
 
 void GameBoard::setCardProperties(int srcPool, int srcNum, int srcCamp, int destAttack, int destHealth, int destCost)
 {
+	//TODO 如果是亡语的话，应该延迟执行或者将卡牌死亡插入在亡语前
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::setCardPropertiesCallBack, this,srcPool,srcNum,srcCamp,destAttack,destHealth,destCost));
-	_actionQueue->push(act, this, 0.5f);
+	_actionQueue->push(act, this, 0.0f);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /********************************************************boardHero 接口***************************************************/

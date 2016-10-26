@@ -14,40 +14,65 @@ void MainLayer::onEnter()
 	Layer::onEnter();
 
 
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
 	auto s = Director::getInstance()->getWinSize();
 
 	log("init...");
 
-	//背景图,方框，游戏模式，6个按钮，一个arrow
-	_bg = Sprite::create(s_png_login_bg);
+	//元素：背景图,方框，游戏模式，6个按钮，一个arrow
+	_bg = Sprite::create(s_png_main_bg);
+	_bg->setPosition(s / 2);
+	addChild(_bg);
+
+	_frame = Sprite::create(s_png_main_frame);
+	_frame->setPosition(s.width/2,s.height *0.48);
+	_frame->setScaleX(0.84);
+	addChild(_frame);
+
+	auto fs = _frame->getContentSize();
+
+	_modeImg = Sprite::create(s_png_main_mode);
+	_modeImg->setPosition(fs.width/2 ,fs.height*0.87);
+	_frame->addChild(_modeImg);
+
+	_arrow = Sprite::create(s_png_main_arrow);
+	_arrow->setPosition(fs.width / 2, fs.height*0.87);
+	_frame->addChild(_arrow);
+
+	const char *buttonPath[12];
+	buttonPath[0] = s_png_main_train;
+	buttonPath[1] = s_png_main_train_bn;
+	buttonPath[2] = s_png_main_adventure;
+	buttonPath[3] = s_png_main_adventure_bn;
+	buttonPath[4] = s_png_main_versus;
+	buttonPath[5] = s_png_main_versus_bn;
+	buttonPath[6] = s_png_main_shop;
+	buttonPath[7] = s_png_main_shop_bn;
+	buttonPath[8] = s_png_main_book;
+	buttonPath[9] = s_png_main_book_bn;
+	buttonPath[10] = s_png_main_option;
+	buttonPath[11] = s_png_main_option_bn;
+	for (int i = 0; i < 6; i++)
+	{
+		_buttons[i] = Button::create(buttonPath[i * 2], buttonPath[i * 2 + 1]);
+		_buttons[i]->setTouchEnabled(true);
+		if (i<3)
+			_buttons[i]->setPosition(Vec2(fs.width*(0.6+i*0.1), fs.height*(0.77-i*0.07)));
+		else
+			_buttons[i]->setPosition(Vec2(fs.width/2, fs.height*(0.7 - i*0.1)));
+	
+		_frame->addChild(_buttons[i]);
+	}
+	_buttons[0]->addTouchEventListener(this, toucheventselector(MainLayer::startTrainingEvent));
+	_buttons[1]->addTouchEventListener(this, toucheventselector(MainLayer::startAdventureEvent));
+	_buttons[2]->addTouchEventListener(this, toucheventselector(MainLayer::startVersusEvent));
+	_buttons[3]->addTouchEventListener(this, toucheventselector(MainLayer::startShopEvent));
+	_buttons[4]->addTouchEventListener(this, toucheventselector(MainLayer::startBookEvent));
+	_buttons[5]->addTouchEventListener(this, toucheventselector(MainLayer::startOptionEvent));
+
+	//元素加载完毕
 
 
-	//练习模式按钮
-	auto trainingButton = Button::create("button/trainingBn.png");
-	trainingButton->setTouchEnabled(true);
-	trainingButton->setPosition(Vec2(0, visibleSize.height / 2));
-	trainingButton->runAction(MoveTo::create(0.2f, Vec2(visibleSize.width * 1 / 4, visibleSize.height * 3 / 8)));
-	trainingButton->addTouchEventListener(this, toucheventselector(MainLayer::startTrainingEvent));
-	addChild(trainingButton);
-
-	//冒险模式按钮
-	auto adventureButton = Button::create("button/adventureBn.png");
-	adventureButton->setTouchEnabled(true);
-	adventureButton->setPosition(Vec2(0, visibleSize.height / 2));
-	adventureButton->runAction(MoveTo::create(0.2f, Vec2(visibleSize.width / 2, visibleSize.height / 2)));
-	adventureButton->addTouchEventListener(this, toucheventselector(MainLayer::adventureEvent));
-	addChild(adventureButton);
-
-	//对战模式按钮
-	auto versusButton = Button::create("button/versusBn.png");
-	versusButton->setTouchEnabled(true);
-	versusButton->setPosition(Vec2(0, visibleSize.height / 2));
-	versusButton->runAction(MoveTo::create(0.2f, Vec2(visibleSize.width * 3 / 4, visibleSize.height * 3 / 8)));
-	versusButton->addTouchEventListener(this, toucheventselector(MainLayer::startVersusEvent));
-	addChild(versusButton);
-	_socket = new GameSocket();
 
 	_gameState = GAME_STATE_NORMAL;
 	scheduleUpdate();
@@ -89,23 +114,25 @@ void MainLayer::startGame(bool mode, bool firstHand)
 	s->release();
 	l->release();
 }
-void MainLayer::adventureEvent(Ref*pSender, TouchEventType type)
+
+//开始冒险模式
+
+void MainLayer::startAdventureEvent(Ref*pSender, TouchEventType type)
 {
 	switch (type)
 	{
 	case TOUCH_EVENT_ENDED:
 	{
-
-		if (!_socket->connect())
-		{
-			log("connect failed!");
-		}
-		log("connect success!");
-		/*	string a = _userName->getText();
-		if (a == "")
 		return;
-		string b = "username:" + a;
-		_socket->sendMsg(b);*/
+		Scene* s = new MyScene();
+		auto l = new MyLayer2();
+		l->_mode = 0;
+		l->_socket = _socket;
+		s->addChild(l);
+		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
+
+		s->release();
+		l->release();
 	}
 		break;
 	default:
@@ -119,10 +146,6 @@ void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 
 	switch (type)
 	{
-	case TOUCH_EVENT_BEGAN:
-		break;
-	case TOUCH_EVENT_MOVED:
-		break;
 	case TOUCH_EVENT_ENDED:
 	{
 		Scene* s = new MyScene();
@@ -130,13 +153,11 @@ void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 		l->_mode = 0;
 		l->_socket = _socket;
 		s->addChild(l);
-		//	Director::getInstance()->replaceScene(TransitionFade::create(2, s));
-		Director::getInstance()->replaceScene(s);
+		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
+
 		s->release();
 		l->release();
 	}
-		break;
-	case TOUCH_EVENT_CANCELED:
 		break;
 	default:
 		break;
@@ -153,15 +174,14 @@ void MainLayer::startVersusEvent(Ref*pSender, TouchEventType type)
 	{
 	case TOUCH_EVENT_ENDED:
 	{
-		//this->unscheduleUpdate();
 		//发送对战消息
-	/*	string a = _userName->getText();
-		if (a == "")
-			return;
-		string b = "username:" + a;
-		_socket->sendMsg(b);
+		//string a = _userName->getText();
+		//if (a == "")
+		//	return;
+		//string b = "username:" + a;
+		//_socket->sendMsg(b);
 		_socket->recvMsg();
-		_gameState = GAME_STATE_PREPARED;*/
+		_gameState = GAME_STATE_PREPARED;
 
 
 	}
@@ -171,6 +191,61 @@ void MainLayer::startVersusEvent(Ref*pSender, TouchEventType type)
 	}
 
 
+}
+
+void MainLayer::startShopEvent(Ref*pSender, TouchEventType type)
+{
+
+
+	switch (type)
+	{
+	case TOUCH_EVENT_ENDED:
+	{
+
+
+
+	}
+		break;
+	default:
+		break;
+	}
+}
+
+void MainLayer::startBookEvent(Ref*pSender, TouchEventType type)
+{
+
+
+	switch (type)
+	{
+	case TOUCH_EVENT_ENDED:
+	{
+
+
+
+	}
+		break;
+	default:
+		break;
+	}
+
+
+}
+
+void MainLayer::startOptionEvent(Ref*pSender, TouchEventType type)
+{
+
+
+	switch (type)
+	{
+	case TOUCH_EVENT_ENDED:
+	{
+
+
+	}
+		break;
+	default:
+		break;
+	}
 }
 
 
