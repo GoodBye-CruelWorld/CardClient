@@ -219,7 +219,7 @@ void GameBoard::cardTransfer(int srcPool, int destPool, int srcNum, int destNum,
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::cardTransferCallBack, this,srcPool, destPool, srcNum,destNum, camp,newCard,battlePlace));
 	float time=1.5f;
 	if (srcPool == POOL_HAND&&destPool == POOL_BATTLE)
-		time = 2.f;
+		time = 1.f;
 	if (destPool == POOL_CEME)
 		time = 0.f;
 	_actionQueue->push(act, this,time);
@@ -552,25 +552,44 @@ void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int 
 
 void GameBoard::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 {
-	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack, this,effectID,lastTime,src,dest));
+	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack1, this,effectID,lastTime,src,dest));
 	_actionQueue->push(act, this, lastTime);
 }
 
-void GameBoard::addEffectS(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest)
+void GameBoard::addEffect(int effectID, float lastTime, Node *src, int destPool, int destNum, int destCamp)
 {
-	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectSCallBack, this, effectID, lastTime,srcPool,srcNum,srcCamp, dest));
+	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack2, this, effectID, lastTime,src,destPool,destNum,destCamp));
+	_actionQueue->push(act, this, lastTime);
+}
+
+void GameBoard::addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest)
+{
+	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack3, this, effectID, lastTime,srcPool,srcNum,srcCamp, dest));
+	_actionQueue->push(act, this, lastTime);
+}
+
+void GameBoard::addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp,int destPool,int destNum,int destCamp)
+{
+	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack4, this, effectID, lastTime, srcPool, srcNum, srcCamp,destPool,destNum,destCamp));
 	_actionQueue->push(act, this, lastTime);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**********************************************************boardEffect»Øµ÷************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void GameBoard::addEffectCallBack(int effectID, float lastTime, Node *src, Node*dest)
+void GameBoard::addEffectCallBack1(int effectID, float lastTime, Node *src, Node*dest)
 {
 	this->getEffect()->addEffect(effectID, lastTime, src, dest);
 }
-
-void GameBoard::addEffectSCallBack(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest)
+void GameBoard::addEffectCallBack2(int effectID, float lastTime, Node *src, int destPool, int destNum, int destCamp)
+{
+	this->getEffect()->addEffect(effectID, lastTime, src, this->getCard(destPool,destNum,destCamp));
+}
+void GameBoard::addEffectCallBack3(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest)
 {
 	this->getEffect()->addEffect(effectID, lastTime, this->getCard(srcPool,srcNum,srcCamp), dest);
+}
+void GameBoard::addEffectCallBack4(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, int destPool, int destNum, int destCamp)
+{
+	this->getEffect()->addEffect(effectID, lastTime, this->getCard(srcPool, srcNum, srcCamp), this->getCard(destPool, destNum, destCamp));
 }

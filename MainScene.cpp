@@ -109,7 +109,6 @@ void MainLayer::startGame(bool mode, bool firstHand)
 	l->_firstHand = firstHand;
 	l->_socket = _socket;
 	s->addChild(l);
-	//	Director::getInstance()->replaceScene(TransitionFade::create(2, s));
 	Director::getInstance()->replaceScene(s);
 	s->release();
 	l->release();

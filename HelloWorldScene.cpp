@@ -77,6 +77,7 @@ bool HelloWorld::init()
 	_userName->setPlaceHolder("  Username");
 	_userName->setPlaceholderFontColor(Color3B::GRAY);
 	_userName->setMaxLength(8);
+	_userName->setText("  <TEST>");
 	_userName->setReturnType(cocos2d::extension::EditBox::KeyboardReturnType::DONE);
 	_frame->addChild(_userName);
 	//ÃÜÂë¿ò

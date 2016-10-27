@@ -153,9 +153,13 @@ public:
 	/************************************************与BoardEffect有关的方法集****************************************/
 public:
 	/*快捷的增加特效方式*/
-	void addEffect(int effectID, float lastTime, Node*src= nullptr, Node*dest = nullptr);
+	void addEffect(int effectID, float lastTime, Node*src, Node*dest);
+	void addEffect(int effectID, float lastTime, Node* src, int destPool, int destNum, int destCamp);
+	void addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest);
+	void addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, int destPool, int destNum, int destCamp);
+
 	/*安全的增加特效方式*/
-	void addEffectS(int effectID, float lastTime, int srcPool,int srcNum,int srcCamp, Node*dest = nullptr);
+	//void addEffectS(int effectID, float lastTime, int srcPool,int srcNum,int srcCamp, Node*dest = nullptr);
 	/************************************************私有方法****************************************/
 private:
 	/*调整指定牌池的所有牌的位置*/
@@ -164,6 +168,7 @@ private:
 	void initRole(int RoleID, int camp/*,Library library*/);    //UNFINISHED:使用数据库
 	/*card回调*/
 	void addCardCallBack(CCard &card, int destPool, int num, int camp);
+
 	void cardTransferCallBack(int srcPool, int destPool, int srcOrder, int destOrder, int srcCamp, CCard &card, int battlePlace);//UNFINISHED:增加destCamp
 	void cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int destOrder, int destCamp, int destHealth);
 	void setCardPropertiesCallBack(int srcPool, int srcNum, int srcCamp, int destAttack, int desHealth, int destCost);
@@ -171,8 +176,10 @@ private:
 	void setHeroHealthCallBack(int camp,int value);
 	void setHeroAttackCallBack(int camp,int value);
 	/*特效回调*/
-	void addEffectCallBack(int effectID, float lastTime, Node* src, Node*dest);
-	void addEffectSCallBack(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest = nullptr);
+	void addEffectCallBack1(int effectID, float lastTime, Node* src, Node*dest);
+	void addEffectCallBack2(int effectID, float lastTime, Node* src, int destPool, int destNum, int destCamp);
+	void addEffectCallBack3(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest);
+	void addEffectCallBack4(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, int destPool,int destNum,int destCamp);
 	/************************************************成员变量****************************************/
 	/*成员对象*/
 private:

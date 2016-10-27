@@ -32,6 +32,9 @@ static const char s_png_main_train[] = "mainScene/train.png";   //
 static const char s_png_main_train_bn[] = "mainScene/train_bn.png";   //
 static const char s_png_main_versus[] = "mainScene/versus.png";   //
 static const char s_png_main_versus_bn[] = "mainScene/versus_bn.png";   //
+
+//战斗界面
+static const char s_png_battle_exit[] = "battleScene/exit.png";
 /*
 static const char s_pathDragon_mod[] = "character/dra/dragon.c3b";   //带飞行动画的龙的模型
 static const char s_pathOrc_mod[] = "character/orc/orc.c3b";         //带动画的兽人模型

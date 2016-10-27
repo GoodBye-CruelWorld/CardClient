@@ -367,6 +367,7 @@ void CBattle::update(float dt)
 		case 03:					//	技能的使用
 		{
 			skillSpelling(BattleID / 1000 % 10, BattleID % 1000 / 10, BattleID % 10);
+			_gameboard->getActionQueue()->reset(false);
 			break;
 		}
 		case 4:					//攻击
@@ -558,6 +559,7 @@ bool CBattle::Spelling(int spell_num, int srcPool, int srcNum){
 	case 702:{
 		break;
 	}
+	
 	case 703:{
 		int k = _enemy->_cardPool[POOL_BATTLE].size();
 		int ran = rand() % (k + 1);
@@ -593,7 +595,7 @@ bool CBattle::Spelling(int spell_num, int srcPool, int srcNum){
 	case 802:{
 	
 		_enemy->_hero->setHealthData(_enemy->_hero->getHealthData() - 3);/*数据处理*/
-		_gameboard->addEffectS(EFFECT_FIREBALL, 0.5f, srcPool, srcNum, _camp, _enemy->_hero);/*特效处理*/
+		_gameboard->addEffect(EFFECT_FIREBALL, 0.5f, srcPool, srcNum, _camp, _enemy->_hero);/*特效处理*/
 
 		/*显示处理*/
 		auto e = _gameboard->getEffect();
@@ -695,10 +697,43 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 		{
 			int num = rand() % (_enemy->_cardPool[POOL_BATTLE].size() + 1);
 			if (num == _enemy->_cardPool[POOL_BATTLE].size())
-				_enemy->_hero->setHealth(_enemy->_hero->getHealth() - 1);
+			{
+				/*数据处理*/
+				_enemy->_hero->setHealthData(_enemy->_hero->getHealthData() - 1);
+
+				/*特效处理*/
+				_gameboard->addEffect(EFFECT_FIREBALL, 0.5f,_hero, _enemy->_hero);
+
+				/*显示处理*/
+				auto e = _gameboard->getEffect();
+				auto aq = _gameboard->getActionQueue();
+				auto keytime = e->getKeyTimeOfEffect(EFFECT_FIREBALL);
+
+				aq->advanceToLastAction();
+				aq->delay(keytime*0.5);
+				_gameboard->setHeroHealth(!_camp, _enemy->_hero->getHealthData());
+				aq->delay((1 - keytime)*0.5);
+
+			
+			}
 			else
 			{
 				_enemy->_cardPool[POOL_BATTLE].at(num).damaged(1);
+
+				/*特效处理*/
+				_gameboard->addEffect(EFFECT_FIREBALL, 0.5f, _hero,POOL_BATTLE,num,!_camp);
+
+				/*显示处理*/
+				auto e = _gameboard->getEffect();
+				auto aq = _gameboard->getActionQueue();
+				auto keytime = e->getKeyTimeOfEffect(EFFECT_FIREBALL);
+
+				aq->advanceToLastAction();
+				aq->delay(keytime*0.5);
+				//_gameboard->setHeroHealth(!_camp, _enemy->_hero->getHealthData());
+				_gameboard->setCardProperties(POOL_BATTLE, num, !_camp, -1, _enemy->_cardPool[POOL_BATTLE].at(num).getFinalHealth(), -1);
+				aq->delay((1 - keytime)*0.5);
+
 
 				if (_enemy->_cardPool[POOL_BATTLE].at(num).isDead())
 					_enemy->CardDead(num);
