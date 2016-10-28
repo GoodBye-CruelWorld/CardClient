@@ -1,9 +1,19 @@
 #include"BoardEffect.h"
+#include"GameBoard.h"
 
-void BoardEffect::onEnter()
+BoardEffect* BoardEffect::_instance = nullptr;
+
+BoardEffect* BoardEffect::getInstance()
 {
-	Node::onEnter();
+	if (_instance != NULL)
+		return _instance;
+	else
+	{
+		_instance = new BoardEffect();
+		return _instance;
+	}
 }
+
 
 void BoardEffect::initEffectsInfo()
 {
@@ -48,7 +58,7 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 		auto emitter = ParticleFire::create();
 		emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("effects/particles/stars.png"));//ÉèÖÃÌùÍ¼
 		emitter->setPosition3D(src->getPosition3D());
-		this->addChild(emitter);
+		GameBoard::getInstance()->addChild(emitter);
 		emitter->runAction(Sequence::create(DelayTime::create(lastTime), CallFunc::create(CC_CALLBACK_0(BoardEffect::endCallback, this, emitter)), NULL));
 		emitter->runAction(MoveTo::create(lastTime, dest->getPosition3D()));
 	}
@@ -86,7 +96,7 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 
 	}
 		break;
-	case 4:
+	case EFFECT_BIT:
 	{
 		Animation *animation = Animation::create();
 		auto node = Sprite::create();
@@ -110,6 +120,23 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 		node->setScale(0.7);
 		dest->addChild(node);
 	}
+		break;
+	case EFFECT_BUFF:
+	{
+		auto die_par = ParticleSystemQuad::create("particles/buff.plist");
+		die_par->setPosition(dest->getContentSize()/2+Size(120,-20));
+		die_par->setRotation(90);
+		die_par->setScale(0.5);
+		dest->addChild(die_par, EFFECT_LAYER);
+	
+	}
+		break;
+	case EFFECT_DEBUFF:
+	{
+
+
+	}
+		break;
 	default:
 		break;
 	}
@@ -120,7 +147,7 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 
 void BoardEffect::addEffect(int effectID, float delay, float duration, float positionX, float positionY, float positionZ)
 {
-	addEffect(effectID, this,delay,duration,positionX,positionY,positionZ);
+	//this->addEffect(effectID, this,delay,duration,positionX,positionY,positionZ);
 }
 
 

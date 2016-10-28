@@ -19,7 +19,7 @@ int BoardChess::getCamp()
 
 void BoardChess::turnSide()
 {	
-	this->runAction(Sequence::create(RotateTo::create(0.3f, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardChess::turnSideCallback, this)), RotateTo::create(0.3f, Vec3(0, 180, 0)), NULL));
+	this->runAction(Sequence::create(RotateBy::create(0.3f, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardChess::turnSideCallback, this)), RotateBy::create(0.3f, Vec3(0, 90, 0)), NULL));
 }
 
 void BoardChess::turnSideCallback()

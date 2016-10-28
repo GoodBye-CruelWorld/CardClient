@@ -1,6 +1,6 @@
 #include"BoardCard.h"
 #include"Tool.h"
-
+#include"BoardEffect.h"
 //*Àà³õÊ¼»¯
 void BoardCard::onEnter()
 {
@@ -150,7 +150,10 @@ void BoardCard::setCurrentHealth(int CurHealth)
 	else if (CurHealth == _oHealth)
 		_laHealth->setColor(Color3B::WHITE);
 	else
+	{
+		BoardEffect::getInstance()->addEffect(EFFECT_BUFF, -1, NULL, this);
 		_laHealth->setColor(Color3B::GREEN);
+	}
 }
 
 

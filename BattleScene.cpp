@@ -52,7 +52,7 @@ void MyLayer2::onEnter()
 	auto s = Director::getInstance()->getWinSize();
 
 
-	_gameBoard = new GameBoard();
+	_gameBoard = GameBoard::getInstance();
 	_gameBoard->setPosition(Vec2(s.width / 2, s.height / 2));
 	addChild(_gameBoard);
 

@@ -2,9 +2,23 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /************************************************************初始化*******************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+GameBoard* GameBoard::_instance = nullptr;
+
 GameBoard::GameBoard()
 {
 }
+
+GameBoard* GameBoard::getInstance()
+{
+	if (_instance != NULL)
+		return _instance;
+	else
+	{
+		_instance = new GameBoard();
+		return _instance;
+	}
+}
+
 
 void GameBoard::onEnter()
 {
@@ -35,12 +49,12 @@ void GameBoard::onEnter()
 	initRole(0, 1);
 
 	//创建效果管理器
-	_effect = new BoardEffect();
+	_effect = BoardEffect::getInstance();
 	_effect->addEffect(0,_bg->getDecoration(0),10); //测试用
 	_effect->addEffect(4,_bg->getDecoration(3),5);   //测试用
 	_effect->addEffect(1, _bg->getDecoration(1), 8);   
 	_effect->addEffect(1, _bg->getDecoration(2), 15);
-	addChild(_effect);
+	//addChild(_effect);
 
 
 
@@ -175,6 +189,13 @@ void GameBoard::startPlayerTurn()
 	_endTurnButton->loadTextureNormal("ChessBoard/start01.png");
 	_endTurnButton->setTouchEnabled(true);
 	_endTurnButton->setEnabled(true);
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (_role[0]->getRoleSkill(i)->isUsed())
+			_role[0]->getRoleSkill(i)->turnSide();
+	}
+	
 }
 
 void GameBoard::startAiTurn()
@@ -183,6 +204,11 @@ void GameBoard::startAiTurn()
 	_endTurnButton->setEnabled(false);
 	_endTurnButton->loadTextureNormal("ChessBoard/start02.png");
 
+	for (int i = 0; i < 3; i++)
+	{
+		if (_role[1]->getRoleSkill(i)->isUsed())
+			_role[1]->getRoleSkill(i)->turnSide();
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -16,7 +16,6 @@ CBattle::CBattle(GameBoard * gameboard, int *battleID, bool * battleState, int *
 	_gameMode = gameMode;
 	_firstHand = firstHand;
 	ActionPoints = ActPtsMax = 1;
-	//vector<CCard>*/*CinBattle*/_cardPool[POOL_BATTLE], *_cardPool[POOL_HAND], *_cardPool[POOL_DECK], *_cardPool[POOL_CEME];
 	
 };
 void CBattle::setEnemy(CBattle *e)
@@ -29,10 +28,11 @@ void CBattle::TurnStart(){
 	ActionPoints = ActPtsMax++;
 	_gameState = GAME_RUN;
 	//
-	if (!_camp)
+	if (_camp==0)
 		_gameboard->startPlayerTurn();
 	else
 		_gameboard->startAiTurn();
+
 	_gameboard->getActionPointBar(_camp)->addTotalActionPoint();
 	_gameboard->getActionPointBar(_camp)->fullAvailActionPoint();
 	//?检测行动
@@ -54,12 +54,7 @@ void CBattle::TurnStart(){
 	//如果是敌方,转到Ai中
 	if (_camp)
 	{
-		//ai->AiTurn()
 		Turning();	
-		/*this->runAction(Sequence::create(
-		DelayTime::create(2.f),
-			CallFunc::create(CC_CALLBACK_0(CBattle::Turning, this)),
-			NULL));*/
 	}
 }
 
@@ -86,11 +81,11 @@ void CBattle::TurnOver()
 	SpellCheck(01);
 	if (!_camp)
 	{
-		_gameboard->startAiTurn();
+		//_gameboard->startAiTurn();
 	}
 	else
 	{
-		_gameboard->startPlayerTurn();
+		//_gameboard->startPlayerTurn();
 		if (_gameMode)
 			_gameSocket->_recv=false;
 	}
@@ -663,7 +658,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 {
 	auto spellID = _gameboard->getRole(_camp)->getRoleSkill(spell_num)->getID();
 
-	spellID = 12;
+	spellID += 10;
 	if (spellID == 10)
 	{
 		switch (destPool)

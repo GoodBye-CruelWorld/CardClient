@@ -1,11 +1,15 @@
 #pragma once
 #include"cocos2d.h"
 USING_NS_CC;
-
+/*特效层*/
+#define EFFECT_LAYER 10
 /*特效默认持续时间*/
 #define DEFAULT_DURATION 0
 #define EFFECT_FLOWER 0
 #define EFFECT_FIREBALL 5
+#define EFFECT_BIT 4
+#define EFFECT_BUFF 6
+#define EFFECT_DEBUFF 7
 /*
 *@BoardEffect
 *brief a union of effects which can  be used in chessboard,including changes of board,effects manifest on the board.
@@ -13,10 +17,15 @@ USING_NS_CC;
 2.若未给出特效的添加对象，则添加至自己本身
 3.若未定义持续时间，则采用特效本身默认持续时间
 */
-class BoardEffect:public Node
+class BoardEffect
 {
+	static BoardEffect *_instance;
+private:
+	BoardEffect(){};
+	
 public:
-	virtual void onEnter()override;
+	static BoardEffect* getInstance();
+public:
 	void initEffectsInfo();
 	/**
 	*@getKeyTimeOfEffect

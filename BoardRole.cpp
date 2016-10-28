@@ -201,6 +201,12 @@ void RoleSkill::useSkill()
 	
 }
 
+//是否已使用
+bool RoleSkill::isUsed()
+{
+	return _isUsed;
+}
+
 void RoleSkill::changeSkill(int SkillID)
 {
 	_chessID = SkillID;

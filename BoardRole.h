@@ -40,7 +40,7 @@ public:
 	static RoleSkill*create(int SkillID/*,GameLibrary *_library*/);
 	
 	void useSkill();   //使用技能
-	bool IsUsed();	   //是否已使用
+	bool isUsed();	   //是否已使用
 	void resetSkillUsable();  //使技能可使用，一般由流程类在下一回合开始时调用
 
 
@@ -49,7 +49,7 @@ public:
 
 	void setCost(int cost);
 	int	 getCost();
-
+	
 private:
 	void changeSkillCallback();
 private:

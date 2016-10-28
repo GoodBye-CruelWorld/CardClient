@@ -37,6 +37,11 @@ private:
 	//设置卡牌当前费用
 	void setCurrentCost(int curcost);  
 	
+	//设置卡牌当前护甲
+	void setCurrentArmor(int curArmor);
+
+	//获取卡牌当前护甲
+	int getCurrentArmor();
 
 	//卡牌被沉默,删去文字描述
 	void silent(); 
@@ -76,6 +81,7 @@ private:
 	CCard *_card;
 	bool _cardside;
 	Sprite *_frame;
+	Sprite *_Armor;
 //private:
 	void calculatePosAndAngle(int place,int size,float &angle,float &x,float &y,int camp=0);
 private:
@@ -83,8 +89,8 @@ private:
 	Sprite  *_normal,*_battle, *_cardBack;//普通,战斗，卡背
 	//int _ID,_attack, _health, _cost;//5个属性
 	//const char*_description;   //描述
-	Label *_laAttack, *_laHealth, *_laCost, *_laDescription,*_laName;
-	int _curHealth, _curAttack, _curCost;
-	int _oHealth, _oAttack, _oCost;
+	Label *_laAttack, *_laHealth, *_laCost, *_laDescription,*_laName,*_laArmor;
+	int _curHealth, _curAttack, _curCost,_curArmor;
+	int _oHealth, _oAttack, _oCost,_oArmor;
 	void turnSideCallback();
 };

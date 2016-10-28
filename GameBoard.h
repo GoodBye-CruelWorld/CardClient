@@ -26,9 +26,12 @@ class GameBoard:public Node
 {
 	/****************************************************初始化********************************************/
 public:
-	GameBoard();
+	
 	virtual void onEnter()override;
-
+	static GameBoard* getInstance();
+private:
+	static GameBoard *_instance;
+	GameBoard();
 	/****************************************************get接口********************************************/
 public:
 	/**@getCard:获取面板卡牌对象.
