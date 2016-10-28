@@ -137,5 +137,9 @@ public:
 
 	//10.27 
 	void buffCheck(int,CCard&);
-
+	//10.28
+	//void spellAttackCheck(CCard&, CCard&){}
+	void SpellCheck(int,int, CCard &card);
+	void Spelling(CCard&, int,int,int);
+	void SpellLaunch();
 };

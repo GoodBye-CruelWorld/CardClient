@@ -127,6 +127,15 @@ void CBattle::SpellCheck(int srcPool, int srcNum, int sTime){
 		}
 }
 
+void CBattle::SpellCheck(int srcPool, int srcNum, CCard &card1){
+	auto &card = _cardPool[srcPool][srcNum];
+	int jS = card.get_spellID().size();
+	for (int j = 0; j < jS; j++)
+		if (card.get_spellID()[j] % 100 == 4){
+			Spelling(card1,card.get_spellID()[j], srcPool, srcNum);
+		}
+}
+
 
 
 void CBattle::SpellCheckPlayer(int sTime){
@@ -167,7 +176,7 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		destCard = &_cardPool[POOL_BATTLE].at(destNum);
 	else
 		destCard = &_enemy->_cardPool[POOL_BATTLE].at(destNum);
-
+	SpellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
 	reduceAttack(_cardPool[POOL_BATTLE].at(srcNum));
 	srcCard->damaged(destCard->getFinalAttack());
 	destCard->damaged(srcCard->getFinalAttack());
@@ -253,7 +262,7 @@ void CBattle::CardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int
 
 }
 
-
+void 
 
 
 void CBattle::cardTransfer(int srcPool, int destPool, int srcNum, int destNum, int battlePlace)
@@ -475,13 +484,13 @@ void CBattle::GameOver()
 
 
 bool CBattle::Spelling(int spell_num, int srcPool, int srcNum){
+	CCard SpellCard = _cardPool[srcPool][srcNum];
+	Spelling(SpellCard, spell_num, srcPool, srcNum);
+	return false;
+}
+
+void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 	int numX = spell_num / 1000000, numID = spell_num % 1000000 / 1000, numChoose = spell_num / 100 % 10;
-	CCard &SpellCard = _cardPool[srcPool][srcNum];
-	if (numChoose == 1) {
-		CCard card2;
-		//获得新的卡牌
-		//&SpellCard = card2
-	}
 	switch (numID)
 	{
 	case 001:
@@ -516,8 +525,8 @@ bool CBattle::Spelling(int spell_num, int srcPool, int srcNum){
 	}
 	case 500:
 		// 获得牌ID
-		Spelling(1001100, srcPool, srcNum);
-		Spelling(4100, srcPool, srcNum);
+		//Spelling(1001100, srcPool, srcNum);
+		//Spelling(4100, srcPool, srcNum);
 		break;
 	case 501:
 		DrawCard();
@@ -550,6 +559,9 @@ bool CBattle::Spelling(int spell_num, int srcPool, int srcNum){
 		break;
 	}
 	case 702:{
+		Buff buff(1, 2);
+		buff._times = 3;
+		SpellCard.addBuff(buff);
 		break;
 	}
 	case 703:{
@@ -649,7 +661,6 @@ bool CBattle::Spelling(int spell_num, int srcPool, int srcNum){
 	default:
 		break;
 	}
-	return true;
 
 }
 
