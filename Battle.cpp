@@ -169,8 +169,21 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		destCard = &_enemy->_cardPool[POOL_BATTLE].at(destNum);
 
 	reduceAttack(_cardPool[POOL_BATTLE].at(srcNum));
-	srcCard->damaged(destCard->getFinalAttack());
-	destCard->damaged(srcCard->getFinalAttack());
+
+	//随从实际和显示血量的改变
+	//判断敌方随从是否带有“猎人印记”的buff
+	Buff buff(1, 4);
+	if (srcCard->buffCheck(buff))
+		srcCard->damaged((destCard->getFinalAttack() - srcCard->get_armor()) <= 0 ? 0 : (destCard->getFinalAttack() - srcCard->get_armor()) * 2);
+	else
+		srcCard->damaged((destCard->getFinalAttack() - srcCard->get_armor()) <= 0 ? 0 : destCard->getFinalAttack() - srcCard->get_armor());
+	if (destCard->buffCheck(buff))
+		destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : (srcCard->getFinalAttack() - destCard->get_armor())*2);
+	else
+		destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : srcCard->getFinalAttack() - destCard->get_armor());
+	//显示血量
+	_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp, -1, _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), -1);
+	_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, -1, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
 
 	//取消本回合随从的攻击能力
 	srcCard->set_isAttack(true);
@@ -694,27 +707,37 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 	{
 		switch (destPool)
 		{
-		case 3:
+		case 3:			//己方随从
+			//实际扣血
 			_cardPool[POOL_BATTLE].at(destNum).damaged(1);
+			//显示扣血
+			_gameboard->setCardProperties(POOL_BATTLE, destNum, _camp, -1, _cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
+
 			if (_cardPool[POOL_BATTLE].at(destNum).isDead())
 				CardDead(destNum);
+			
 			break;
-		case 4:
+		case 4:			//敌方随从
+			//实际扣血
 			_enemy->_cardPool[POOL_BATTLE].at(destNum).damaged(1);
-			if (_enemy->_cardPool[POOL_BATTLE].at(destNum).isDead())
-				_enemy->CardDead(destNum);
-			if (ActPtsMax >= 6)
+			//实际扣血
+			_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, -1, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
+			if (ActPtsMax >= 0)
 			{
 				Buff _buff(1, 4);
 				_buff._times = 1;
 				_enemy->_cardPool[POOL_BATTLE].at(destNum).addBuff(_buff);
 			}
+
+			if (_enemy->_cardPool[POOL_BATTLE].at(destNum).isDead())
+				_enemy->CardDead(destNum);
+			
 			break;
-		case 6:
-			_hero->setHealth(_enemy->_hero->getHealth() - 1);
+		case 6:		//己方英雄
+			_hero->setHealth(_enemy->_hero->getHealthData() - 1);
 			break;
-		case 7:
-			_enemy->_hero->setHealth(_enemy->_hero->getHealth() - 1);
+		case 7:		//地方英雄
+			_enemy->_hero->setHealth(_enemy->_hero->getHealthData() - 1);
 			break;
 		default:
 			break;
