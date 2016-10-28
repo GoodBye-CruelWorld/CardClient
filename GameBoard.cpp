@@ -50,10 +50,10 @@ void GameBoard::onEnter()
 
 	//创建效果管理器
 	_effect = BoardEffect::getInstance();
-	_effect->addEffect(0,_bg->getDecoration(0),10); //测试用
-	_effect->addEffect(4,_bg->getDecoration(3),5);   //测试用
-	_effect->addEffect(1, _bg->getDecoration(1), 8);   
-	_effect->addEffect(1, _bg->getDecoration(2), 15);
+	//_effect->addEffect(0,_bg->getDecoration(0),10); //测试用
+	//_effect->addEffect(4,_bg->getDecoration(3),5);   //测试用
+	//_effect->addEffect(1, _bg->getDecoration(1), 8);   
+	//_effect->addEffect(1, _bg->getDecoration(2), 15);
 	//addChild(_effect);
 
 
@@ -316,9 +316,10 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 		auto srcCard = _cardPools[POOL_BATTLE + 4 * srcCamp].at(srcOrder);
 		auto destCard = _cardPools[POOL_BATTLE + 4 * destCamp].at(destOrder);
 		auto delay = srcCard->attackCard(destCard);
-		_effect->addEffect(4, destCard, delay);
+	//	_effect->addEffect(4, destCard, delay);
 		this->runAction(Sequence::create(
 			DelayTime::create(delay),
+			CallFunc::create(CC_CALLBACK_0(BoardEffect::addEffect,_effect, 4,-1, nullptr,destCard)),
 			CallFunc::create(CC_CALLBACK_0(BoardCard::setCurrentHealth, srcCard, srcHealth)),
 			CallFunc::create(CC_CALLBACK_0(BoardCard::setCurrentHealth, destCard, destHealth)),
 			NULL));
@@ -329,9 +330,10 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 		auto srcHero = _role[srcCamp]->getRolePhote();
 		auto destCard = _cardPools[POOL_BATTLE + 4 * destCamp].at(destOrder);
 		auto delay = srcHero->attack(destCard->getPosition());
-		_effect->addEffect(4, destCard, delay);
+		//_effect->addEffect(4, destCard, delay);
 		this->runAction(Sequence::create(
 			DelayTime::create(delay),
+			CallFunc::create(CC_CALLBACK_0(BoardEffect::addEffect, _effect, 4, -1, nullptr, destCard)),
 			CallFunc::create(CC_CALLBACK_0(BoardRole::setHealth, _role[srcCamp], srcHealth, 0)),
 			CallFunc::create(CC_CALLBACK_0(BoardCard::setCurrentHealth, destCard, destHealth)),
 			NULL));
@@ -341,9 +343,11 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 		auto srcCard = _cardPools[POOL_BATTLE + 4 * srcCamp].at(srcOrder);
 		auto destHero = _role[destCamp]->getRolePhote();
 		auto delay = srcCard->attackHero(destCamp);
-		_effect->addEffect(4, destHero, delay);
+		//_effect->addEffect(4, destHero, delay);
 		this->runAction(Sequence::create(
 			DelayTime::create(delay),
+			CallFunc::create(CC_CALLBACK_0(BoardEffect::addEffect, _effect, 4, -1, nullptr, destHero)),
+			//CallFunc::create(CC_CALLBACK_0(BoardEffect::addEffect, _effect, 4, -1, nullptr, destCard)),
 			CallFunc::create(CC_CALLBACK_0(BoardCard::setCurrentHealth, srcCard, srcHealth)),
 			CallFunc::create(CC_CALLBACK_0(BoardRole::setHealth, _role[destCamp], destHealth, 0)),
 			NULL));
@@ -353,9 +357,10 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 		auto srcHero = _role[srcCamp]->getRolePhote();
 		auto destHero = _role[destCamp]->getRolePhote();
 		auto delay = srcHero->attack(destHero->getPosition());
-		_effect->addEffect(4, destHero, delay);
+		//_effect->addEffect(4, destHero, delay);
 		this->runAction(Sequence::create(
 			DelayTime::create(delay),
+			CallFunc::create(CC_CALLBACK_0(BoardEffect::addEffect, _effect, 4, -1, nullptr, destHero)),
 			CallFunc::create(CC_CALLBACK_0(BoardRole::setHealth, _role[srcCamp], srcHealth, 0)),
 			CallFunc::create(CC_CALLBACK_0(BoardRole::setHealth, _role[destCamp], destHealth, 0)),
 			NULL));
