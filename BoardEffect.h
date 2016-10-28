@@ -10,6 +10,8 @@ USING_NS_CC;
 #define EFFECT_BIT 4
 #define EFFECT_BUFF 6
 #define EFFECT_DEBUFF 7
+#define EFFECT_FIRE_FLASH 8
+#define EFFECT_FROZEN 9
 /*
 *@BoardEffect
 *brief a union of effects which can  be used in chessboard,including changes of board,effects manifest on the board.
@@ -36,9 +38,10 @@ public:
 	float getKeyTimeOfEffect(int effectID);
 	float getLastTimeOfEffect(int effectID);
 	void addEffect(int effectID, float lastTime, Node *src, Node*dest);
-	void addEffect(int effectID, float delay=0,float duration = DEFAULT_DURATION, float positionX = 0, float positionY = 0, float positionZ = 0);
-	void addEffect(int effectID, Node * target, float delay = 0, float duration = DEFAULT_DURATION, float positionX = 0, float positionY = 0, float positionZ = 0);
+	
 private:
+	ParticleSystemQuad* addParticle(std::string fileName, Node* dest, float rotation=NULL, float scale=NULL, Vec2 position=NULL);
+	//ParticleSystemQuad* addParticleEffect(std::string fileName,Node* dest);
 	void endCallback(Node* sender); //当特效结束后会调用这个函数
 	Vec3 effects[100];	//x=effectID,y=effectKeyTime,z=effectLastTime
 };

@@ -121,10 +121,11 @@ void RolePhote::setWordChoicesVisible(bool visible) //设置‘语句选择’的可见不可
 }
 void RolePhote::speakWord(int num) //说话，num代表第几条语句
 {
+	return;//为测试方便
 	if (num < 0 || num>3)
 		return;
 
-	if (_wordSpeakOnScreen)
+	if (_wordSpeakOnScreen>0)
 	{
 		_wordSpeak[_wordSpeakOnScreen]->stopAllActions();
 		_wordSpeak[_wordSpeakOnScreen]->setVisible(false);
