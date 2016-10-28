@@ -17,8 +17,8 @@ CAIEnemy::~CAIEnemy()
 
 float CAIEnemy::AiTurn(){
 
-	AiCummom();
 	AiAttack();
+	AiCummom();
 	auto dT = bat->_gameboard->getActionQueue()->getDelayTime()+1.5f;/*获取动画序列总延迟时间*/
 	return dT;
 }

@@ -598,15 +598,15 @@ void  BattleTool2D::onTouchMoved(Touch* touch, Event* event)
 		}
 		case 3:
 			
-			_sight = 1;
-			//if ((_battleMy->_cardPool[POOL_BATTLE].at(_beginID % 10)._canAttack) && (!_battleMy->_cardPool[POOL_BATTLE].at(_beginID % 10)._isAttack))
-			//	_sight = 1;	
-			//else
-			//{
-			//	//提示不能攻击
-			//	_gameboard->getRole(0)->getRolePhote()->speakWord(1);
-			//	_beginID = 0;				
-			//}
+			//_sight = 1;
+			if ((_battleMy->_cardPool[POOL_BATTLE].at(_beginID % 10).get_canAttack()) && (!_battleMy->_cardPool[POOL_BATTLE].at(_beginID % 10).get_isAttack()))
+				_sight = 1;	
+			else
+			{
+				//提示不能攻击
+				_gameboard->getRole(0)->getRolePhote()->speakWord(1);
+				_beginID = 0;				
+			}
 			break;
 		case 6:
 			if ((_beginID % 100) / 10)//英雄可攻击
@@ -731,21 +731,18 @@ int BattleTool2D::judgeTouchPoint(cocos2d::Point tp, int PartID)
 		//调用英雄类，获得技能数据
 		int SkillID = 0;
 		auto Skill=_gameboard->getRole(0)->getRoleSkill(Number);
-		SkillID=Skill->getID();
+		SkillID=Skill->getSkillID();
 
 		//判断技能是否指向
 		bool  Direct = false;
-		switch (SkillID)
-		{
 		
-		default:
-			break;
-		}
+		if (SkillID == 10 || SkillID == 0)
+			Direct = true;
 
-		//test
-		/*********************************************************************************************************/
-		Direct = true;
-		/*********************************************************************************************************/
+		
+		
+
+		
 		if (Direct)
 		{
 			return 800 + 1 * 10 + Number;//1表示指向性

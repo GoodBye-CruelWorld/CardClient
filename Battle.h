@@ -98,6 +98,7 @@ public:
 //	bool Spelling(int spell_num, CCard &card1);
 	bool Spelling(int spell_num, int srcPool, int srcNum);
 	void skillSpelling(int spellNum, int srcPool, int srcNum);
+	void skillSpelling();//触发被动技能
 	int getCardPos(int cardPool,CCard &card);//获取card在数组中的位置,没有则返回-1
 	//void CreatureDead(CCardinBattlefield &creature);
 	void CreatureDead(CCard &card);
@@ -132,4 +133,9 @@ public:
 	void reduceAttack(CCard&);
 	void buffAdd(Buff&, int, CCard&);
 	int _resourceNumber;
+
+
+	//10.27 
+	void buffCheck(int,CCard&);
+
 };

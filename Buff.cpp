@@ -3,6 +3,8 @@ Buff::Buff(int type,int id)
 {
 	_bufftype = type;
 	_buffid = id;
+	_times = -1;
+
 	setdata(0, 0, 0);
 	setResource(-1);
 

@@ -21,7 +21,7 @@ RolePhote * RolePhote::create(int RoleID)
 		case 0:
 		{
 			rolePhote->_phote = Sprite::create("ChessBoard/chess/hero/1.png");
-		
+
 			rolePhote->addChild(rolePhote->_phote);
 			rolePhote->initwords();
 		}
@@ -68,7 +68,7 @@ void RolePhote::initwords()
 
 
 
-	
+
 	for (int i = 0; i < 4; i++)
 	{
 		_wordSpeak[i] = Sprite::create("ChessBoard/chess/dialog.png");
@@ -76,10 +76,10 @@ void RolePhote::initwords()
 		_wordSpeak[i]->setVisible(false);
 		addChild(_wordSpeak[i]);
 
-		label[i+4] = Label::create(word[i], "Arial", 24);
-		label[i+4]->setColor(Color3B::BLACK);
-		label[i+4]->setPosition(75, 50);
-		_wordSpeak[i]->addChild(label[i+4]);
+		label[i + 4] = Label::create(word[i], "Arial", 24);
+		label[i + 4]->setColor(Color3B::BLACK);
+		label[i + 4]->setPosition(75, 50);
+		_wordSpeak[i]->addChild(label[i + 4]);
 
 	}
 
@@ -96,13 +96,13 @@ void RolePhote::explode()
 
 float RolePhote::attack(Vec2 Pos)
 {
-	 return attack(Pos.x, Pos.y);
+	return attack(Pos.x, Pos.y);
 }
 float RolePhote::attack(float PosX, float PosY)
 {
 	auto time = sqrt(PosX*PosX + PosY*PosY) / 400;
-	auto action1 = MoveBy::create(sqrt(PosX*PosX+PosY*PosY)/400, Vec2(0, 400));
-	auto easeaction1=EaseOut::create(action1, 0.2);
+	auto action1 = MoveBy::create(sqrt(PosX*PosX + PosY*PosY) / 400, Vec2(0, 400));
+	auto easeaction1 = EaseOut::create(action1, 0.2);
 	auto easeaction2 = EaseIn::create(action1->reverse(), 0.4);
 	auto action2 = Sequence::create(easeaction1, easeaction2, NULL);
 	this->runAction(action2);
@@ -122,13 +122,13 @@ void RolePhote::setWordChoicesVisible(bool visible) //设置‘语句选择’的可见不可
 void RolePhote::speakWord(int num) //说话，num代表第几条语句
 {
 	if (num < 0 || num>3)
-		return ;
+		return;
 
 	if (_wordSpeakOnScreen)
 	{
 		_wordSpeak[_wordSpeakOnScreen]->stopAllActions();
 		_wordSpeak[_wordSpeakOnScreen]->setVisible(false);
-	//	_wordSpeakOnScreen->runAction(Sequence::create(FadeOut::create(0.05f), CallFunc::create(CC_CALLBACK_0(Sprite::setVisible, _wordSpeak[num], false)), NULL));
+		//	_wordSpeakOnScreen->runAction(Sequence::create(FadeOut::create(0.05f), CallFunc::create(CC_CALLBACK_0(Sprite::setVisible, _wordSpeak[num], false)), NULL));
 	}
 	_wordSpeakOnScreen = num;
 
@@ -168,9 +168,9 @@ RoleSkill *RoleSkill::create(int SkillID/*,GameLibrary _library */)
 	roleSkill->_chessID = SkillID;
 	if (roleSkill&&roleSkill->init())
 	{
-	    //改为roleSkill->_face = Sprite::create(_library->getPath1(SKILL_TABLE,SkillID));
+		//改为roleSkill->_face = Sprite::create(_library->getPath1(SKILL_TABLE,SkillID));
 		roleSkill->_face = Sprite::create("ChessBoard/chess/skill.png");
-    	//改为roleSkill->setCost(_library->getCost(SKILL_TABLE,SkillID))); 
+		//改为roleSkill->setCost(_library->getCost(SKILL_TABLE,SkillID))); 
 		roleSkill->setCost(2); //测试用
 
 		//描述
@@ -180,7 +180,7 @@ RoleSkill *RoleSkill::create(int SkillID/*,GameLibrary _library */)
 		roleSkill->_description->setVisible(false);
 
 		roleSkill->_isUsed = false;
-		
+
 
 		roleSkill->_back = Sprite::create("ChessBoard/chess/skill2.png");
 		roleSkill->_back->setVisible(false);
@@ -198,11 +198,16 @@ void RoleSkill::useSkill()
 	_isUsed = true;
 	turnSide();
 	//_skill这张图片做出更改
-	
+
 }
 
-//是否已使用
-bool RoleSkill::isUsed()
+
+int RoleSkill::getSkillID()
+{
+	return _chessID;
+
+}
+bool RoleSkill::isUsed()	   //是否已使用
 {
 	return _isUsed;
 }
@@ -217,7 +222,7 @@ void RoleSkill::changeSkill(int SkillID)
 void RoleSkill::changeSkillCallback()
 {
 	_face->removeFromParent();
-	
+
 	_face = Sprite::create("ChessBoard/chess/skill2.png");
 	this->addChild(_face);
 
@@ -254,7 +259,7 @@ RoleWeapon *RoleWeapon::create(int WeaponID/*,GameLibrary _library */)
 	roleWeapon->_chessID = WeaponID;
 	if (roleWeapon&&roleWeapon->init())
 	{
-	
+
 		//roleWeapon->_face = Sprite::create(_library->getPath1(CARD_TABLE,WeaponID));s
 		roleWeapon->_face = Sprite::create("ChessBoard/chess/a.png");
 		roleWeapon->_weaponFrame = Sprite::create("ChessBoard/chess/a.png");  //装饰用
@@ -263,7 +268,7 @@ RoleWeapon *RoleWeapon::create(int WeaponID/*,GameLibrary _library */)
 		//roleWeapon->_attack = _library->getAttack(CARD_TABLE,WeaponID);
 		//roleWeapon->_useTime = _library->getUseTime(CARD_TABLE,WeaponID);
 		roleWeapon->_isUsed = false;
-	
+
 		//描述
 		roleWeapon->_description = Sprite::create("ChessBoard/chess/b.png");
 		auto label = Label::create("_library->getDescription(CARD_TABLE,WeaponID)", "Arial", 20);
@@ -283,22 +288,22 @@ RoleWeapon *RoleWeapon::create(CCard &card)
 	roleWeapon->_chessID = card.get_cardID();
 	if (roleWeapon&&roleWeapon->init())
 	{
-		
-			roleWeapon->_face = Sprite::create(card.get_cardPath());
-			roleWeapon->_weaponFrame = Sprite::create("ChessBoard/chess/a.png");//装饰用
-			roleWeapon->_back = Sprite::create("ChessBoard/chess/a.png"); 
 
-		
-			roleWeapon->_back->setVisible(false);
-			//roleWeapon->_attack = card.Attack;
-			//roleWeapon->_useTime = card.UseTime;
-			roleWeapon->_isUsed = false;
+		roleWeapon->_face = Sprite::create(card.get_cardPath());
+		roleWeapon->_weaponFrame = Sprite::create("ChessBoard/chess/a.png");//装饰用
+		roleWeapon->_back = Sprite::create("ChessBoard/chess/a.png");
 
-			//描述
-			roleWeapon->_description = Sprite::create("ChessBoard/chess/b.png");
-			auto label = Label::create("_library->getDescription(CARD_TABLE,WeaponID)", "Arial", 20);
-			roleWeapon->_description->addChild(label);
-			roleWeapon->_description->setVisible(false);
+
+		roleWeapon->_back->setVisible(false);
+		//roleWeapon->_attack = card.Attack;
+		//roleWeapon->_useTime = card.UseTime;
+		roleWeapon->_isUsed = false;
+
+		//描述
+		roleWeapon->_description = Sprite::create("ChessBoard/chess/b.png");
+		auto label = Label::create("_library->getDescription(CARD_TABLE,WeaponID)", "Arial", 20);
+		roleWeapon->_description->addChild(label);
+		roleWeapon->_description->setVisible(false);
 	}
 	else
 	{
@@ -419,6 +424,7 @@ void RoleEquip::useEquip()
 		broken();
 }
 
+
 bool RoleEquip::IsUsed()	   //是否已使用
 {
 	return _isUsed;
@@ -450,18 +456,20 @@ void BoardRole::onEnter()
 BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
 {
 	auto role = new (std::nothrow)BoardRole();
-	role->_chessID= RoleID;
+	role->_chessID = RoleID;
 	if (role&&role->init())
-	{ 
+	{
 		//role->_rolePhote = RolePhote::create(_library->getPath(ROLE_TABLE,RoleID));  数据库搭建之后
 		role->_rolePhote = RolePhote::create(RoleID);  //测试用
 		for (int i = 0; i < 3; i++)
 		{
-			role->_roleSkill[i] = RoleSkill::create(RoleID + i * 100);
+
+			role->_roleSkill[i] = RoleSkill::create(RoleID * 10 + i);
+
 			//role->_roleSkill[i] = RoleSkill::create(_library->getSkillID(ROLE_TABLE,RoleID,i),_library);
 			role->_roleEquip[i] = NULL;
 		}
-			
+
 
 		role->_roleWeapon = NULL;
 
@@ -478,7 +486,7 @@ BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
 		role->setHealthData(role->_maxHealth);
 		role->setAttack(0);
 		role->setHealth(role->_maxHealth);
-		
+
 	}
 	else
 	{
@@ -530,7 +538,20 @@ int BoardRole::getHealthData()
 {
 	return _healthData;
 }
-void BoardRole::setHealth(int health,float delay)
+
+
+int BoardRole::getArmor()
+{
+	return _armor;
+}
+
+int BoardRole::getAttackSkill()
+{
+	return _attackSkill;
+}
+
+
+void BoardRole::setHealth(int health, float delay)
 {
 	if (delay != 0)
 	{
@@ -543,6 +564,7 @@ void BoardRole::setHealth(int health,float delay)
 
 	_healthLb->setVisible(true);
 	_health = health;
+
 	char c[10];
 	sprintf(c, "%d", _health);
 	_healthLb->setString(c);
@@ -554,8 +576,21 @@ void BoardRole::setHealth(int health,float delay)
 
 void BoardRole::setHealthData(int health)
 {
-	_healthData = health;
+
+	_healthData = health >= _maxHealth ? _maxHealth : health;
 }
+
+void BoardRole::setArmor(int armor)
+{
+	_armor = armor;
+}
+
+void BoardRole::setAttackSkill(int AttackSkill)
+{
+	_attackSkill = AttackSkill;
+}
+
+
 bool BoardRole::addWeapon(int ID)
 {
 	if (_roleWeapon)
@@ -604,7 +639,7 @@ bool BoardRole::removeWeapon()
 }
 
 
-bool BoardRole::addEquip(int ID,int num)
+bool BoardRole::addEquip(int ID, int num)
 {
 	if (num > 2 || num < 0)
 		return false;
@@ -625,7 +660,7 @@ bool BoardRole::addEquip(int ID,int num)
 	}
 }
 
-bool BoardRole::addEquip(CCard &card,int num)
+bool BoardRole::addEquip(CCard &card, int num)
 {
 
 	if (num > 2 || num < 0)
@@ -658,7 +693,7 @@ bool BoardRole::removeEquip(int num)
 
 int BoardRole::getCurEquipNum()
 {
-	int curNum=0;
+	int curNum = 0;
 	for (int i = 0; i < 3; i++)
 		if (getEquip(i))
 			curNum++;

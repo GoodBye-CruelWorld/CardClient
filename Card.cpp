@@ -57,7 +57,10 @@ void CCard::cardCreate(int num)
 			//spell测试
 			if (num == 0){
 				//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
-				_spellID[0] = 5801003;
+
+				_spellID[0] = 1710102;//冰冻
+					//1708002 风怒
+
 				//_spellID.push_back(5801003);
 
 			}
@@ -155,6 +158,12 @@ void CCard::reduceBuffTimes(){
 	for (int i = 0; i < k; i++){
 		if (_cardbuff[i]._times > 0){
 			_cardbuff[i]._times--;
+
+			if (_cardbuff[i]._times == 0){
+				deleteBuff(i);
+				i--; k--;
+			}
+
 		}
 	}
 }
@@ -172,7 +181,8 @@ void CCard::deleteBuffFromResource(int resource){
 }
 
 void CCard::canAttack(){
-	if (_attacktime == 0){
+	if (_attacktime <= 0){
+
 		_canAttack = false;
 		_isAttack = true;
 	}
@@ -183,16 +193,34 @@ void CCard::canAttack(){
 	}
 }
 
-void CCard::buffCheck(){
+
+
+
+void CCard::buffCheck(int s){
 	int k = _cardbuff.size();
 	for (int i = 0; i < k; i++){
 		if (_cardbuff[i]._bufftype == 1){
-			if (_cardbuff[i]._buffid == 1){
+			if (_cardbuff[i]._buffid == 2){
 				_attacktime = 0;
 			}
-			if (_cardbuff[i]._buffid == 2){
+			if (_cardbuff[i]._buffid == 3){
+
 				_attacktime *= 2;
 			}
 		}
 	}
+
+}
+
+bool CCard::buffCheck(Buff buff)
+{
+	for (int i = 0; i < _cardbuff.size(); i++)
+	{
+		if (_cardbuff[i]._buffid == buff._buffid &&_cardbuff[i]._bufftype == buff._bufftype)
+			return true;
+	}
+
+
+	return false;
+
 }

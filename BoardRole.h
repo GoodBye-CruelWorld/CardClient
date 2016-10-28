@@ -11,11 +11,11 @@ class RolePhote :public BoardChess
 public:
 	virtual void onEnter()override;
 	static RolePhote*create(int RoleID/*,GameLibrary *_library*/);
-	
+
 	void explode();  //头像爆炸，代表i choose death
 	float attack(float posX, float posY); //令英雄攻击（即头像移动）,注意头像的attack和武器的use的命令是分开的，大多数情况两条都要调用
 	float attack(Vec2 Pos);
-	
+
 
 	void setWordChoicesVisible(bool visible);  //设置‘语句选择’的可见不可见
 	void speakWord(int num); //说话，num代表第几条语句
@@ -38,7 +38,7 @@ class RoleSkill :public BoardChess
 public:
 	virtual void onEnter()override;
 	static RoleSkill*create(int SkillID/*,GameLibrary *_library*/);
-	
+
 	void useSkill();   //使用技能
 	bool isUsed();	   //是否已使用
 	void resetSkillUsable();  //使技能可使用，一般由流程类在下一回合开始时调用
@@ -46,10 +46,12 @@ public:
 
 	void changeSkill(int SkillID);   //改变技能，同时重置_isUsed为false
 
+	int getSkillID();				 //获得技能ID
+
 
 	void setCost(int cost);
 	int	 getCost();
-	
+
 private:
 	void changeSkillCallback();
 private:
@@ -104,7 +106,7 @@ private:
 	int _attack;
 	int _useTime;  //耐久
 	int _isUsed;  //是否已使用
-	
+
 	//GameLibrary _library //数据库
 };
 
@@ -125,26 +127,44 @@ public:
 	RoleWeapon* getWeapon();
 
 	int getAttack();
-	int getHealth();
-	int getHealthData();
+
 	void setAttack(int attack);
-	void setHealth(int Health,float Delay=0.f);
+
+	int getHealth();
+	void setHealth(int Health, float Delay = 0.f);
+
+	int getHealthData();
 	void setHealthData(int health);
+
+	int getArmor();
+	void setArmor(int armor);
+
+	int getAttackSkill();
+	void setAttackSkill(int AttackSkill);
+
+
+
+
 	bool addWeapon(int ID);  //如果本身有武器，则返回1，否则0
 	bool addWeapon(CCard &card);
 	bool removeWeapon();
 
-	bool addEquip(int ID,int num);//
-	bool addEquip(CCard &card,int num);
+	bool addEquip(int ID, int num);//
+	bool addEquip(CCard &card, int num);
 	bool removeEquip(int num);
 
 	bool IsWeapon();
 	int getCurEquipNum();  //武器不计其内
 private:
 	int _attack;
+
+	int _attackSkill;
 	int _health;
 	int _healthData;
 	int _maxHealth;
+	int  _armor;
+
+
 
 	Label*_attackLb;
 	Label*_healthLb;

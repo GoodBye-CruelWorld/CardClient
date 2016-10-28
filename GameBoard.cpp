@@ -45,7 +45,7 @@ void GameBoard::onEnter()
 
 
 	//创建英雄
-	initRole(0, 0);
+	initRole(1, 0);
 	initRole(0, 1);
 
 	//创建效果管理器
