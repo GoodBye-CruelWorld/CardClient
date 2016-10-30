@@ -126,7 +126,7 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 		//卡牌增益时的特效
 	case EFFECT_BUFF:
 	{
-		addParticle("particles/shine.plist", dest,);
+		addParticle("particles/shine.plist", dest);
 		auto die_par = ParticleSystemQuad::create("particles/shine.plist");
 		die_par->setPosition(dest->getContentSize()/2);
 		die_par->setRotation(90);
@@ -162,7 +162,7 @@ void BoardEffect::endCallback(Node *sender)
 }
 
 
-ParticleSystemQuad* addParticle(std::string fileName, Node* dest, float scale, float rotation, Vec2 position)
+ParticleSystemQuad* BoardEffect::addParticle(std::string fileName, Node* dest, float scale, float rotation, Vec2 position)
 {
 	auto par = ParticleSystemQuad::create(fileName);
 	if (position != NULL)

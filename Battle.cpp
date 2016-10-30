@@ -275,7 +275,6 @@ void CBattle::CardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int
 
 }
 
-void 
 
 
 void CBattle::cardTransfer(int srcPool, int destPool, int srcNum, int destNum, int battlePlace)

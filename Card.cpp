@@ -16,13 +16,13 @@ void CCard::cardCreate(int num)
 	/*职业 00战士 01弓箭手 100 为中立 200+为boss 
 	类型同前
 	*/
-
+	_cardID = num;
 	GameSqlite _gSql;
 	Tool _tool;
 	_cardPath = "card/2.png";
 
 	_armor = 0;
-	_cardID = num;
+	
 	_profession = num / 10000;
 	num = num % 1000;
 	_type = num % 10;
@@ -30,26 +30,26 @@ void CCard::cardCreate(int num)
 	std::string _name = "Name",_desc="Desc";
 	
 
-	if (_profession == 00){
+		//随从牌
 		if (num / 1000 == 0)
 		{
 			char s[10];
 			std::string str;
 
-			_health = atoi(_gSql.getCardData(num, CARD_HEALTH));
-			_attack = atoi(_gSql.getCardData(num, CARD_ATTACK));
-			_cost = atoi(_gSql.getCardData(num, CARD_COST));
-			_armor = atoi(_gSql.getCardData(num, CARD_NAME));
-			_quality = atoi(_gSql.getCardData(num, CARD_QUALITY));
+			_health = atoi(_gSql.getCardData(_cardID, CARD_HEALTH));
+			_attack = atoi(_gSql.getCardData(_cardID, CARD_ATTACK));
+			_cost = atoi(_gSql.getCardData(_cardID, CARD_COST));
+			_armor = atoi(_gSql.getCardData(_cardID, CARD_NAME));
+			_quality = atoi(_gSql.getCardData(_cardID, CARD_QUALITY));
 
-			sprintf_s(s, "%d", num);
+			sprintf_s(s, "%d", _cardID);
 			str = s;
 			_cardPath = "card/" + str + ".png";
 			_cardName = "Name" + str;
 			_cardDescribe = "Desc" + str;
 			for (int i = 0; i <= 3; i++)
 			{
-				int _spell = atoi(_gSql.getCardData(num, CARD_SPELL_1 + i));
+				int _spell = atoi(_gSql.getCardData(_cardID, CARD_SPELL_1 + i));
 				if (_spell < 100)
 					break;
 				_spellID.push_back(_spell);
@@ -58,8 +58,7 @@ void CCard::cardCreate(int num)
 			if (num == 0){
 				//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
 
-				_spellID[0] =
-					2500007;
+				_spellID[0] =2500007;
 				_cardID += 1000;
 					//1710102;//冰冻
 					//1708002 风怒
@@ -67,18 +66,8 @@ void CCard::cardCreate(int num)
 				//_spellID.push_back(5801003);
 
 			}
-			if (num == 1){
-				//int a = _spellID[0];//5802002
-				//log("5801002--" + _spellID[0]);
-				//_spellID.push_back(5802002);
-			}
-			if (num == 2){
-				//int a = _spellID[0];//5802001
-				//log("5802001--" + _spellID[0]);
-				//_spellID.push_back(5802001);
-			}
 		}
-	}
+	
 	
 	_healthBuff = 0;
 	_healthBattle = _health;

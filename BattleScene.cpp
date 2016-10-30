@@ -57,12 +57,17 @@ void MyLayer2::onEnter()
 	addChild(_gameBoard);
 
 
+	/*≥ı ºªØ≈∆ø‚*/
 
-
-	int id[30];
+	int armorId[30];
+	int warriorId[30];
 	for (int i = 0; i < 30; i++)
-		id[i] = i%3;
-
+	{
+		armorId[i] = rand() % 8 + 10000;
+		warriorId[i] = rand() % 8;
+	}
+	armorId[0] = 0;
+	////////////////////////////////////////////////////////////////////
 	bool firstHand[2];
 	firstHand[0] = false;
 	firstHand[1] = true;
@@ -76,7 +81,10 @@ void MyLayer2::onEnter()
 	{
 		_battleID[i] = 0;
 		_battleState[i] = false;
-		_battles[i] = new CBattle(_gameBoard, &_battleID[i], &_battleState[i], id, i,_socket,_mode,firstHand[i]);
+		if (i==0)
+			_battles[i] = new CBattle(_gameBoard, &_battleID[i], &_battleState[i], armorId, i,_socket,_mode,firstHand[i]);
+		else
+			_battles[i] = new CBattle(_gameBoard, &_battleID[i], &_battleState[i],warriorId, i, _socket, _mode, firstHand[i]);
 		this->addChild(_battles[i]);	
 	}
 

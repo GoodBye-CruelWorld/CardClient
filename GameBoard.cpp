@@ -469,19 +469,19 @@ void GameBoard::initRole(int RoleID, int camp/*,Library library*/)
 	if (!camp)
 	{
 		_role[camp]->setPosition(1, 384 - 610);
-		_role[camp]->getRoleSkill(0)->setPosition(655 - 512, 220 + 384 - 580);
-		_role[camp]->getRoleSkill(1)->setPosition(734.6 - 512, 220 + 384 - 556);
-		_role[camp]->getRoleSkill(2)->setPosition(814 - 512, 220 + 384 - 564);
-		_role[camp]->getRoleSkill(2)->setScale(1.2f);
+		_role[camp]->getRoleSkill(0)->setPosition(655 - 512, 220 + 384 - 580+5);
+		_role[camp]->getRoleSkill(1)->setPosition(734.6 - 512+5, 220 + 384 - 556);
+		_role[camp]->getRoleSkill(2)->setPosition(814 - 512+8, 220 + 384 - 564);
+	
 	
 	}
 	else
 	{
 		_role[1]->setPosition(1, 226);
-		_role[1]->getRoleSkill(0)->setPosition(655 - 512, -(220 + 384 - 580));
-		_role[1]->getRoleSkill(1)->setPosition(734.6 - 512, -(220 + 384 - 556));
-		_role[1]->getRoleSkill(2)->setPosition(814 - 512, -(220 + 384 - 564));
-		_role[1]->getRoleSkill(2)->setScale(1.2f);
+		_role[1]->getRoleSkill(0)->setPosition(655 - 512-10, -(220 + 384 - 580)-5);
+		_role[1]->getRoleSkill(1)->setPosition(734.6 - 512-10, -(220 + 384 - 556));
+		_role[1]->getRoleSkill(2)->setPosition(814 - 512, -(220 + 384 - 564)-8);
+
 	}
 }
 
