@@ -708,9 +708,9 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 		switch (destPool)
 		{
 		case 3:			//己方随从
-			//实际扣血
+			//数据处理
 			_cardPool[POOL_BATTLE].at(destNum).damaged(1);
-			//显示扣血
+			//显示处理
 			_gameboard->setCardProperties(POOL_BATTLE, destNum, _camp, -1, _cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
 
 			if (_cardPool[POOL_BATTLE].at(destNum).isDead())
@@ -720,7 +720,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 		case 4:			//敌方随从
 			//实际扣血
 			_enemy->_cardPool[POOL_BATTLE].at(destNum).damaged(1);
-			//实际扣血
+			//显示扣血
 			_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, -1, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
 			if (ActPtsMax >= 0)
 			{
@@ -745,7 +745,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 
 
 	}
-
+	/*猎人大技能：随机15点伤害*/
 	if (skillID == 12)
 	{
 		for (int i = 1; i <= 15; i++)

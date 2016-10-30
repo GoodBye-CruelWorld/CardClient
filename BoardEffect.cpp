@@ -25,6 +25,8 @@ void BoardEffect::initEffectsInfo()
 	effects[EFFECT_FLOWER].z = 3.f;
 	effects[EFFECT_FIREBALL].y = 0.8f;
 	effects[EFFECT_FIREBALL].z = 1.f;
+	effects[EFFECT_FIRE_FLASH].y = 0.8f;
+	effects[EFFECT_FIRE_FLASH].z = 1.f;
 }
 float BoardEffect::getKeyTimeOfEffect(int effectID)
 {
@@ -124,6 +126,7 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 		//卡牌增益时的特效
 	case EFFECT_BUFF:
 	{
+		addParticle("particles/shine.plist", dest,);
 		auto die_par = ParticleSystemQuad::create("particles/shine.plist");
 		die_par->setPosition(dest->getContentSize()/2);
 		die_par->setRotation(90);
@@ -141,7 +144,9 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 		//火焰冲击
 	case EFFECT_FIRE_FLASH:
 	{
-		addParticle("particles/fireFlash.plist", dest);
+		auto par=addParticle("particles/fireFlash.plist", src);
+		par->runAction(Sequence::create(DelayTime::create(lastTime), CallFunc::create(CC_CALLBACK_0(BoardEffect::endCallback, this, par)), NULL));
+		par->runAction(MoveTo::create(lastTime, dest->getPosition3D()));
 	}
 		break;
 	default:
@@ -157,7 +162,7 @@ void BoardEffect::endCallback(Node *sender)
 }
 
 
-void addParticle(std::string fileName, Node* dest, float scale, float rotation, Vec2 position)
+ParticleSystemQuad* addParticle(std::string fileName, Node* dest, float scale, float rotation, Vec2 position)
 {
 	auto par = ParticleSystemQuad::create(fileName);
 	if (position != NULL)
@@ -174,5 +179,5 @@ void addParticle(std::string fileName, Node* dest, float scale, float rotation, 
 		par->setScale(scale);
 
 	dest->addChild(par, EFFECT_LAYER);
-	
+	return par;
 }
