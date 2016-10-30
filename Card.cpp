@@ -57,8 +57,11 @@ void CCard::cardCreate(int num)
 			//spell测试
 			if (num == 0){
 				//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
-				_cardID = 1000;
-				_spellID[0] = 1710102;//冰冻
+
+				_spellID[0] =
+					2500007;
+				_cardID += 1000;
+					//1710102;//冰冻
 					//1708002 风怒
 
 				//_spellID.push_back(5801003);

@@ -134,7 +134,8 @@ void CAIEnemy::AiAttack()
 	int s1 = c.size(), s2 = ce.size();
 
 	for (int i = 0; i < k; i++){
-		AiAttackTo(i, _atkF[i], s1, s2);
+		if (bat->_cardPool[POOL_BATTLE][i].get_canAttack())
+			AiAttackTo(i, _atkF[i], s1, s2);
 	}
 }
 
