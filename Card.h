@@ -117,6 +117,8 @@ public:
 	void canAttack();
 	void buffCheck(int);
 	bool buffCheck(Buff buff);
+	//10.30
+	//void heal(int);
 
 private:
 	int _pos; //在战场上的位置

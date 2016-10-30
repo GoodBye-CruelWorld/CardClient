@@ -57,14 +57,47 @@ void CCard::cardCreate(int num)
 			//spell测试
 			if (num == 0){
 				//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
-
+				//set_armor(1);
 				_spellID[0] =
-					2500007;
+					1501007;
+				//_spellID.push_back(1604099);
+					//缩小3攻
+					//1705002;//眩晕全场
+				//	1711102	;//石化
 				_cardID += 1000;
 					//1710102;//冰冻
 					//1708002 风怒
 
-				//_spellID.push_back(5801003);
+				//_spellID.push_back(5801003);战士随从
+				/*
+				特殊 X001-- - 为 + X护甲
+
+					低阶步兵
+					战吼1护甲 1600002
+
+					提枪侍从 不谈
+
+					装备锻造
+					友方随从 + 2护甲 2601102
+
+					巨人
+					敌方随从 xuanyun 1602102
+
+					铁架
+					回合结束 护甲 + 2 2603001
+
+					前线
+					攻击等于友方护甲和 1604099
+					新buff
+					1 5 攻击取友方护甲和
+
+					铁骑
+					战吼5护甲 5605002 - 5001002
+
+					战神
+					战吼4护甲 4606002 - 4001002
+					随从豁免 90199*/
+
 
 			}
 			if (num == 1){
@@ -82,6 +115,7 @@ void CCard::cardCreate(int num)
 	
 	_healthBuff = 0;
 	_healthBattle = _health;
+	_healthMax = _health;
 	_attackBuff = 0;
 	_attackBattle = _attack;
 	_costBattle = _cost;
@@ -114,6 +148,7 @@ void CCard::getBuff(int _health_change, int _attack_change){
 }
 
 int CCard::getFinalAttack(){
+	if (_attackBattle + _attackBuff< 0)  return 0;
 	return _attackBattle + _attackBuff;
 }
 int CCard::getFinalHealth(){
@@ -131,9 +166,10 @@ void CCard::addBuff(Buff& buff){
 		//数值改动
 		_costBattle += buff._buffdata[0];
 		_attackBattle += buff._buffdata[1];
-		_attackBattle = _attackBattle;
+		_healthMax += buff._buffdata[2];
 		_healthBattle += buff._buffdata[2];
 	}
+	canAttack();
 }
 
 void CCard::deleteBuff(int k){
@@ -141,6 +177,7 @@ void CCard::deleteBuff(int k){
 		//数值还原 暂不验上限
 		_costBattle -= _cardbuff[k]._buffdata[0];
 		_attackBattle -= _cardbuff[k]._buffdata[1];
+		_healthMax -= _cardbuff[k]._buffdata[2];
 		_healthBattle -= _cardbuff[k]._buffdata[2];
 	}
 	_cardbuff.erase(_cardbuff.begin() + k);
@@ -184,7 +221,7 @@ void CCard::deleteBuffFromResource(int resource){
 }
 
 void CCard::canAttack(){
-	if (_attacktime <= 0){
+	if (_attacktime <= 0||_attackBattle<=0){
 
 		_canAttack = false;
 		_isAttack = true;

@@ -242,9 +242,6 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 		//判断技能是否正确指向
 		if ((_endID / 100 == 3) || (_endID / 100 == 4) || (_endID / 100 == 5) || (_endID / 100 == 6) || (_endID / 100 == 7))
 		{
-			
-			
-
 			int Number = _battleMy->_cardPool[POOL_BATTLE].size();
 
 			int  result = 0;
@@ -391,19 +388,11 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 				int Number = _battleMy->_cardPool[POOL_BATTLE].size();
 
 				int  result = 0;
-				//判断能否召唤（指向的位置有随从）
+				//判断能否召唤（指向的位置有随从）,同时判断战吼的指向是否正确
 				if (_endID/100==3)
 				{
 					if (_battleMy->_cardPool[POOL_BATTLE].size() == 0)
-					{
-						_cardSel = NULL;
-
-						//移除鼠标的准星
-						//_mouseSprite的图片还原成准星
-						_mouseSprite->setVisible(false);
-						_sight = 0;
-						return;
-					}
+						break;
 					result = -1;
 					for (int i = 0; i < _battleMy->_cardPool[POOL_BATTLE].size(); i++)
 					{
@@ -415,36 +404,19 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						}						
 					}
 					if (result == -1)
-					{
-						_cardSel = NULL;
-
-						//移除鼠标的准星
-						//_mouseSprite的图片还原成准星
-						_mouseSprite->setVisible(false);
-						_sight = 0;
-						return;
-
-					}
+						break;
 				}
 
 				if (_endID / 100 == 4)
 				{
 					if (_battleIt->_cardPool[POOL_BATTLE].size() == 0)
-					{
-						_cardSel = NULL;
-
-						//移除鼠标的准星
-						//_mouseSprite的图片还原成准星
-						_mouseSprite->setVisible(false);
-						_sight = 0;
-						return;
-					}
+						break;
 					result = _endID%10;
 					
 				}
 
 				//判断指向性随从的放置位置
-
+				//从左到右找一个没有随从的空位，将该随从放入
 				for (int j = 0; j < 5; j++)
 				{
 					//检测某个位置是否已有随从
@@ -460,10 +432,9 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 					}
 					if (s)
 					{
+						//设置改随从的显示
 						_gameboard->getCard(POOL_HAND,_beginID % 10,0)->setPosition(Vec2(-155 + 80 * j, -65));
-
 						//设置BattleID
-						//_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + 03 * 10 + Number % 10;
 						_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + _endID/100 * 10 +result;
 
 						break;
@@ -1024,4 +995,35 @@ bool BattleTool2D::collisionCheck(Point p, Node *node)
 		return true;
 	else
 		return false;
+}
+
+int  BattleTool2D::cardPositionCheck(Node *node)
+{
+	for (int j = 0; j <= 4; j++)
+	{
+		Point p = Vec2(355 + j * 80, 326);
+		auto s = Director::getInstance()->getWinSize();
+		auto a = node->getPosition() + s / 2;
+		auto scale = node->getScale();
+		Node*parent = node->getParent();
+		while (parent != _gameboard)
+		{
+			a += parent->getPosition() - parent->getContentSize() / 2;
+			parent = parent->getParent();
+		}
+		auto b = node->getContentSize() / 2 * node->getScale();
+
+		if (p.x<(a.x + b.width) && p.x>(a.x - b.width) /*&& p.y<(a.y + b.height) && p.y>(a.y - b.height)*/)
+			return j;
+	}
+
+	return -1;
+}
+
+int	 BattleTool2D::cardPositionCheck(int cardPool, int num, int camp)
+{
+
+	return  cardPositionCheck(_gameboard->getCard(cardPool, num, camp));
+
+
 }

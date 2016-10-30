@@ -12,6 +12,8 @@ USING_NS_CC;
 #define AIM 0		//判断是否是指向性
 #define ATTACK 1	//判断随从是否能够攻击
 
+//#define BATTLEPOOL 2
+
 /*@BeginID/EndID
 *@brief:表示触摸开始与结束对应含义
 *@位数:3位
@@ -93,6 +95,8 @@ private:
 	*@return:true=碰撞,false=未碰撞
 	*/
 	bool collisionCheck(Point p, Node *node);
+	int	 cardPositionCheck(Node *node);
+	int	 cardPositionCheck(int cardPool,int num,int camp);
 	int judgeTouchPoint(cocos2d::Point tp, int PartID);
 	int judgeCard(CCard *_card, int JudgeType);//判断卡牌的一些特性
 

@@ -92,6 +92,7 @@ void CBattle::TurnOver()
 	}
 
 	SpellCheck(01);
+	Check();
 	if (_camp)
 	{
 
@@ -145,6 +146,7 @@ void CBattle::SpellCheckPlayer(int sTime){
 		SpellCheck(POOL_BATTLE, i, sTime);
 	}
 }
+
 void CBattle::SpellCheckEnemy(int sTime){
 
 
@@ -252,6 +254,7 @@ void CBattle::DrawCard(){
 }
 
 void CBattle::CardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int num2, int battlePlace){
+	num2 = 0;
 	//检测是否可召唤 召唤随从 卡牌传递 技能检测 
 	SpellCheck(12);
 	_resourceNumber++;
@@ -269,13 +272,19 @@ void CBattle::CardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int
 	_gameboard->getActionPointBar(_camp)->reduceAvailActionPoint(card1[num1].get_cost());
 	//CardTranslate(card1, card2, num1, num2);
 	cardTransfer(POOL_HAND, POOL_BATTLE, num1, num2, battlePlace);
+
 	SpellCheck(POOL_BATTLE, num2, 2);
 	//card2[num2].Pos = num2;
 	Check();
 
 }
 
-//void 
+void CBattle::SpellLaunch(vector<CCard>&card, int num){
+	ActionChange(-card[num].get_cost());
+	_gameboard->getActionPointBar(_camp)->reduceAvailActionPoint(card[num].get_cost());
+	cardTransfer(POOL_HAND, POOL_CEME, num, 0);
+	SpellCheck(POOL_CEME, 0, 7);
+}
 
 
 void CBattle::cardTransfer(int srcPool, int destPool, int srcNum, int destNum, int battlePlace)
@@ -373,9 +382,9 @@ void CBattle::update(float dt)
 		}
 		case 02:					//道具法术装备的使用
 		{
-			auto CardID = _cardPool[POOL_HAND].at(BattleID / 1000 % 10).get_cardID();
-			if (CardID / 1000 == 2)
-				Spelling(CardID, POOL_HAND, BattleID / 1000 % 10);
+			auto place = BattleID / 100 % 10;
+			SpellLaunch(_cardPool[POOL_HAND], BattleID / 1000 % 10);
+			_gameboard->getActionQueue()->reset(false);
 			break;
 		}
 		case 03:					//	技能的使用
@@ -416,12 +425,15 @@ void CBattle::update(float dt)
 			break;
 		}
 		*_battleState = false;
+		Check();
 	}
 
 
 }
 void CBattle::Check()
-{}
+{
+	SpellCheck(99);
+}
 
 
 
@@ -497,7 +509,7 @@ void CBattle::GameOver()
 
 
 bool CBattle::Spelling(int spell_num, int srcPool, int srcNum){
-	CCard SpellCard = _cardPool[srcPool][srcNum];
+	CCard &SpellCard = _cardPool[srcPool][srcNum];
 	Spelling(SpellCard, spell_num, srcPool, srcNum);
 	return false;
 }
@@ -506,9 +518,10 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 	int numX = spell_num / 1000000, numID = spell_num % 1000000 / 1000, numChoose = spell_num / 100 % 10;
 	switch (numID)
 	{
-	case 001:
+	case 001:{
 		SpellCard.set_armor(SpellCard.get_armor() + numX);
-		break;
+		break; 
+	}
 	case 002:
 		SpellCard.get_buffID().push_back(0000);
 		break;
@@ -535,16 +548,17 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		for (int i = 0; i < s; i++){
 			SpellCard.set_attackBuff(SpellCard.get_attackBuff() + _cardPool[POOL_BATTLE][i].get_armor());
 		}
+		break;
 	}
 	case 500:
 		// 获得牌ID
 		//Spelling(1001100, srcPool, srcNum);
 		//Spelling(4100, srcPool, srcNum);
 		break;
-	case 501:
+	case 501:{
 		DrawCard();
 		//hero 类互动
-		break;
+		break; }
 	case 502:
 		//to be 
 		break;
@@ -554,6 +568,47 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		for (int i = 0; i < s; i++){
 			if (/*CinBattle*/_cardPool[POOL_BATTLE][i].get_armor() > 0) DrawCard();
 		}
+		break;
+	}
+	//10.30 战士随从
+	case 600:{
+		Spelling(SpellCard, 2001000, 0, 0);
+		//SpellCard.set_armor(0);
+		break;
+	}
+	case 601:{
+		if (_camp == 1) break;
+		auto i = *_battleID % 10+1;
+		Spelling(_cardPool[POOL_BATTLE].at(i), 2001000, 0, 0);
+		break;
+	}
+	case 602:{
+		if (_camp == 1) break;
+		auto i = *_battleID % 10;
+		Buff buff(1, 2);
+		buff._times = 3;
+		_enemy->_cardPool[POOL_BATTLE].at(i).addBuff(buff);
+		break;
+	}
+	case 603:{
+		Spelling(SpellCard, 2001000, 0, 0);
+		break;
+	}
+	case 604:{
+		for (int i = 0; i < SpellCard._cardbuff.size();i++){
+			if (SpellCard._cardbuff[i]._bufftype == 0 && SpellCard._cardbuff[i]._buffid == 5){
+				SpellCard.deleteBuff(i);
+				break;
+			}
+		}
+		int addarmor = _hero->getArmor()
+			;//*hero
+		for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++){
+			addarmor += _cardPool[POOL_BATTLE][i].get_armor();
+		}
+		Buff buff(0, 5);
+		buff.setdata(0, addarmor, 0);
+		SpellCard.addBuff(buff);
 		break;
 	}
 		//10.6 猎人部分随从异能
@@ -591,6 +646,28 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		}
 		break;
 	}
+	case 705:{
+		Buff buff(1, 2);
+		buff._times = 3;
+		for (int i = 0; i < _enemy->_cardPool[POOL_BATTLE].size(); i++){
+			_enemy->_cardPool[POOL_BATTLE][i].addBuff(buff);
+		}
+		for (int i = 1; i < _cardPool[POOL_BATTLE].size(); i++){
+			_cardPool[POOL_BATTLE][i].addBuff(buff);
+		}
+
+		break;
+	}
+	case 706:{
+		Buff buff(1, 1);
+		buff.setdata(0, 1, 0);
+		int p=SpellCard.get_pos();
+		for (int i = 1; i < _cardPool[POOL_BATTLE].size(); i++){
+			if (_cardPool[POOL_BATTLE][i].get_pos() == p + 1 || _cardPool[POOL_BATTLE][i].get_pos()==p-1){
+				_cardPool[POOL_BATTLE][i].addBuff(buff);
+			}
+		}break;
+	}
 	case 708:{
 		Buff buff(1, 3);
 		SpellCard.addBuff(buff);
@@ -600,6 +677,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		//Buff buff(1,)
 		SpellCard._attacktime = 1;
 		SpellCard.canAttack();
+		//SpellCard.set_armor(1);
 		break;
 	}
 	case 710:{
@@ -610,6 +688,23 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		_cardPool[POOL_BATTLE][i].addBuff(buff);
 		_cardPool[POOL_BATTLE][i]._attacktime = 0;
 		_cardPool[POOL_BATTLE][i].canAttack();
+		break;
+	}
+	case 711:{
+		if (_camp == 1) break;
+		auto i = *_battleID % 10;
+		Buff buff(1, 2);
+		buff._times = 7;
+		_enemy->_cardPool[POOL_BATTLE][i].addBuff(buff);
+		break;
+	}
+	case 712:{
+		if (_camp == 1) break;
+		auto i = *_battleID % 10;
+		Buff buff(0, 1);
+		buff._times = 1;
+		buff.setdata(0, -3, 0);
+		_enemy->_cardPool[POOL_BATTLE][i].addBuff(buff);
 		break;
 	}
 
@@ -632,7 +727,6 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		break;
 	}
 	case 802:{
-
 		_enemy->_hero->setHealthData(_enemy->_hero->getHealthData() - 3);/*数据处理*/
 
 		_gameboard->addEffect(EFFECT_FIREBALL, 0.5f, srcPool, srcNum, _camp, _enemy->_hero);/*特效处理*/

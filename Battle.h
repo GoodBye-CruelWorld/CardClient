@@ -141,5 +141,5 @@ public:
 	//void spellAttackCheck(CCard&, CCard&){}
 	void SpellCheck(int,int, CCard &card);
 	void Spelling(CCard&, int,int,int);
-	void SpellLaunch(); 
+	void SpellLaunch(vector<CCard>&, int);
 };
