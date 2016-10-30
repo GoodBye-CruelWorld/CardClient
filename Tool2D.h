@@ -12,6 +12,13 @@ USING_NS_CC;
 #define AIM 0		//判断是否是指向性
 #define ATTACK 1	//判断随从是否能够攻击
 
+#define SPELL	0		//法术
+#define SKILL	1	    //技能
+#define RETINUE 2		//随从
+#define ROLE	3		//英雄
+
+//#define BATTLEPOOL 2
+
 /*@BeginID/EndID
 *@brief:表示触摸开始与结束对应含义
 *@位数:3位
@@ -93,6 +100,9 @@ private:
 	*@return:true=碰撞,false=未碰撞
 	*/
 	bool collisionCheck(Point p, Node *node);
+	int	 cardPositionCheck(Node *node);
+	//判断某一张牌的实际位置
+	int	 cardPositionCheck(int cardPool,int num,int camp);
 	int judgeTouchPoint(cocos2d::Point tp, int PartID);
 	int judgeCard(CCard *_card, int JudgeType);//判断卡牌的一些特性
 
@@ -100,7 +110,10 @@ private:
 	/*用来判断是否单机一下，而不是长时间按住*/
 	void resetOneTouch(float dt);	
 	/*用来显示技能的描述*/
-	void disSkilldiscribe(float dt);					
+	void disSkilldiscribe(float dt);
+
+	// 判断技能法术指向性降临能否指定
+	bool judgeAimed(int type, int ID, int destType, int destNum);
 
 
 	bool judgePointIn(Vec2 p, Vec2 p0);

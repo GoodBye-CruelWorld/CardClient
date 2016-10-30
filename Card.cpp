@@ -59,15 +59,15 @@ void CCard::cardCreate(int num)
 				//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
 
 				_spellID[0] =
-					2500007;
-				_cardID += 1000;
-					//1710102;//冰冻
+					//2500007;
+					1710102;//冰冻
 					//1708002 风怒
 
 				//_spellID.push_back(5801003);
 
 			}
 			if (num == 1){
+				_spellID.push_back(90099);
 				//int a = _spellID[0];//5802002
 				//log("5801002--" + _spellID[0]);
 				//_spellID.push_back(5802002);
