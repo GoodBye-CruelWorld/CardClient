@@ -160,7 +160,8 @@ public:
 	void addEffect(int effectID, float lastTime, Node* src, int destPool, int destNum, int destCamp);
 	void addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest);
 	void addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, int destPool, int destNum, int destCamp);
-
+	/*根据特效关键节点调整动画序列时间*/
+	void adjustNextAnimeTime(int effectID);
 	/*安全的增加特效方式*/
 	//void addEffectS(int effectID, float lastTime, int srcPool,int srcNum,int srcCamp, Node*dest = nullptr);
 	/************************************************私有方法****************************************/

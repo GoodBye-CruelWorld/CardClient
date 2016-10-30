@@ -1,5 +1,5 @@
 #include "HelloWorldScene.h"
-
+#include"HeroBuilder.h"
 USING_NS_CC;
 
 #include"MainScene.h";
@@ -65,6 +65,8 @@ bool HelloWorld::init()
 	_exit = Button::create(s_png_login_exit);
 	_exit->setPosition(Vec2(s.width *0.53, s.height*0.45));
 	_frame->addChild(_exit);
+
+
 	
 	//´´½¨µÇÂ¼¿ò
 	auto editBoxSize = Size(180, 35);
@@ -93,7 +95,7 @@ bool HelloWorld::init()
 	_frame->addChild(_userPwd);
 	
 
-
+	
 
 
 	_gameState = GAME_STATE_NORMAL;

@@ -469,19 +469,19 @@ void GameBoard::initRole(int RoleID, int camp/*,Library library*/)
 	if (!camp)
 	{
 		_role[camp]->setPosition(1, 384 - 610);
-		_role[camp]->getRoleSkill(0)->setPosition(655 - 512, 220 + 384 - 580);
-		_role[camp]->getRoleSkill(1)->setPosition(734.6 - 512, 220 + 384 - 556);
-		_role[camp]->getRoleSkill(2)->setPosition(814 - 512, 220 + 384 - 564);
-		_role[camp]->getRoleSkill(2)->setScale(1.2f);
+		_role[camp]->getRoleSkill(0)->setPosition(655 - 512, 220 + 384 - 580+5);
+		_role[camp]->getRoleSkill(1)->setPosition(734.6 - 512+5, 220 + 384 - 556);
+		_role[camp]->getRoleSkill(2)->setPosition(814 - 512+8, 220 + 384 - 564);
+	
 	
 	}
 	else
 	{
 		_role[1]->setPosition(1, 226);
-		_role[1]->getRoleSkill(0)->setPosition(655 - 512, -(220 + 384 - 580));
-		_role[1]->getRoleSkill(1)->setPosition(734.6 - 512, -(220 + 384 - 556));
-		_role[1]->getRoleSkill(2)->setPosition(814 - 512, -(220 + 384 - 564));
-		_role[1]->getRoleSkill(2)->setScale(1.2f);
+		_role[1]->getRoleSkill(0)->setPosition(655 - 512-10, -(220 + 384 - 580)-5);
+		_role[1]->getRoleSkill(1)->setPosition(734.6 - 512-10, -(220 + 384 - 556));
+		_role[1]->getRoleSkill(2)->setPosition(814 - 512, -(220 + 384 - 564)-8);
+
 	}
 }
 
@@ -584,27 +584,44 @@ void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int 
 void GameBoard::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack1, this,effectID,lastTime,src,dest));
+	adjustNextAnimeTime(effectID);
 	_actionQueue->push(act, this, lastTime);
 }
 
 void GameBoard::addEffect(int effectID, float lastTime, Node *src, int destPool, int destNum, int destCamp)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack2, this, effectID, lastTime,src,destPool,destNum,destCamp));
+	adjustNextAnimeTime(effectID);
 	_actionQueue->push(act, this, lastTime);
 }
 
 void GameBoard::addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack3, this, effectID, lastTime,srcPool,srcNum,srcCamp, dest));
+	adjustNextAnimeTime(effectID);
 	_actionQueue->push(act, this, lastTime);
 }
 
 void GameBoard::addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp,int destPool,int destNum,int destCamp)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack4, this, effectID, lastTime, srcPool, srcNum, srcCamp,destPool,destNum,destCamp));
+	adjustNextAnimeTime(effectID);
 	_actionQueue->push(act, this, lastTime);
 }
 
+void GameBoard::adjustNextAnimeTime(int effectID)
+{
+	if (effectID == EFFECT_FIREBALL || effectID == EFFECT_FIRE_FLASH)
+	{
+	
+	auto e = getEffect();
+	auto aq = getActionQueue();
+	auto keytime = e->getKeyTimeOfEffect(effectID);
+
+	aq->advanceToLastAction();
+	aq->delay(keytime*0.5);
+	}
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**********************************************************boardEffect»Øµ÷************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -35,6 +35,12 @@ static const char s_png_main_versus_bn[] = "mainScene/versus_bn.png";   //
 
 //Õ½¶·½çÃæ
 static const char s_png_battle_exit[] = "battleScene/exit.png";
+
+//Ó¢ĞÛ
+
+//¼¼ÄÜ
+
+//¿¨ÅÆ
 /*
 static const char s_pathDragon_mod[] = "character/dra/dragon.c3b";   //´ø·ÉĞĞ¶¯»­µÄÁúµÄÄ£ĞÍ
 static const char s_pathOrc_mod[] = "character/orc/orc.c3b";         //´ø¶¯»­µÄÊŞÈËÄ£ĞÍ
@@ -44,5 +50,10 @@ static const char s_pathTree_mod[] = "decoration3D/tree /tree16.c3b";  //Ê÷µÄÄ£Ğ
 static const char s_pathClockTower_mod[] = "decoration3D/clockTower/towerA.c3b";//ÆÕÍ¨µÄÖÓÂ¥Ä£ĞÍ
 static const char s_pathHouse_mod[] = "decoration3D/construction/house.c3b";   //·¿×ÓÄ£ĞÍ
 static const char s_pathBarrack_mod[] = "decoration3D/construction/barrack.c3b";//¾üÓªÄ£ĞÍ
+*/
+/*
+0000000-0000008
+0010000-0010000
+0100000-0100008
 */
 #endif
