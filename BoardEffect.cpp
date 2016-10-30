@@ -157,7 +157,7 @@ void BoardEffect::endCallback(Node *sender)
 }
 
 
-void addParticle(std::string fileName, Node* dest, float scale, float rotation, Vec2 position)
+void BoardEffect::addParticle(std::string fileName, Node* dest, float scale, float rotation, Vec2 position)
 {
 	auto par = ParticleSystemQuad::create(fileName);
 	if (position != NULL)

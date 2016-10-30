@@ -40,7 +40,7 @@ public:
 	void addEffect(int effectID, float lastTime, Node *src, Node*dest);
 	
 private:
-	ParticleSystemQuad* addParticle(std::string fileName, Node* dest, float rotation=NULL, float scale=NULL, Vec2 position=NULL);
+	void addParticle(std::string fileName, Node* dest, float rotation=NULL, float scale=NULL, Vec2 position=NULL);
 	//ParticleSystemQuad* addParticleEffect(std::string fileName,Node* dest);
 	void endCallback(Node* sender); //当特效结束后会调用这个函数
 	Vec3 effects[100];	//x=effectID,y=effectKeyTime,z=effectLastTime
