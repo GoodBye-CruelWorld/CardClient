@@ -115,7 +115,7 @@ public:
 	void deleteBuff(int);// 删除buff并进行数值恢复处理（主要是血量）
 	int _attacktime, _resourceID;
 	void canAttack();
-	void buffCheck(int);
+	int buffCheck(int);
 	bool buffCheck(Buff buff);
 	//10.30
 	//void heal(int);

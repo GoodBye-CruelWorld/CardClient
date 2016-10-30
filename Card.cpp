@@ -236,20 +236,30 @@ void CCard::canAttack(){
 
 
 
-void CCard::buffCheck(int s){
+int CCard::buffCheck(int sTime){
 	int k = _cardbuff.size();
 	for (int i = 0; i < k; i++){
-		if (_cardbuff[i]._bufftype == 1){
-			if (_cardbuff[i]._buffid == 2){
-				_attacktime = 0;
-			}
-			if (_cardbuff[i]._buffid == 3){
+		if (sTime == 0){
+			if (_cardbuff[i]._bufftype == 1){
+				if (_cardbuff[i]._buffid == 2){
+					_attacktime = 0;
+				}
+				if (_cardbuff[i]._buffid == 3){
 
-				_attacktime *= 2;
+					_attacktime *= 2;
+				}
+			}
+		}
+
+		if (sTime == 1){
+			if (_cardbuff[i]._bufftype == 1){
+				if (_cardbuff[i]._buffid == 5){
+					return 5;
+				}
 			}
 		}
 	}
-
+	return 0;
 }
 
 bool CCard::buffCheck(Buff buff)

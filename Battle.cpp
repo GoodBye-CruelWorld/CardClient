@@ -83,6 +83,8 @@ void CBattle::Turning()
 
 void CBattle::TurnOver()
 {
+	//buff check
+	
 	//buff reduce
 	for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++){
 		_cardPool[POOL_BATTLE][i].reduceBuffTimes();
@@ -611,6 +613,31 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		SpellCard.addBuff(buff);
 		break;
 	}
+	case 620:{
+		if (_camp == 1) break;
+		auto i = *_battleID % 10;
+		_cardPool[POOL_BATTLE][i].heal(100);
+		Spelling(_cardPool[POOL_BATTLE][i], 1001000, 0, 0);
+		break;
+	}
+	case 621:{
+		Buff buff(1, 5);
+		buff._times = 1;
+		for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++)
+		{
+			_cardPool[POOL_BATTLE][i].addBuff(buff);
+		}
+		break;
+	}
+	case 622:{
+		if (_hero->getArmor()>0) DrawCard();
+		for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++)
+		{
+			if (_cardPool[POOL_BATTLE][i].get_armor())
+				DrawCard();
+		}
+		break;
+	}
 		//10.6 猎人部分随从异能
 	case 700:{
 		Buff buff(2, 1);
@@ -705,6 +732,32 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		buff._times = 1;
 		buff.setdata(0, -3, 0);
 		_enemy->_cardPool[POOL_BATTLE][i].addBuff(buff);
+		break;
+	}
+	case 720:{
+
+		if (_camp == 1) break;
+		auto i = *_battleID % 10;
+		_enemy->CardDead(i);
+		break;
+	}
+	case 721:{
+		for (int i = 0; i < _enemy->_cardPool[POOL_BATTLE].size(); i++){
+			_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
+		}
+		_enemy->CheckDead();
+		break;
+	}
+	case 722:{
+		if (_camp == 1) break;
+		auto i = *_battleID % 10;
+		_enemy->_cardPool[POOL_BATTLE][i].damaged(6);
+		break;
+	}
+	case 723:{
+		for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++){
+			_cardPool[POOL_BATTLE][i].heal(3);
+		}
 		break;
 	}
 
