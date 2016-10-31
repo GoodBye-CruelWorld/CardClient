@@ -53,7 +53,7 @@ public:
 	int	 getCost();
 
 private:
-	void changeSkillCallback();
+	void changeSkillCallback(int SkillID);
 private:
 
 	int _cost;

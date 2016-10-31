@@ -1,5 +1,6 @@
 #include"BoardRole.h"
 #include"Tool.h"
+#include"HeroBuilder.h"
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //RolePhote
@@ -10,26 +11,18 @@ void RolePhote::onEnter()
 	Node::onEnter();
 }
 
-RolePhote * RolePhote::create(int RoleID)
+RolePhote * RolePhote::create(int roleID)
 {
 	auto rolePhote = new (std::nothrow)RolePhote();
-	rolePhote->_chessID = RoleID;
+	rolePhote->_chessID = roleID;
 	if (rolePhote&&rolePhote->init())
 	{
-		switch (RoleID)
-		{
-		case 0:
-		{
-			rolePhote->_phote = Sprite::create("ChessBoard/chess/hero/1.png");
-
-			rolePhote->addChild(rolePhote->_phote);
-			rolePhote->initwords();
-		}
-			break;
-
-		default:
-			break;
-		}
+		char c[30];
+		sprintf(c, "battleScene/hero/%d.png", roleID);
+		rolePhote->_phote = Sprite::create(c);
+		rolePhote->addChild(rolePhote->_phote);
+		rolePhote->initwords();
+	
 
 	}
 	else
@@ -157,22 +150,23 @@ void RolePhote::speakWordCallBack()
 void RoleSkill::onEnter()
 {
 	BoardChess::onEnter();
-	addChild(_face);
-	addChild(_back);
-	addChild(_description);
+
 }
 
 
-RoleSkill *RoleSkill::create(int SkillID/*,GameLibrary _library */)
+RoleSkill *RoleSkill::create(int skillID/*,GameLibrary _library */)
 {
 	auto roleSkill = new (std::nothrow)RoleSkill();
-	roleSkill->_chessID = SkillID;
+	roleSkill->_chessID = skillID;
 	if (roleSkill&&roleSkill->init())
 	{
 		//改为roleSkill->_face = Sprite::create(_library->getPath1(SKILL_TABLE,SkillID));
-		roleSkill->_face = Sprite::create("ChessBoard/chess/skill.png");
+		roleSkill->_face = HeroBuilder::buildHeroSkill(skillID);
 		//改为roleSkill->setCost(_library->getCost(SKILL_TABLE,SkillID))); 
-		roleSkill->setCost(2); //测试用
+		if (skillID%10==0)
+			roleSkill->setCost(2);
+		else if (skillID%10==2)
+			roleSkill->setCost(12);
 
 		//描述
 		roleSkill->_description = Sprite::create("ChessBoard/chess/b.png");
@@ -185,6 +179,10 @@ RoleSkill *RoleSkill::create(int SkillID/*,GameLibrary _library */)
 
 		roleSkill->_back = Sprite::create("ChessBoard/chess/skill2.png");
 		roleSkill->_back->setVisible(false);
+
+		roleSkill->addChild(roleSkill->_face);
+		roleSkill->addChild(roleSkill->_back);
+		roleSkill->addChild(roleSkill->_description);
 
 	}
 	else
@@ -216,15 +214,15 @@ bool RoleSkill::isUsed()	   //是否已使用
 void RoleSkill::changeSkill(int SkillID)
 {
 	_chessID = SkillID;
-	this->runAction(Sequence::create(DelayTime::create(2), CallFunc::create(CC_CALLBACK_0(RoleSkill::changeSkillCallback, this)), NULL));
+	this->runAction(Sequence::create(DelayTime::create(2), CallFunc::create(CC_CALLBACK_0(RoleSkill::changeSkillCallback, this,SkillID)), NULL));
 
 }
 
-void RoleSkill::changeSkillCallback()
+void RoleSkill::changeSkillCallback(int SkillID)
 {
 	_face->removeFromParent();
 
-	_face = Sprite::create("ChessBoard/chess/skill2.png");
+	_face = HeroBuilder::buildHeroSkill(SkillID);
 	this->addChild(_face);
 
 	_isUsed = false;  //可删，如果不必要的话

@@ -1,6 +1,7 @@
 #include"BoardCard.h"
 #include"Tool.h"
 #include"BoardEffect.h"
+#include"BoardCardBuilder.h"
 //*类初始化
 void BoardCard::onEnter()
 {
@@ -18,17 +19,18 @@ void BoardCard::onEnter()
 //*静态创建卡牌显示类
 BoardCard *BoardCard::create(CCard& card)
 {
-
+	/*
+	card由2大部分组成
+	1.卡背
+	2.卡框：包括卡片图画,数值等
+	*/
 	auto boardcard = new (std::nothrow) BoardCard();
 	if (boardcard   && boardcard->init())
 	{
 		boardcard->_frame= Sprite::create("card/frameMM.png");
-		//boardcard->_frame->setScale(0.25f);
 		boardcard->_frame->setRotation3D(Vec3(0, 180, 0));
-		boardcard->_normal = Sprite::create(card.get_cardPath());
-		boardcard->_normal->setScale(0.25f);
+		boardcard->_normal = BoardCardBuilder::buildCardInBattle(card.get_cardID());
 		boardcard->_normal->setRotation3D(Vec3(0, 180, 0));
-		//boardcard->_battle = Sprite::create(card._path2);
 
 		boardcard->_cardBack = Sprite::create("card/back.png");
 		boardcard->_cardBack->setScale(0.25f);
@@ -304,7 +306,7 @@ float BoardCard::transFromHandToBattle(int PosOrder,int Camp)
 	if (Camp)
 	{
 		auto a=this->getRotation3D();
-		this->runAction(Sequence::create(RotateBy::create(time/2, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardCard::turnSideCallback, this)), RotateTo::create(time/2, Vec3(0, 180, 540)), NULL));
+		this->runAction(Sequence::create(RotateBy::create(time/2, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardCard::turnSideCallback, this)), RotateTo::create(time/2, Vec3(0, 180, 360)), NULL));
 	}
 	return time;
 }

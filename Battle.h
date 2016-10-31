@@ -141,5 +141,7 @@ public:
 	//void spellAttackCheck(CCard&, CCard&){}
 	void SpellCheck(int,int, CCard &card);
 	void Spelling(CCard&, int,int,int);
-	void SpellLaunch(); 
+	//10.30
+	void SpellLaunch(vector<CCard>&, int);
+	//void relife();
 };
