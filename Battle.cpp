@@ -349,6 +349,7 @@ void CBattle::CheckDead(){
 	for (int i = 0; i < k; i++){
 		if (_cardPool[POOL_BATTLE][i].isDead()){
 			CardDead(i);
+			i--; k--;
 			//			t.push_back(i); 还须统一死亡结算
 		}
 	}
@@ -625,8 +626,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 				break;
 			}
 		}
-		int addarmor = _hero->getArmor()
-			;//*hero
+		int addarmor = 0;// _hero->getArmor();//*hero
 		for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++){
 			addarmor += _cardPool[POOL_BATTLE][i].get_armor();
 		}
@@ -687,7 +687,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		if (ran == k)
 			_enemy->_hero->setHealth(_enemy->_hero->getHealth() - 3);
 		else{
-			_enemy->_cardPool[POOL_BATTLE][ran].damaged(3);
+			_enemy->_cardPool[POOL_BATTLE][ran].damaged(10);
 			if (_enemy->_cardPool[POOL_BATTLE][ran].isDead()){
 				//CCard *card = &(_enemy->_cardPool[POOL_BATTLE][ran]);
 				_enemy->CardDead(ran);
@@ -708,7 +708,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		break;
 	}
 	case 706:{
-		Buff buff(1, 1);
+		Buff buff(0, 1);
 		buff.setdata(0, 1, 0);
 		int p=SpellCard.get_pos();
 		for (int i = 1; i < _cardPool[POOL_BATTLE].size(); i++){
@@ -765,7 +765,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 	}
 	case 721:{
 		for (int i = 0; i < _enemy->_cardPool[POOL_BATTLE].size(); i++){
-			_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
+			_enemy->_cardPool[POOL_BATTLE][i].damaged(10);
 		}
 		_enemy->CheckDead();
 		break;
