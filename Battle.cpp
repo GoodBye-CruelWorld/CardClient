@@ -84,13 +84,35 @@ void CBattle::Turning()
 void CBattle::TurnOver()
 {
 	//buff check
-	
-	//buff reduce
-	for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++){
-		_cardPool[POOL_BATTLE][i].reduceBuffTimes();
+	for (int i = 0; i < _cardPool[POOL_CEME].size(); i++){
+		if (_cardPool[POOL_CEME][i].buffCheck(1, 5)){
+			bool f = true; int pos = 0;
+			for (int j = 0; j < 5; j++){
+				f = true;
+				for (int k = 0; k < _cardPool[POOL_BATTLE].size(); i++){
+					if (_cardPool[POOL_BATTLE][k].get_pos() == j){
+						f = false;
+						break;
+					}
+				}
+				if (f){ pos = j; break; }
+			}
+			if (f){
+				_cardPool[POOL_CEME][i].relife();
+				_cardPool[POOL_CEME][i]._healthBattle = 1;
+				cardTransfer(POOL_CEME, POOL_BATTLE, i, 0, pos);
+				i--;
+			}
+		}
 	}
-	for (int i = 0; i < _enemy->_cardPool[POOL_BATTLE].size(); i++){
-		_enemy->_cardPool[POOL_BATTLE][i].reduceBuffTimes();
+	//buff reduce
+	for (int j = 0; j < 4; j++){
+		for (int i = 0; i < _cardPool[j].size(); i++){
+			_cardPool[j][i].reduceBuffTimes();
+		}
+		for (int i = 0; i < _enemy->_cardPool[j].size(); i++){
+			_enemy->_cardPool[j][i].reduceBuffTimes();
+		}
 	}
 
 	SpellCheck(01);
@@ -261,7 +283,7 @@ void CBattle::CardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int
 	SpellCheck(12);
 	_resourceNumber++;
 	//暂不函数化的卡牌召唤光环添加
-
+	card1[num1].relife();
 	for (int j = 0; j < card2.size(); j++){
 		for (int i = 0; i < card2[j]._cardbuff.size(); i++){
 			buffAdd(card2[j]._cardbuff[i], card2[j]._resourceID, card1[num1]);

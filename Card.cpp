@@ -20,7 +20,7 @@ void CCard::cardCreate(int num)
 	GameSqlite _gSql;
 	Tool _tool;
 	_cardPath = "card/2.png";
-
+	//int cardid = num;
 	_armor = 0;
 	_cardID = num;
 	_profession = num / 10000;
@@ -55,11 +55,10 @@ void CCard::cardCreate(int num)
 			_spellID.push_back(_spell);
 		}
 		//spell测试
-		if (num == 0){
+		if (_cardID == 10001){
 			//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
 			//set_armor(1);
-			_spellID[0] =
-				1501007;
+			_spellID.push_back(621007);
 			//_spellID.push_back(1604099);
 			//缩小3攻
 			//1705002;//眩晕全场
@@ -111,15 +110,9 @@ void CCard::cardCreate(int num)
 			//_spellID.push_back(5802001);
 		}
 	}
+	_cost = 1;
+	relife();
 
-
-	_healthBuff = 0;
-	_healthBattle = _health;
-	_healthMax = _health;
-	_attackBuff = 0;
-	_attackBattle = _attack;
-	_costBattle = _cost;
-	_costBuff = 0;
 }
 
 CCard::~CCard()
@@ -254,12 +247,26 @@ int CCard::buffCheck(int sTime){
 		if (sTime == 1){
 			if (_cardbuff[i]._bufftype == 1){
 				if (_cardbuff[i]._buffid == 5){
-					return 5;
+					//诈尸
 				}
 			}
 		}
 	}
 	return 0;
+}
+bool CCard::buffCheck(int sTime,int buf){
+	int k = _cardbuff.size();
+	for (int i = 0; i < k; i++){
+		if (sTime == 1){
+			if (_cardbuff[i]._bufftype == 1){
+				if (_cardbuff[i]._buffid == buf){
+					//诈尸
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 bool CCard::buffCheck(Buff buff)
@@ -273,4 +280,15 @@ bool CCard::buffCheck(Buff buff)
 
 	return false;
 
+}
+
+void CCard::relife(){
+	_healthBuff = 0;
+	_healthBattle = _health;
+	_healthMax = _health;
+	_attackBuff = 0;
+	_attackBattle = _attack;
+	_costBattle = _cost;
+	_costBuff = 0;
+	
 }
