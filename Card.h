@@ -121,6 +121,7 @@ public:
 	//void heal(int);
 	//11.4
 	void relife();
+	bool buffCheck(int,int);
 
 private:
 	int _pos; //在战场上的位置
