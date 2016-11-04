@@ -983,6 +983,9 @@ bool BattleTool2D::judgeAimed(int type, int ID, int destType, int destNum)
 	int num = ID / 100 % 10;
 	switch (num)
 	{
+	case 1:
+		result = true;
+		break;
 	case 2:
 		if (destType == 3 || destType == 6)
 			result = true;
