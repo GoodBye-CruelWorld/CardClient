@@ -165,10 +165,10 @@ void BoardEffect::endCallback(Node *sender)
 ParticleSystemQuad* BoardEffect::addParticle(std::string fileName, Node* dest, float scale, float rotation, Vec2 position)
 {
 	auto par = ParticleSystemQuad::create(fileName);
-	if (position != NULL)
-		par->setPosition(NULL);
+	if (position !=Vec2(0,0))
+		par->setPosition(position);
 	else
-		par->setPosition(dest->getContentSize() / 2);
+		par->setPosition(dest->getPosition());
 
 	if (rotation!=NULL)
 		par->setRotation(rotation);
@@ -178,6 +178,6 @@ ParticleSystemQuad* BoardEffect::addParticle(std::string fileName, Node* dest, f
 	if (scale != NULL)
 		par->setScale(scale);
 
-	dest->addChild(par, EFFECT_LAYER);
+	GameBoard::getInstance()->addChild(par, EFFECT_LAYER);
 	return par;
 }

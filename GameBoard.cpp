@@ -584,42 +584,47 @@ void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int 
 void GameBoard::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack1, this,effectID,lastTime,src,dest));
-	adjustNextAnimeTime(effectID);
 	_actionQueue->push(act, this, lastTime);
+
+	adjustNextAnimeTime(effectID,lastTime);
 }
 
 void GameBoard::addEffect(int effectID, float lastTime, Node *src, int destPool, int destNum, int destCamp)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack2, this, effectID, lastTime,src,destPool,destNum,destCamp));
-	adjustNextAnimeTime(effectID);
+	
 	_actionQueue->push(act, this, lastTime);
+	adjustNextAnimeTime(effectID, lastTime);
 }
 
 void GameBoard::addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack3, this, effectID, lastTime,srcPool,srcNum,srcCamp, dest));
-	adjustNextAnimeTime(effectID);
 	_actionQueue->push(act, this, lastTime);
+	adjustNextAnimeTime(effectID, lastTime);
 }
 
 void GameBoard::addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp,int destPool,int destNum,int destCamp)
 {
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::addEffectCallBack4, this, effectID, lastTime, srcPool, srcNum, srcCamp,destPool,destNum,destCamp));
-	adjustNextAnimeTime(effectID);
+
 	_actionQueue->push(act, this, lastTime);
+	adjustNextAnimeTime(effectID, lastTime);
 }
 
-void GameBoard::adjustNextAnimeTime(int effectID)
+void GameBoard::adjustNextAnimeTime(int effectID,float lastTime)
 {
 	if (effectID == EFFECT_FIREBALL || effectID == EFFECT_FIRE_FLASH)
 	{
 	
-	auto e = getEffect();
-	auto aq = getActionQueue();
-	auto keytime = e->getKeyTimeOfEffect(effectID);
+		auto e = getEffect();
+		auto aq = getActionQueue();
+		auto keytime = e->getKeyTimeOfEffect(effectID);
 
-	aq->advanceToLastAction();
-	aq->delay(keytime*0.5);
+		aq->advanceToLastAction();
+		aq->delay(keytime*lastTime);
+		aq->delayAfterNextAction((1 - keytime)*lastTime);
+
 	}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

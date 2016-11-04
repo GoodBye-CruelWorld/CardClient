@@ -76,6 +76,7 @@ bool BattleTool2D::onTouchBegan(Touch* touch, Event* event)
 						_cardSel= card;
 						_gameboard->selectCard(POOL_HAND,i);
 						_sight=1;//œ‘ æø®≈∆ÀÊ Û±Í“∆∂Ø
+						break;
 					}
 				}				
 			}

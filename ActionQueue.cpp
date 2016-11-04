@@ -4,6 +4,8 @@ ActionQueue::ActionQueue()
 {
 	_delayTime = 0.f;
 	_curActionNum = -1;
+	_delayAfter = false;
+	_delayAfterTime = 0;
 }
 
 void ActionQueue::push(Action* action,Node* target, float lastTime)
@@ -20,6 +22,13 @@ void ActionQueue::push(Action* action,Node* target, float lastTime)
 	_delayTime+= lastTime;
 	_actions.pushBack(act);
 	_delays.push_back(_delayTime);
+
+	//判断是否有该动作之后的延迟
+	if (_delayAfter)
+	{
+		delay(_delayAfterTime);
+		_delayAfter = !_delayAfter;
+	}
 	return;
 
 }
@@ -47,8 +56,12 @@ void ActionQueue::advance(float time)
 }
 void ActionQueue::advanceToLastAction()
 {
-	auto time = _delays.back();
-	_delayTime = time;
+	if (_delays.size() <= 1)
+	{
+		_delayTime = 0;
+		return;
+	}
+	_delayTime = _delays.back();
 }
 void ActionQueue::dump(bool stopCurAction )
 {
@@ -118,4 +131,11 @@ void ActionQueue::removeCallBack()
 void ActionQueue::addCurActionNum()
 {
 	_curActionNum+=1;
+}
+
+
+void ActionQueue::delayAfterNextAction(float time)
+{
+	_delayAfter = true;
+	_delayAfterTime = time;
 }
