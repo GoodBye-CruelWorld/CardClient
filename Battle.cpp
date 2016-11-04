@@ -865,9 +865,11 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 	{
 		switch (destPool)
 		{
-		case 3:			//己方随从
+		case 3:	//己方随从
 			//实际扣血
 			_cardPool[POOL_BATTLE].at(destNum).damaged(1);
+			/*特效处理*/
+			_gameboard->addEffect(EFFECT_FIRE_FLASH, 0.2f, _hero,POOL_BATTLE,destNum,_camp);
 			//显示扣血
 			_gameboard->setCardProperties(POOL_BATTLE, destNum, _camp, -1, _cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
 
@@ -878,6 +880,8 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 		case 4:			//敌方随从
 			//实际扣血
 			_enemy->_cardPool[POOL_BATTLE].at(destNum).damaged(1);
+			/*特效处理*/
+			_gameboard->addEffect(EFFECT_FIRE_FLASH, 0.4f, _hero, POOL_BATTLE, destNum, !_camp);
 			//实际扣血
 			_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, -1, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
 			if (ActPtsMax >= 0)
@@ -892,10 +896,14 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 			
 			break;
 		case 6:		//己方英雄
-			_hero->setHealth(_enemy->_hero->getHealthData() - 1);
+			_hero->setHealthData(_hero->getHealthData() - 1);
+			_gameboard->addEffect(EFFECT_FIRE_FLASH, 0.2f, _hero,_hero);
+			_hero->setHealth(_hero->getHealthData());
 			break;
-		case 7:		//地方英雄
-			_enemy->_hero->setHealth(_enemy->_hero->getHealthData() - 1);
+		case 7:		//敌方英雄
+			_enemy->_hero->setHealthData(_enemy->_hero->getHealthData() - 1);
+			_gameboard->addEffect(EFFECT_FIRE_FLASH, 0.5f, _hero, _enemy->_hero);
+			_enemy->_hero->setHealth(_enemy->_hero->getHealthData());
 			break;
 		default:
 			break;
@@ -919,14 +927,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 				_gameboard->addEffect(EFFECT_FIREBALL, 0.5f, _hero, _enemy->_hero);
 
 				/*显示处理*/
-				auto e = _gameboard->getEffect();
-				auto aq = _gameboard->getActionQueue();
-				auto keytime = e->getKeyTimeOfEffect(EFFECT_FIREBALL);
-
-				aq->advanceToLastAction();
-				aq->delay(keytime*0.5);
 				_gameboard->setHeroHealth(!_camp, _enemy->_hero->getHealthData());
-				aq->delay((1 - keytime)*0.5);
 
 
 			}
