@@ -24,6 +24,12 @@ float CAIEnemy::AiTurn(){
 }
 
 void CAIEnemy::AiCummom(){
+	auto pp = bat->_cardPool[POOL_BATTLE];
+	for (int i = 0; i < 5; i++)
+		place[i] = true;
+	for (int i = 0; i < pp.size(); i++){
+		place[pp[i].get_pos()] = false;
+	}
 	auto c = bat->_cardPool[POOL_HAND];//手牌
 	int pts = bat->actionPoints;//行动点
 	int k = c.size();//手牌数量
@@ -263,7 +269,7 @@ vector<int> CAIEnemy::dp(vector<int>&p, vector<int>&v, int m, vector<CCard> &car
 }
 
 int CAIEnemy::setPlace(){
-	int p[5] = { 2, 1, 3, 0,-1 };
+	int p[6] = { 2, 1, 3, 0,4,-1 };
 	//int p[5] = { 3,2, 1,  0, -1 };
 	int i = 0;
 	while (!place[p[i]]) i++;

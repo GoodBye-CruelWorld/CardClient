@@ -295,6 +295,7 @@ void CBattle::cardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int
 	actionChange(-card1[num1].get_cost());
 	_gameboard->getActionPointBar(_camp)->reduceAvailActionPoint(card1[num1].get_cost());
 	//CardTranslate(card1, card2, num1, num2);
+	if (_camp == 1) card1[num1].set_pos(battlePlace);
 	cardTransfer(POOL_HAND, POOL_BATTLE, num1, num2, battlePlace);
 
 	spellCheck(POOL_BATTLE, num2, 2);
@@ -346,7 +347,7 @@ CBattle::~CBattle()
 void CBattle::cardDead(int num){
 	//CardTranslate(card, _cardPool[POOL_CEME], 0);
 	auto card = _cardPool[POOL_BATTLE].at(num);
-	if (card.get_place() < 0 || card.get_place()>4) card.set_place(0);
+	if (card.get_place() < 0 || card.get_place()>5) card.set_place(0);
 	ai->place[card.get_place()] = true;
 	spellCheck(POOL_BATTLE, num, 03);
 	cardTransfer(POOL_BATTLE, POOL_CEME, num, 0);
