@@ -76,6 +76,8 @@ bool BattleTool2D::onTouchBegan(Touch* touch, Event* event)
 						_cardSel= card;
 						_gameboard->selectCard(POOL_HAND,i);
 						_sight=1;//显示卡牌随鼠标移动
+
+						break;
 					}
 				}				
 			}
@@ -325,6 +327,12 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	///////////////////////////////////////////////////////////////////////////////////我方手牌的使用	
 	if (_beginID / 100 == 1)
 	{
+		
+		//解决卡牌原地单机无法还原的问题
+		if (_sight != 2 && _sight != -1)
+			_gameboard->setCardOraginState();//还原卡牌位置	
+		
+		
 		//使用非指向性牌
 		if (_sight==2)
 			if (tp.y>BoardScreen.y/4)															

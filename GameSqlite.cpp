@@ -16,7 +16,7 @@ GameSqlite::GameSqlite()
 	sqlite3_open("sql/Dcg_database_Card", &sql[0]);
 	sqlite3_open("sql/Dcg_database_Character", &sql[1]);
 	sqlite3_open("sql/Dcg_database_Skill", &sql[2]);
-	//SetData();
+	SetData();
 }
 
 
@@ -148,28 +148,28 @@ void GameSqlite::SetData()
 	
 	///战士5801003
 	//sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000000,'低阶步兵',0,1,1,'护甲1',0,3703001,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000000,'低阶步兵',0,1,1,'护甲1',0,5801003,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000000,'低阶步兵',0,1,1,'护甲1',0,1600002,2,3,4,7,7)", 0, 0, errmsg);
 	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000001,'提枪侍从',1,3,1,'降临：使英雄的装备获得耐久+1',0,5802002,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000002,'装甲锻造者',3,3,3,'降临：使一名随从获得护甲+2',0,5802001,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000003,'巨人战士',5,3,4,'降临：眩晕一个随从直到你的下个回合开始',1,2102,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000002,'装甲锻造者',3,3,3,'降临：使一名随从获得护甲+2',0,2601102,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000003,'巨人战士',5,3,4,'降临：眩晕一个随从直到你的下个回合开始',1,1602102,2,3,4,7,7)", 0, 0, errmsg);
 	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000004,'英灵',6,5,7,'返场：6',1,6904001,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000005,'铁甲武士',8,7,7,'每个回合结束获得护甲+2',1,2001101,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000006,'前线指挥官',2,3,3,'友方角色每有一点护甲值，获得+1攻击力',2,20099,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000007,'铁骑',4,1,5,'友方角色每有一点护甲值，获得+1攻击力',2,20099,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000008,'战神',11,10,10,'护甲4 随从豁免 攻击反制',3,90004,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000005,'铁甲武士',8,7,7,'每个回合结束获得护甲+2',1,2603001,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000006,'前线指挥官',2,3,3,'友方角色每有一点护甲值，获得+1攻击力',2,1604099,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000007,'铁骑',4,1,5,'友方角色每有一点护甲值，获得+1攻击力',2,5001002,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0000008,'战神',11,10,10,'护甲4 随从豁免 攻击反制',3,4001002,90199,3,4,7,7)", 0, 0, errmsg);
 	
 	//弓箭手
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010000,'侦查鹰',1,4,0,'友方所有其他随从攻击加1',0,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010001,'猎鹰',2,1,3,'冲锋',0,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010002,'见习游侠',0,1,2,'降临：造成1点伤害',0,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010003,'神射手',3,3,4,'降临：对一个角色造成2点伤害',1,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010004,'重弩手',4,4,5,'攻击产生晕眩效果',0,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010005,'美杜莎',7,4,3,'降临：石化1个随从',2,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010006,'迫击炮小队',7,7,5,'回合结束时对随机1个敌方角色造成3点伤害',0,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010007,'风行者',5,3,5,'一回合可以攻击两次',2,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010008,'魔羽',11,12,8,'降临：晕眩场上所有随从',3,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010009,'游侠首领',2,3,2,'降临：使他左右的随从攻击+1',1,1,2,3,4,7,7)", 0, 0, errmsg);
-	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010010,'暗影射手',3,4,3,'降临：当前回合使一个随从攻击减3',1,1,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010000,'侦查鹰',1,4,0,'友方所有其他随从攻击加1',0,1700002,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010001,'猎鹰',2,1,3,'冲锋',0,1709002,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010002,'见习游侠',0,1,2,'降临：造成1点伤害',0,1707102,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010003,'神射手',3,3,4,'降临：对一个角色造成2点伤害',1,1707102,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010004,'重弩手',4,4,5,'攻击产生晕眩效果',0,2702004,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010005,'美杜莎',7,4,3,'降临：石化1个随从',2,1711102,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010006,'迫击炮小队',7,7,5,'回合结束时对随机1个敌方角色造成3点伤害',0,3703001,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010007,'风行者',5,3,5,'一回合可以攻击两次',2,1708002,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010008,'魔羽',11,12,8,'降临：晕眩场上所有随从',3,1705002,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010009,'游侠首领',2,3,2,'降临：使他左右的随从攻击+1',1,1706002,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0010010,'暗影射手',3,4,3,'降临：当前回合使一个随从攻击减3',1,3712102,2,3,4,7,7)", 0, 0, errmsg);
 
 	//中立																																									
 	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0100000,'冒险家',1,2,1,'降临：抽1张牌',1,1,2,3,4,7,7)", 0, 0, errmsg);
@@ -183,8 +183,21 @@ void GameSqlite::SetData()
 	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0100008,'哭泣的灵魂',5,5,4,'遗言：对随机敌人1~3点伤害；随从豁免',1,1,2,3,4,7,7)", 0, 0, errmsg);
 		
 	
+	//法术
+	//战士
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0001000,'重返战场',0,0,0,'回复一名随从所有生命值，并使其获得护甲+1',0,620107,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0001001,'紧急包扎',0,0,0,'本回合死亡的随从，回合结束重新返回战场并有1点生命值',2,621007,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0001002,'战事准备',0,0,0,'每有一个友方角色有护甲，摸一张牌',2,622007,2,3,4,7,7)", 0, 0, errmsg);
+
 	
-	
+	//猎人
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0011000,'石化之箭',0,0,0,'3回合无法攻击',0,711107,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0011001,'夺命射击',0,0,0,'消灭1个指定随从',1,720107,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0011002,'箭雨',0,0,0,'对敌方所有随从造成2伤害',2,721007,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0011003,'震荡射击',0,0,0,'晕眩',2,602107,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0011004,'烈炎射击',0,0,0,'对目标造成6伤害',1,722107,2,3,4,7,7)", 0, 0, errmsg);
+	sqlite3_exec(sql[0], "insert into sqlTable(ID,CardName, Cost, Health, Attack, CardDescribe, Quality, Spell0,Spell1,Spell2,Spell3,GraphPath1,GraphPath2) values(0011005,'治愈箭雨',0,0,0,'友方所有随从恢复3生命值',2,723007,2,3,4,7,7)", 0, 0, errmsg);
+
 	
 
 
