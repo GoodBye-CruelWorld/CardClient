@@ -16,7 +16,7 @@ GameSqlite::GameSqlite()
 	sqlite3_open("sql/Dcg_database_Card", &sql[0]);
 	sqlite3_open("sql/Dcg_database_Character", &sql[1]);
 	sqlite3_open("sql/Dcg_database_Skill", &sql[2]);
-	SetData();
+	//SetData();
 }
 
 
