@@ -311,7 +311,7 @@ void GameBoard::setHeroAttackCallBack(int camp, int value)
 
 void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int destOrder, int destCamp, int destHealth)
 {
-	if (srcOrder != -1 && destOrder != -1)
+	if (srcOrder != 7 && destOrder != 7)
 	{
 		auto srcCard = _cardPools[POOL_BATTLE + 4 * srcCamp].at(srcOrder);
 		auto destCard = _cardPools[POOL_BATTLE + 4 * destCamp].at(destOrder);
@@ -325,7 +325,7 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 			NULL));
 
 	}
-	if (srcOrder == -1 && destOrder != -1)
+	if (srcOrder == 7 && destOrder != 7)
 	{
 		auto srcHero = _role[srcCamp]->getRolePhote();
 		auto destCard = _cardPools[POOL_BATTLE + 4 * destCamp].at(destOrder);
@@ -338,7 +338,7 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 			CallFunc::create(CC_CALLBACK_0(BoardCard::setCurrentHealth, destCard, destHealth)),
 			NULL));
 	}
-	if (srcOrder != -1 && destOrder == -1)
+	if (srcOrder != 7 && destOrder == 7)
 	{
 		auto srcCard = _cardPools[POOL_BATTLE + 4 * srcCamp].at(srcOrder);
 		auto destHero = _role[destCamp]->getRolePhote();
@@ -352,11 +352,12 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 			CallFunc::create(CC_CALLBACK_0(BoardRole::setHealth, _role[destCamp], destHealth, 0)),
 			NULL));
 	}
-	if (srcOrder == -1 && destOrder == -1)
+	if (srcOrder ==7 && destOrder == 7)
 	{
 		auto srcHero = _role[srcCamp]->getRolePhote();
 		auto destHero = _role[destCamp]->getRolePhote();
-		auto delay = srcHero->attack(destHero->getPosition());
+		auto delay = srcHero->attack(Vec2(20, -190 + destCamp * 280));
+
 		//_effect->addEffect(4, destHero, delay);
 		this->runAction(Sequence::create(
 			DelayTime::create(delay),
@@ -402,6 +403,25 @@ void GameBoard::showCardDescribe(int cardPool,int num)
 
 void GameBoard::setCardPropertiesCallBack(int srcPool, int srcNum, int srcCamp, int value,int type)
 {
+	if (srcNum == 7)
+	{
+		auto hero = this->getRole(srcCamp);
+		switch (type)
+		{
+		case 1:
+			hero->setAttack(value);
+			break;
+		case 2:
+			hero->setHealth(value);
+			break;
+		case 3:
+			hero->setArmor(value);
+			break;
+		default:
+			break;
+		}
+		return;
+	}
 	auto card = _cardPools[srcPool + 4 * srcCamp].at(srcNum);
 	switch (type)
 	{

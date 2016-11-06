@@ -2,6 +2,8 @@
 #include"BoardChess.h"
 #include "ui/CocosGUI.h"
 #include"Card.h"
+#include<vector>
+using namespace std;
 using namespace ui;
 
 
@@ -155,6 +157,19 @@ public:
 
 	bool IsWeapon();
 	int getCurEquipNum();  //武器不计其内
+
+	//116 
+	CCard _hero;
+	vector<CCard> _equip;
+	void link();
+	void realAddWeapon(CCard&);
+	bool checkWeapon(CCard&);
+	void destroy(int);
+	void reduceWeapon();
+	void reduceEquip();
+	int checkWeapon();
+	bool checkWBuff(int);
+
 private:
 	int _attack;
 

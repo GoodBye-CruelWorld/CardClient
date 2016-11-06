@@ -23,7 +23,7 @@ RolePhote * RolePhote::create(int roleID)
 		rolePhote->addChild(rolePhote->_phote);
 		rolePhote->initwords();
 	
-
+		
 	}
 	else
 	{
@@ -481,16 +481,26 @@ BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
 		//role->_healthLb->setScale(3);
 		role->_rolePhote->addChild(role->_healthLb);
 
+
+
 		role->_maxHealth = 20;
 		role->setHealthData(role->_maxHealth);
 		role->setAttack(1);
 		role->setHealth(role->_maxHealth);
+
+
+		role->_hero.set_health(20);
+		role->_hero.set_attack(0);
+		role->_hero.relife();
+		role->link();
+
 
 	}
 	else
 	{
 		CC_SAFE_DELETE(role);
 	}
+	
 	return role;
 }
 
@@ -706,4 +716,83 @@ bool BoardRole::IsWeapon()
 		return true;
 	else
 		return false;
+}
+
+//116
+void BoardRole::link(){
+	_health = _hero._healthBattle;
+	_attack = _hero._attackBattle;
+}
+
+bool BoardRole::checkWeapon(CCard&card){
+	if (card.get_cardID() / 1000 % 10 == 2) return true;
+	else return false;
+}
+int BoardRole::checkWeapon(){
+	bool f = false; int i = 0;
+	for (i = 0; i < _equip.size(); i++){
+		if (checkWeapon(_equip[i])){
+			f = true;
+			break;
+		}
+	}
+	if (f) return i;
+	else return -1;
+}
+void BoardRole::realAddWeapon( CCard&card ){
+	int i = checkWeapon();
+	if (checkWeapon(card)&&i>0){
+		destroy(i);
+	}
+	if (_equip.size()<3){
+		_equip.push_back(card);
+		_hero._attackBattle += card._attackBattle;
+		if (card.get_spellID()[1] == 3){
+			_armor += 1;
+		}
+		_hero.canAttack();
+	}
+	link();
+}
+
+void BoardRole::destroy(int i){
+	_hero._attackBattle -= _equip[i]._attackBattle;
+	link();
+	_hero.canAttack();
+	_equip.erase(_equip.begin() + i);
+}
+
+void BoardRole::reduceWeapon(){
+	for (int i = 0; i < _equip.size(); i++){
+		if (checkWeapon(_equip[i])){
+			_equip[i]._healthBattle--;
+			if (_equip[i].get_spellID()[1] == 3){
+				_armor -= 1;
+			}
+			if (_equip[i]._healthBattle == 0){
+				destroy(i);
+				i--;
+			}
+		}
+	}
+}
+void BoardRole::reduceEquip(){
+	for (int i = 0; i < _equip.size(); i++){
+		if (!checkWeapon(_equip[i])){
+			_equip[i]._healthBattle--;
+			if (_equip[i]._healthBattle == 0){
+				destroy(i);
+				i--;
+			}
+		}
+	}
+}
+
+bool BoardRole::checkWBuff(int num){
+	for (int i = 0; i < _equip.size(); i++){
+		if (_equip[i].get_spellID()[1] == num){
+			return true;
+		}
+	}
+	return false;
 }
