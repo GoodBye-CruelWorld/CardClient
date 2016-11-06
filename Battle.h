@@ -148,4 +148,6 @@ public:
 	void spellLaunch(vector<CCard>&, int);
 	void spellLaunch(int cardPool, int);
 	//void relife();
+	//11.6
+	void equipLaunch(int ,int);
 };

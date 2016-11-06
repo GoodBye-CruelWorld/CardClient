@@ -58,8 +58,10 @@ void CCard::cardCreate(int num)
 			_cardID = 12001;
 			//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
 			//set_armor(1);
-			_spellID.push_back(721007);
-			_cardID += 1000;
+			//_spellID.push_back(721007);
+			_cardID += 2000;
+			_health = 2;
+			_attack = 3;
 			//缩小3攻
 			//1705002;//眩晕全场
 			//	1711102	;//石化

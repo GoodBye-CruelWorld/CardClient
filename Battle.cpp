@@ -349,6 +349,11 @@ void CBattle::spellLaunch(int cardPool, int num)
 	spellLaunch(_cardPool[cardPool],num);
 }
 
+//11.6
+void CBattle::equipLaunch(int cardPool, int num){
+	_hero->_equip.push_back
+}
+
 
 void CBattle::cardTransfer(int srcPool, int destPool, int srcNum, int destNum, int battlePlace)
 {

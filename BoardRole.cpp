@@ -717,3 +717,55 @@ void BoardRole::link(){
 	_health = _hero._healthBattle;
 	_attack = _hero._attackBattle;
 }
+
+bool BoardRole::checkWeapon(CCard&card){
+	if (card.get_cardID() / 1000 % 10 == 2) return true;
+	else return false;
+}
+
+void BoardRole::realAddWeapon( CCard&card ){
+	bool f = false; int i = 0;
+	for (i = 0; i < _equip.size(); i++){
+		if (checkWeapon(_equip[i])){
+			f = true;
+			break;
+		}
+	}
+	if (checkWeapon(card)&&f){
+		destroy(i);
+	}
+	if (_equip.size()<3){
+		_equip.push_back(card);
+		_hero._attackBattle += card._attackBattle;
+		_hero.canAttack();
+	}
+}
+
+void BoardRole::destroy(int i){
+	_hero._attackBattle -= _equip[i]._attackBattle;
+	_hero.canAttack();
+	_equip.erase(_equip.begin() + i);
+}
+
+void BoardRole::reduceWeapon(){
+	for (int i = 0; i < _equip.size(); i++){
+		if (checkWeapon(_equip[i])){
+			_equip[i]._healthBattle--;
+			if (_equip[i]._healthBattle == 0){
+				destroy(i);
+				i--;
+			}
+		}
+	}
+}
+void BoardRole::reduceEquip(){
+	for (int i = 0; i < _equip.size(); i++){
+		if (!checkWeapon(_equip[i])){
+			_equip[i]._healthBattle--;
+			if (_equip[i]._healthBattle == 0){
+				destroy(i);
+				i--;
+			}
+		}
+	}
+}
