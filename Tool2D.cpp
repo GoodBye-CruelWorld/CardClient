@@ -663,7 +663,8 @@ void  BattleTool2D::onTouchMoved(Touch* touch, Event* event)
 			}
 			break;
 		case 6:
-			if ((_beginID % 100) / 10)//Ó¢ÐÛ¿É¹¥»÷
+			//if ((_beginID % 100) / 10)//Ó¢ÐÛ¿É¹¥»÷
+			if (_gameboard->getRole(0)->_hero.get_canAttack() && !_gameboard->getRole(0)->_hero.get_isAttack())
 			{
 				_sight = 1;
 			}
