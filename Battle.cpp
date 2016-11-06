@@ -199,20 +199,24 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 
 	//srcCard即攻击方,destCard即被攻击方
 	CCard *srcCard, *destCard;
-	if (srcCamp == _camp)
-		srcCard = &_cardPool[POOL_BATTLE].at(srcNum);
-	else
-		srcCard = &_enemy->_cardPool[POOL_BATTLE].at(srcNum);
+
+	if (srcNum == 7){
+		srcCard = &_hero->_hero;
+	}
+	else{
+		if (srcCamp == _camp)
+			srcCard = &_cardPool[POOL_BATTLE].at(srcNum);
+		else
+			srcCard = &_enemy->_cardPool[POOL_BATTLE].at(srcNum);
+	}
 
 	if (destCamp == _camp)
 		destCard = &_cardPool[POOL_BATTLE].at(destNum);
 	else
 		destCard = &_enemy->_cardPool[POOL_BATTLE].at(destNum);
-	if (srcNum == 7){
-		srcCard = &_hero->_hero;
-	}
-	spellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
-	reduceAttack(_cardPool[POOL_BATTLE].at(srcNum));
+	if (srcNum!=7)
+		spellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
+	reduceAttack(*srcCard);
 
 	//随从实际和显示血量的改变
 	//判断敌方随从是否带有“猎人印记”的buff
@@ -226,9 +230,10 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	else
 		destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : srcCard->getFinalAttack() - destCard->get_armor());
 	//显示血量
-	_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp,_cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), 2);
-	_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp,_enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), 2);
-
+	if (srcNum != 7){
+		_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp, _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), 2);
+		_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), 2);
+	}
 	//取消本回合随从的攻击能力
 	srcCard->set_isAttack(true);
 
@@ -238,7 +243,7 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	else 
 		_gameboard->cardAttack(srcNum, srcCamp, srcCard->getFinalHealth(), destNum, destCamp, destCard->getFinalHealth()); 
 	
-
+	if (srcNum!=7)
 	if (srcCard->isDead()){
 		if (srcCamp == _camp)
 			cardDead(srcNum);
@@ -258,11 +263,11 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 void CBattle::cardAttack(int num)						//随从攻击英雄 重载+1
 {
 
-	auto creAttack = _cardPool[POOL_BATTLE][num];
-	if (num == 7){
-		creAttack = _hero->_hero;
+	CCard& creAttack = _hero->_hero;
+	if (num <5){
+		creAttack = _cardPool[POOL_BATTLE][num];
 	}
-	reduceAttack(_cardPool[POOL_BATTLE][num]);
+	reduceAttack(creAttack);
 
 	//TODO 创建一个hero数据类
 	_enemy->_hero->setHealthData(_enemy->_hero->getHealthData() - creAttack.getFinalAttack());

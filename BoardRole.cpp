@@ -485,12 +485,16 @@ BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
 		role->setHealthData(role->_maxHealth);
 		role->setAttack(1);
 		role->setHealth(role->_maxHealth);
+		role->_hero.set_health(20);
+		role->_hero.set_attack(1);
+		role->_hero.relife();
 
 	}
 	else
 	{
 		CC_SAFE_DELETE(role);
 	}
+	
 	return role;
 }
 
