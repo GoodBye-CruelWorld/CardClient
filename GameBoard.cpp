@@ -356,7 +356,8 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 	{
 		auto srcHero = _role[srcCamp]->getRolePhote();
 		auto destHero = _role[destCamp]->getRolePhote();
-		auto delay = srcHero->attack(destHero->getPosition());
+		auto delay = srcHero->attack(Vec2(20, -190 + destCamp * 280));
+
 		//_effect->addEffect(4, destHero, delay);
 		this->runAction(Sequence::create(
 			DelayTime::create(delay),

@@ -162,6 +162,12 @@ public:
 	CCard _hero;
 	vector<CCard> _equip;
 	void link();
+	void realAddWeapon(CCard&);
+	bool checkWeapon(CCard&);
+	void destroy(int);
+	void reduceWeapon();
+	void reduceEquip();
+
 private:
 	int _attack;
 
