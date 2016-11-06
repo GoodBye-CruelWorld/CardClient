@@ -483,14 +483,18 @@ BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
 
 		role->_maxHealth = 20;
 		role->setHealthData(role->_maxHealth);
-		role->setAttack(0);
+		role->setAttack(1);
 		role->setHealth(role->_maxHealth);
+		role->_hero.set_health(20);
+		role->_hero.set_attack(1);
+		role->_hero.relife();
 
 	}
 	else
 	{
 		CC_SAFE_DELETE(role);
 	}
+	
 	return role;
 }
 
@@ -706,4 +710,10 @@ bool BoardRole::IsWeapon()
 		return true;
 	else
 		return false;
+}
+
+//116
+void BoardRole::link(){
+	_health = _hero._healthBattle;
+	_attack = _hero._attackBattle;
 }

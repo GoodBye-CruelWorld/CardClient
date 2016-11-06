@@ -77,6 +77,7 @@ bool BattleTool2D::onTouchBegan(Touch* touch, Event* event)
 						_cardSel= card;
 						_gameboard->selectCard(POOL_HAND,i);
 						_sight=1;//显示卡牌随鼠标移动
+
 						break;
 					}
 				}				
@@ -183,14 +184,14 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	{
 		if (_roleWord == 0)
 		{
-			if (_beginID / 100 == 6)			//我方表情选择
+			if (_beginID / 100 == 6 && _endID / 100 == 6)		//我方表情选择
 			{
 				auto Role = _gameboard->getRole(0);
 				Role->getRolePhote()->setWordChoicesVisible(true);
 				_roleWord = 1;
 				_beginID = 0;
 			}
-			if (_beginID / 100 == 7)		//敌方表情选择
+			if (_beginID / 100 == 7 && _endID / 100 == 7)	//敌方表情选择
 			{
 				auto Role = _gameboard->getRole(1);
 				Role->getRolePhote()->setWordChoicesVisible(true);
@@ -327,6 +328,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	///////////////////////////////////////////////////////////////////////////////////我方手牌的使用	
 	if (_beginID / 100 == 1)
 	{
+
 		//解决卡牌原地单机无法还原的问题
 		if (_sight != 2 && _sight != -1)
 			_gameboard->setCardOraginState();//还原卡牌位置	
@@ -375,6 +377,21 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						int Number = _battleMy->_cardPool[POOL_BATTLE].size();
 
 
+						//调用Cbattle类的随从召唤				
+						_t_battleID = 2 * 1000000 + 01 * 10000 + _beginID % 10 * 1000;
+					}
+					else
+						_gameboard->setCardOraginState();//还原卡牌位置	
+					break;
+				}
+				case 2:		//表示为装备，传值判断与法术一样
+				{
+					//判断鼠标抬起的落点是否在手牌区外
+					if ((_endID / 100 != 1)  &(_endID != 0)&  _battleMy->actionPoints >= _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_cost())		//在手牌区外
+					{
+						int Number = _battleMy->_cardPool[POOL_BATTLE].size();
+
+						_gameboard->getRole(0)->addWeapon(_cradID);
 						//调用Cbattle类的随从召唤				
 						_t_battleID = 2 * 1000000 + 01 * 10000 + _beginID % 10 * 1000;
 					}
@@ -547,7 +564,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	///////////////////////////////////////////////////////////////////////////////////////////////英雄攻击
 	if (_beginID / 100 == 6)
 	{
-		if ((_endID / 100 == 4) || (_endID / 100 == 5) || (_endID / 100 == 6) || (_endID / 100 == 7))
+		if ((_endID / 100 == 4) || (_endID / 100 == 5) || (_endID / 100 == 7))
 		{
 			_t_battleID = 4 * 1000000 + _beginID / 100 * 10000 + _beginID % 10 * 1000 + _endID / 100 * 10 + _endID % 10;
 		}

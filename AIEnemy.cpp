@@ -28,7 +28,7 @@ void CAIEnemy::AiCummom(){
 	for (int i = 0; i < 5; i++)
 		place[i] = true;
 	for (int i = 0; i < pp.size(); i++){
-		place[pp[i].get_pos()] = false;
+		place[pp[i].get_pos()] = false; 
 	}
 	auto c = bat->_cardPool[POOL_HAND];//手牌
 	int pts = bat->actionPoints;//行动点
