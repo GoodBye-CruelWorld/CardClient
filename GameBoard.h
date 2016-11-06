@@ -17,6 +17,7 @@ USING_NS_CC;
 #define POOL_HAND 1 //手牌池
 #define POOL_BATTLE 2 //战斗池
 #define POOL_CEME 3 //墓地池
+#define POOL_HERO 10 //墓地池
 /*
 *@GameBoard
 *@brief 游戏面板类主要负责有关游戏的显示.
