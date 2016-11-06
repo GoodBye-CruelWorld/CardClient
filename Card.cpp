@@ -35,6 +35,10 @@ void CCard::cardCreate(int num)
 		char s[10];
 		std::string str;
 
+		if (_cardID == 10001){
+			_cardID = 2001;
+		}
+
 		_health = atoi(_gSql.getCardData(_cardID, CARD_HEALTH));
 		_attack = atoi(_gSql.getCardData(_cardID, CARD_ATTACK));
 		_cost = atoi(_gSql.getCardData(_cardID, CARD_COST));
@@ -55,11 +59,11 @@ void CCard::cardCreate(int num)
 		}
 		//spell测试
 		if (_cardID == 10001){
-			_cardID = 12001;
+			//_cardID = 11001;
 			//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
 			//set_armor(1);
-			_spellID.push_back(721007);
-			_cardID += 1000;
+			//_spellID.push_back(721007);
+			//_cardID += 1000;
 			//缩小3攻
 			//1705002;//眩晕全场
 			//	1711102	;//石化
