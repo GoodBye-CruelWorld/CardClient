@@ -14,9 +14,12 @@ void Command::sendCommand(int command, int camp)
 		}
 		case 02:					//道具法术装备的使用
 		{
-			//int p=command/
+			int p = command / 1000 % 10;
 			auto place = command / 100 % 10;
-			_battles[camp]->spellLaunch(POOL_HAND, command / 1000 % 10);
+			if (p == 1)
+				_battles[camp]->spellLaunch(POOL_HAND, command / 1000 % 10);
+			else
+				_battles[camp]->equipLaunch(POOL_HAND, command / 1000 % 10);
 			GameBoard::getInstance()->getActionQueue()->reset(false);
 			break;
 		}
@@ -31,7 +34,6 @@ void Command::sendCommand(int command, int camp)
 		{
 			auto p = command / 1000 % 10;
 			if (command / 10000 % 10 == 6) {
-				_battles[camp]->_hero->reduceWeapon();
 				p = 7; 
 			}
 			if (command / 10 % 10 != 7)
@@ -46,6 +48,9 @@ void Command::sendCommand(int command, int camp)
 			{
 				_battles[camp]->cardAttack(p);
 				GameBoard::getInstance()->getActionQueue()->reset(false);
+			}
+			if (command / 10000 % 10 == 6) {
+				_battles[camp]->_hero->reduceWeapon();
 			}
 			break;
 

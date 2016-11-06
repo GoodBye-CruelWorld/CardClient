@@ -167,6 +167,8 @@ public:
 	void destroy(int);
 	void reduceWeapon();
 	void reduceEquip();
+	int checkWeapon();
+	bool checkWBuff(int);
 
 private:
 	int _attack;

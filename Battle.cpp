@@ -30,6 +30,12 @@ void attackReset(CCard&card){
 }
 
 void CBattle::turnStart(){
+	//武器攻击初始化
+	//for (int i = 0;i<her)
+	int p = _hero->checkWeapon();
+	if (p > 0)
+		_hero->_hero._attackBattle += _hero->_equip[p]._attackBattle;
+
 	//回合开始 行动上限+1 行动充满 检测上限点数 抽牌 待完善
 	actionPoints = ActPtsMax++;
 	_gameState = GAME_RUN;
@@ -89,6 +95,10 @@ void CBattle::turning()
 
 void CBattle::turnOver()
 {
+	//武器结束
+	int p = _hero->checkWeapon();
+	if (p > 0)
+		_hero->_hero._attackBattle -= _hero->_equip[p]._attackBattle;
 	//buff check
 	for (int i = 0; i < _cardPool[POOL_CEME].size(); i++){
 		if (_cardPool[POOL_CEME][i].buffCheck(1, 5)){
@@ -225,10 +235,16 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		srcCard->damaged((destCard->getFinalAttack() - srcCard->get_armor()) <= 0 ? 0 : (destCard->getFinalAttack() - srcCard->get_armor()) * 2);
 	else
 		srcCard->damaged((destCard->getFinalAttack() - srcCard->get_armor()) <= 0 ? 0 : destCard->getFinalAttack() - srcCard->get_armor());
-	if (destCard->buffCheck(buff))
-		destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : (srcCard->getFinalAttack() - destCard->get_armor())*2);
-	else
-		destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : srcCard->getFinalAttack() - destCard->get_armor());
+	if (srcNum == 7 && _hero->checkWBuff(2)){
+		spelling(721007,0,0,0);
+	}
+	else{
+		
+		if (destCard->buffCheck(buff))
+			destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : (srcCard->getFinalAttack() - destCard->get_armor()) * 2);
+		else
+			destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : srcCard->getFinalAttack() - destCard->get_armor());
+	}
 	//显示血量
 	if (srcNum != 7){
 		_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp, _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), 2);
@@ -236,7 +252,9 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	}
 	//取消本回合随从的攻击能力
 	srcCard->set_isAttack(true);
-
+	if (srcNum==7&&_hero->checkWBuff(1)&&destCard->_healthBattle<destCard->get_healthMax()){
+		destCard->_healthBattle = 0;
+	}
 	if (srcNum == 7){
 		_hero->link();
 	}
@@ -250,7 +268,7 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		else
 			_enemy->cardDead(srcNum);
 	}
-
+	if (!(srcNum == 7 && _hero->checkWBuff(2)))
 	if (destCard->isDead()){
 		if (destCamp == _camp)
 			cardDead(destNum);
@@ -351,7 +369,11 @@ void CBattle::spellLaunch(int cardPool, int num)
 
 //11.6
 void CBattle::equipLaunch(int cardPool, int num){
-	_hero->_equip.push_back
+	//_hero->_equip.push_back()
+	actionChange(-_cardPool[cardPool][num].get_cost());
+	_gameboard->getActionPointBar(_camp)->reduceAvailActionPoint(_cardPool[cardPool][num].get_cost());
+	_hero->realAddWeapon(_cardPool[cardPool][num]);
+	cardTransfer(POOL_HAND, POOL_CEME, num, 0);
 }
 
 
