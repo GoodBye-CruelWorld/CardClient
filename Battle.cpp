@@ -23,6 +23,12 @@ void CBattle::setEnemy(CBattle *e)
 	_enemy = e;
 }
 
+void attackReset(CCard&card){
+	card._attacktime = 1;
+	card.buffCheck(0);
+	card.canAttack();
+}
+
 void CBattle::turnStart(){
 	//回合开始 行动上限+1 行动充满 检测上限点数 抽牌 待完善
 	actionPoints = ActPtsMax++;
@@ -48,11 +54,11 @@ void CBattle::turnStart(){
 
 	//将上回合的随从变成可以攻击
 
+	//_hero->_hero
+	attackReset(_hero->_hero);
 	for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++)
 	{
-		_cardPool[POOL_BATTLE].at(i)._attacktime = 1;
-		_cardPool[POOL_BATTLE].at(i).buffCheck(0);
-		_cardPool[POOL_BATTLE].at(i).canAttack();
+		attackReset(_cardPool[POOL_BATTLE].at(i));
 	}
 
 
@@ -202,6 +208,9 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		destCard = &_cardPool[POOL_BATTLE].at(destNum);
 	else
 		destCard = &_enemy->_cardPool[POOL_BATTLE].at(destNum);
+	if (srcNum == 7){
+		srcCard = &_hero->_hero;
+	}
 	spellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
 	reduceAttack(_cardPool[POOL_BATTLE].at(srcNum));
 
@@ -223,8 +232,12 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	//取消本回合随从的攻击能力
 	srcCard->set_isAttack(true);
 
-
-	_gameboard->cardAttack(srcNum, srcCamp, srcCard->getFinalHealth(), destNum, destCamp, destCard->getFinalHealth());
+	if (srcNum == 7){
+		_hero->link();
+	}
+	else 
+		_gameboard->cardAttack(srcNum, srcCamp, srcCard->getFinalHealth(), destNum, destCamp, destCard->getFinalHealth()); 
+	
 
 	if (srcCard->isDead()){
 		if (srcCamp == _camp)
@@ -246,11 +259,18 @@ void CBattle::cardAttack(int num)						//随从攻击英雄 重载+1
 {
 
 	auto creAttack = _cardPool[POOL_BATTLE][num];
+	if (num == 7){
+		creAttack = _hero->_hero;
+	}
 	reduceAttack(_cardPool[POOL_BATTLE][num]);
 
 	//TODO 创建一个hero数据类
 	_enemy->_hero->setHealthData(_enemy->_hero->getHealthData() - creAttack.getFinalAttack());
-	_gameboard->cardAttack(num, _camp, creAttack.getFinalHealth(), -1, !_camp, _enemy->_hero->getHealthData());
+	if (num == 7){
+		_hero->link();
+	}
+	else
+		_gameboard->cardAttack(num, _camp, creAttack.getFinalHealth(), -1, !_camp, _enemy->_hero->getHealthData());
 	if (_enemy->_hero->getHealth() <= 0)
 	{
 		_gameState = GAME_WIN;
@@ -258,6 +278,8 @@ void CBattle::cardAttack(int num)						//随从攻击英雄 重载+1
 		gameOver();
 	}
 }
+
+
 
 
 

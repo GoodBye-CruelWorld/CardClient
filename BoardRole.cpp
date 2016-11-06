@@ -707,3 +707,9 @@ bool BoardRole::IsWeapon()
 	else
 		return false;
 }
+
+//116
+void BoardRole::link(){
+	_health = _hero._healthBattle;
+	_attack = _hero._attackBattle;
+}

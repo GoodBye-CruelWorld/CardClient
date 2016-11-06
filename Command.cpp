@@ -28,16 +28,19 @@ void Command::sendCommand(int command, int camp)
 		}
 		case 4:					//¹¥»÷
 		{
+			auto p = command / 1000 % 10;
+			if (command / 10000 == 7) p = 7;
 			if (command / 10 % 10 != 7)
 				//cardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(command / 1000 % 10), /*CinBattle*/_cardPool[POOL_BATTLE].at(command / 1000 % 10));
 			{
-				_battles[camp]->cardAttack(command / 1000 % 10, 0, command % 10, 1);
+				
+				_battles[camp]->cardAttack(p, 0, command % 10, 1);
 				GameBoard::getInstance()->getActionQueue()->reset(false);
 			}
 			else
 				//cardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(command / 1000 % 10));
 			{
-				_battles[camp]->cardAttack(command / 1000 % 10);
+				_battles[camp]->cardAttack(p);
 				GameBoard::getInstance()->getActionQueue()->reset(false);
 			}
 			break;
