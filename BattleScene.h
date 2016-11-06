@@ -6,6 +6,7 @@
 #include"GameBoard.h"
 #include"Tool2D.h"
 #include"Battle.h"
+#include"Command.h"
 #define CL(__className__) [](){ return __className__::create();}
 
 class MyScene :public cocos2d::Scene
@@ -30,7 +31,7 @@ private:
 	GameBoard *_gameBoard;
 	BattleTool2D *_tool;
 	CBattle *_battles[2];
-
+	Command *_cmd;
 	int _battleID[2];
 	bool _battleState[2];
 };

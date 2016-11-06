@@ -13,69 +13,105 @@ CCard::CCard(int num)
 void CCard::cardCreate(int num)
 {
 	//编号说明 编号为7位 前3位表示职业 3位表示类型 后三位为编号
-	/*职业 00战士 01弓箭手 100 为中立 200+为boss 
+	/*职业 00战士 01弓箭手 100 为中立 200+为boss
 	类型同前
 	*/
-	_cardID = num;
+
 	GameSqlite _gSql;
 	Tool _tool;
-	_cardPath = "card/2.png";
 
 	_armor = 0;
-	
+	_cardID = num;
 	_profession = num / 10000;
 	num = num % 1000;
 	_type = num % 10;
 
-	std::string _name = "Name",_desc="Desc";
-	
+	std::string _name = "Name", _desc = "Desc";
 
-		//随从牌
-		if (num / 1000 == 0)
+
+
+	if (num / 1000 == 0)
+	{
+		char s[10];
+		std::string str;
+
+		_health = atoi(_gSql.getCardData(_cardID, CARD_HEALTH));
+		_attack = atoi(_gSql.getCardData(_cardID, CARD_ATTACK));
+		_cost = atoi(_gSql.getCardData(_cardID, CARD_COST));
+		_armor = atoi(_gSql.getCardData(_cardID, CARD_NAME));
+		_quality = atoi(_gSql.getCardData(_cardID, CARD_QUALITY));
+
+		sprintf_s(s, "%d", _cardID);
+		str = s;
+		_cardPath = "card/" + str + ".png";
+		_cardName = "Name" + str;
+		_cardDescribe = "Desc" + str;
+		for (int i = 0; i <= 3; i++)
 		{
-			char s[10];
-			std::string str;
-
-			_health = atoi(_gSql.getCardData(_cardID, CARD_HEALTH));
-			_attack = atoi(_gSql.getCardData(_cardID, CARD_ATTACK));
-			_cost = atoi(_gSql.getCardData(_cardID, CARD_COST));
-			_armor = atoi(_gSql.getCardData(_cardID, CARD_NAME));
-			_quality = atoi(_gSql.getCardData(_cardID, CARD_QUALITY));
-
-			sprintf_s(s, "%d", _cardID);
-			str = s;
-			_cardPath = "card/" + str + ".png";
-			_cardName = "Name" + str;
-			_cardDescribe = "Desc" + str;
-			for (int i = 0; i <= 3; i++)
-			{
-				int _spell = atoi(_gSql.getCardData(_cardID, CARD_SPELL_1 + i));
-				if (_spell < 100)
-					break;
-				_spellID.push_back(_spell);
-			}
-			//spell测试
-			if (num == 0){
-				//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
-
-				_spellID[0] =2500007;
-				_cardID += 1000;
-					//1710102;//冰冻
-					//1708002 风怒
-
-				//_spellID.push_back(5801003);
-
-			}
+			int _spell = atoi(_gSql.getCardData(_cardID, CARD_SPELL_1 + i));
+			if (_spell < 100)
+				break;
+			_spellID.push_back(_spell);
 		}
-	
-	
-	_healthBuff = 0;
-	_healthBattle = _health;
-	_healthMax = _health;
-	_attackBuff = 0;
-	_attackBattle = _attack;
-	_costBattle = _cost;
-	_costBuff = 0;
+		//spell测试
+		if (_cardID == 10001){
+			_cardID = 12001;
+			//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
+			//set_armor(1);
+			//_spellID.push_back(1604099);
+			//缩小3攻
+			//1705002;//眩晕全场
+			//	1711102	;//石化
+			//_cardID += 1000;
+			//1710102;//冰冻
+			//1708002 风怒
+
+			//_spellID.push_back(5801003);战士随从
+			/*
+			特殊 X001-- - 为 + X护甲
+
+			低阶步兵
+			战吼1护甲 1600002
+
+			提枪侍从 不谈
+
+			装备锻造
+			友方随从 + 2护甲 2601102
+
+			巨人
+			敌方随从 xuanyun 1602102
+
+			铁架
+			回合结束 护甲 + 2 2603001
+
+			前线
+			攻击等于友方护甲和 1604099
+			新buff
+			1 5 攻击取友方护甲和
+
+			铁骑
+			战吼5护甲 5605002 - 5001002
+
+			战神
+			战吼4护甲 4606002 - 4001002
+			随从豁免 90199*/
+
+
+		}
+		if (num == 1){
+			//int a = _spellID[0];//5802002
+			//log("5801002--" + _spellID[0]);
+			//_spellID.push_back(5802002);
+		}
+		if (num == 2){
+			//int a = _spellID[0];//5802001
+			//log("5802001--" + _spellID[0]);
+			//_spellID.push_back(5802001);
+		}
+	}
+	_cost = 1;
+	relife();
+
 }
 
 CCard::~CCard()
@@ -104,6 +140,7 @@ void CCard::getBuff(int _health_change, int _attack_change){
 }
 
 int CCard::getFinalAttack(){
+	if (_attackBattle + _attackBuff< 0)  return 0;
 	return _attackBattle + _attackBuff;
 }
 int CCard::getFinalHealth(){
@@ -121,9 +158,10 @@ void CCard::addBuff(Buff& buff){
 		//数值改动
 		_costBattle += buff._buffdata[0];
 		_attackBattle += buff._buffdata[1];
-		_attackBattle = _attackBattle;
+		_healthMax += buff._buffdata[2];
 		_healthBattle += buff._buffdata[2];
 	}
+	canAttack();
 }
 
 void CCard::deleteBuff(int k){
@@ -131,6 +169,7 @@ void CCard::deleteBuff(int k){
 		//数值还原 暂不验上限
 		_costBattle -= _cardbuff[k]._buffdata[0];
 		_attackBattle -= _cardbuff[k]._buffdata[1];
+		_healthMax -= _cardbuff[k]._buffdata[2];
 		_healthBattle -= _cardbuff[k]._buffdata[2];
 	}
 	_cardbuff.erase(_cardbuff.begin() + k);
@@ -174,7 +213,7 @@ void CCard::deleteBuffFromResource(int resource){
 }
 
 void CCard::canAttack(){
-	if (_attacktime <= 0){
+	if (_attacktime <= 0 || _attackBattle <= 0){
 
 		_canAttack = false;
 		_isAttack = true;
@@ -189,20 +228,44 @@ void CCard::canAttack(){
 
 
 
-void CCard::buffCheck(int s){
+int CCard::buffCheck(int sTime){
 	int k = _cardbuff.size();
 	for (int i = 0; i < k; i++){
-		if (_cardbuff[i]._bufftype == 1){
-			if (_cardbuff[i]._buffid == 2){
-				_attacktime = 0;
-			}
-			if (_cardbuff[i]._buffid == 3){
+		if (sTime == 0){
+			if (_cardbuff[i]._bufftype == 1){
+				if (_cardbuff[i]._buffid == 2){
+					_attacktime = 0;
+				}
+				if (_cardbuff[i]._buffid == 3){
 
-				_attacktime *= 2;
+					_attacktime *= 2;
+				}
+			}
+		}
+
+		if (sTime == 1){
+			if (_cardbuff[i]._bufftype == 1){
+				if (_cardbuff[i]._buffid == 5){
+					//诈尸
+				}
 			}
 		}
 	}
-
+	return 0;
+}
+bool CCard::buffCheck(int sTime,int buf){
+	int k = _cardbuff.size();
+	for (int i = 0; i < k; i++){
+		if (sTime == 1){
+			if (_cardbuff[i]._bufftype == 1){
+				if (_cardbuff[i]._buffid == buf){
+					//诈尸
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 bool CCard::buffCheck(Buff buff)
@@ -216,4 +279,15 @@ bool CCard::buffCheck(Buff buff)
 
 	return false;
 
+}
+
+void CCard::relife(){
+	_healthBuff = 0;
+	_healthBattle = _health;
+	_healthMax = _health;
+	_attackBuff = 0;
+	_attackBattle = _attack;
+	_costBattle = _cost;
+	_costBuff = 0;
+	
 }

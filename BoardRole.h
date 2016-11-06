@@ -174,6 +174,10 @@ private:
 	RoleEquip *_roleEquip[3];
 	RoleWeapon *_roleWeapon;
 
+	//CCard hero
+
+
+
 	int  _curEquipNum;  //装备总数
 	bool _isWeapon;     //是否有武器
 	//GameLibrary _library //数据库

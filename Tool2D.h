@@ -3,6 +3,7 @@
 #include"GameBoard.h"
 #include "Battle.h"
 #include"Card.h"
+#include"Command.h"
 #include"GameSocket.h"
 using std::vector;
 
@@ -79,7 +80,7 @@ class BattleTool2D : public cocos2d::Node
 {
 	/***************************************************构造析构初始化********************************************/
 public:
-	BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* battleIt, int *battleID, bool *battleState);
+	BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* battleIt);
 	virtual void onEnter() override;
 	/*****************************************************触摸检测************************************************/
 public:
@@ -127,7 +128,7 @@ private:
 private:
 	GameBoard * _gameboard;     //面板指针
 	CBattle	*_battleMy,*_battleIt; //战斗流程对象指针
-	
+	Command *_cmd;
 private:
 	bool _gameMode;             //游戏形式 0=单机 1=对战
 private:

@@ -115,10 +115,13 @@ public:
 	void deleteBuff(int);// 删除buff并进行数值恢复处理（主要是血量）
 	int _attacktime, _resourceID;
 	void canAttack();
-	void buffCheck(int);
+	int buffCheck(int);
 	bool buffCheck(Buff buff);
 	//10.30
 	//void heal(int);
+	//11.4
+	void relife();
+	bool buffCheck(int,int);
 
 private:
 	int _pos; //在战场上的位置

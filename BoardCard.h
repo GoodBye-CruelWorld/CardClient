@@ -23,6 +23,7 @@ class BoardCard :public BoardChess
 {
 	friend class GameBoard;
 public:
+	void initElement(CCard& card);
 	virtual void onEnter()override;
 private:
 	//根据卡牌类的对象来创建对象
@@ -81,15 +82,16 @@ private:
 	CCard *_card;
 	bool _cardside;
 	Sprite *_frame;
-	Sprite *_Armor;
+
 //private:
 	void calculatePosAndAngle(int place,int size,float &angle,float &x,float &y,int camp=0);
 private:
-	int _state;  //状态
+	
 	Sprite  *_normal,*_battle, *_cardBack;//普通,战斗，卡背
-	//int _ID,_attack, _health, _cost;//5个属性
-	//const char*_description;   //描述
+	Sprite *_armor;
 	Label *_laAttack, *_laHealth, *_laCost, *_laDescription,*_laName,*_laArmor;
+private:
+	int _state;  //状态
 	int _curHealth, _curAttack, _curCost,_curArmor;
 	int _oHealth, _oAttack, _oCost,_oArmor;
 	void turnSideCallback();

@@ -147,8 +147,9 @@ public:
 	*/
 	void cardAttack(int srcOrder, int srcCamp,int srcHealth ,int destOrder, int destCamp,int destHealth);
 	/**@setCardProperties:集成的卡牌显示对象属性的修改.
+	*@type 0=cost,1=attack,2=health,3=armor
 	*/
-	void setCardProperties(int srcPool, int srcNum, int srcCamp, int destAttack=-1, int desHealth=-1,int destCost=-1);
+	void setCardProperties(int srcPool, int srcNum, int srcCamp,int value, int type);
 	/************************************************与BoardCard有关的方法集****************************************/
 public:
 	void setHeroHealth(int camp,int value);
@@ -161,7 +162,7 @@ public:
 	void addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, Node*dest);
 	void addEffect(int effectID, float lastTime, int srcPool, int srcNum, int srcCamp, int destPool, int destNum, int destCamp);
 	/*根据特效关键节点调整动画序列时间*/
-	void adjustNextAnimeTime(int effectID);
+	void adjustNextAnimeTime(int effectID,float lastTime);
 	/*安全的增加特效方式*/
 	//void addEffectS(int effectID, float lastTime, int srcPool,int srcNum,int srcCamp, Node*dest = nullptr);
 	/************************************************私有方法****************************************/
@@ -175,7 +176,7 @@ private:
 
 	void cardTransferCallBack(int srcPool, int destPool, int srcOrder, int destOrder, int srcCamp, CCard &card, int battlePlace);//UNFINISHED:增加destCamp
 	void cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int destOrder, int destCamp, int destHealth);
-	void setCardPropertiesCallBack(int srcPool, int srcNum, int srcCamp, int destAttack, int desHealth, int destCost);
+	void setCardPropertiesCallBack(int srcPool, int srcNum, int srcCamp, int value,int type);
 	/*hero回调*/
 	void setHeroHealthCallBack(int camp,int value);
 	void setHeroAttackCallBack(int camp,int value);

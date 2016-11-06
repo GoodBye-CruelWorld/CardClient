@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /************************************************************初始化*******************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-BattleTool2D::BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* battleIt, int *battleID, bool * battleState)
+BattleTool2D::BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* battleIt)
 {
 	//初始化变量
 	_sight = 0;
@@ -15,12 +15,13 @@ BattleTool2D::BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* ba
 
 	// 初始化指针
 	_gameboard = gameboard;
-	_battleID = battleID;
-	_battleState = battleState;
+	/*_battleID = battleID;
+	_battleState = battleState;*/
 
 	_battleIt = battleIt;
 	_battleMy = battleMy;
 
+	_cmd = Command::getInstance();
 
 	//设置鼠标准星
 	_mouseSprite = Sprite::create("b.png");
@@ -64,7 +65,7 @@ bool BattleTool2D::onTouchBegan(Touch* touch, Event* event)
 		{	//指向手牌类的指针Card
 			int Number = _beginID % 10;
 			//调用我方手牌类中的单位链表,找到_beginID%10所对应序列号的手牌
-			if (true/*判断但前费用和Card指针所需的费用  _battleMy->_cardPool[POOL_HAND].at(Number).getCost()<=Battle.ActionPoints*/)
+			if (true/*判断但前费用和Card指针所需的费用  _battleMy->_cardPool[POOL_HAND].at(Number).getCost()<=Battle.actionPoints*/)
 			{
 				//获得Card所指手牌类的位置坐标，改变为tp
 				//将_mouseSprite图片改成对应的卡牌的图片
@@ -183,14 +184,14 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	{
 		if (_roleWord == 0)
 		{
-			if (_beginID / 100 == 6)			//我方表情选择
+			if (_beginID / 100 == 6 && _endID / 100 == 6)		//我方表情选择
 			{
 				auto Role = _gameboard->getRole(0);
 				Role->getRolePhote()->setWordChoicesVisible(true);
 				_roleWord = 1;
 				_beginID = 0;
 			}
-			if (_beginID / 100 == 7)		//敌方表情选择
+			if (_beginID / 100 == 7 && _endID / 100 == 7)	//敌方表情选择
 			{
 				auto Role = _gameboard->getRole(1);
 				Role->getRolePhote()->setWordChoicesVisible(true);
@@ -327,7 +328,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	///////////////////////////////////////////////////////////////////////////////////我方手牌的使用	
 	if (_beginID / 100 == 1)
 	{
-		
+
 		//解决卡牌原地单机无法还原的问题
 		if (_sight != 2 && _sight != -1)
 			_gameboard->setCardOraginState();//还原卡牌位置	
@@ -344,7 +345,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 				case 0:		//表示是随从
 				{
 					//判断鼠标抬起的落点是否在我方随从区
-					if ((_endID / 100 == 3) && _battleMy->ActionPoints >= _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_cost())		//在随从区,并且该位置无随从
+					if ((_endID / 100 == 3) && _battleMy->actionPoints >= _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_cost())		//在随从区,并且该位置无随从
 					{			
 						//获得我方随从区的随从个数
 						int Number = _battleMy->_cardPool[POOL_BATTLE].size();	
@@ -371,11 +372,26 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 				case 1:		//表示为法术
 				{
 					//判断鼠标抬起的落点是否在手牌区外
-					if ((_endID / 100 != 1)  &(_endID != 0)&  _battleMy->ActionPoints >= _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_cost())		//在随从区,并且该位置无随从
+					if ((_endID / 100 != 1)  &(_endID != 0)&  _battleMy->actionPoints >= _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_cost())		//在随从区,并且该位置无随从
 					{
 						int Number = _battleMy->_cardPool[POOL_BATTLE].size();
 
 
+						//调用Cbattle类的随从召唤				
+						_t_battleID = 2 * 1000000 + 01 * 10000 + _beginID % 10 * 1000;
+					}
+					else
+						_gameboard->setCardOraginState();//还原卡牌位置	
+					break;
+				}
+				case 2:		//表示为装备，传值判断与法术一样
+				{
+					//判断鼠标抬起的落点是否在手牌区外
+					if ((_endID / 100 != 1)  &(_endID != 0)&  _battleMy->actionPoints >= _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_cost())		//在手牌区外
+					{
+						int Number = _battleMy->_cardPool[POOL_BATTLE].size();
+
+						_gameboard->getRole(0)->addWeapon(_cradID);
 						//调用Cbattle类的随从召唤				
 						_t_battleID = 2 * 1000000 + 01 * 10000 + _beginID % 10 * 1000;
 					}
@@ -548,7 +564,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	///////////////////////////////////////////////////////////////////////////////////////////////英雄攻击
 	if (_beginID / 100 == 6)
 	{
-		if ((_endID / 100 == 4) || (_endID / 100 == 5) || (_endID / 100 == 6) || (_endID / 100 == 7))
+		if ((_endID / 100 == 4) || (_endID / 100 == 5) || (_endID / 100 == 7))
 		{
 			_t_battleID = 4 * 1000000 + _beginID / 100 * 10000 + _beginID % 10 * 1000 + _endID / 100 * 10 + _endID % 10;
 		}
@@ -581,8 +597,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	//信息交互
 	if (_t_battleID != 0)
 	{
-		*_battleID = _t_battleID;
-		*_battleState = true;		
+		_cmd->sendCommand(_t_battleID);
 		_t_battleID= 0;
 	}
 
@@ -985,6 +1000,9 @@ bool BattleTool2D::judgeAimed(int type, int ID, int destType, int destNum)
 	int num = ID / 100 % 10;
 	switch (num)
 	{
+	case 1:
+		result = true;
+		break;
 	case 2:
 		if (destType == 3 || destType == 6)
 			result = true;

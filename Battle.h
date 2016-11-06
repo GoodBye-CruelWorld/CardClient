@@ -33,9 +33,9 @@ public:
 	*/
 	CBattle *_enemy;//传递对面战斗类的指针
 
-	void GameStart();
-	void GameOver();
-	void Gaming();
+	void gameStart();
+	void gameOver();
+	void gaming();
 
 
 	/*
@@ -55,54 +55,56 @@ public:
 	*/
 	/*
 	*/
-	void TurnStart();
-	void TurnOver();
+	void turnStart();
+	void turnOver();
 
-	virtual void Turning();
+	virtual void turning();
 
-	void ActionChange(int num);
-	vector<CCard>& CheckPosition(CCard &card);//检测牌的位置
+	void actionChange(int num);
+	vector<CCard>& checkPosition(CCard &card);//检测牌的位置
 
 
-	void DrawCard();//抽牌
-	//void DrawCard(vector<CCardinHand> &cardIH, vector<CCardinDeck> &cardID);
-	//void CardAttack(CCard &creAttack, CCard &creBeattacked);	//随从间的攻击
-//	void CardAttack(CCard &creAttack);							//随从攻击英雄
+	void drawCard();//抽牌
+	//void drawCard(vector<CCardinHand> &cardIH, vector<CCardinDeck> &cardID);
+	//void cardAttack(CCard &creAttack, CCard &creBeattacked);	//随从间的攻击
+//	void cardAttack(CCard &creAttack);							//随从攻击英雄
 	void cardAttack(int srcNum, int srcCamp, int destNum, int destCamp);
-	void CardAttack(int num);							//随从攻击英雄 重载+1
+	void cardAttack(int num);							//随从攻击英雄 重载+1
 
-	void RoleAttack();											//英雄攻击英雄
-	void RoleAttack(CCard &creBeattacked);						//英雄攻击随从
+	void roleAttack();											//英雄攻击英雄
+	void roleAttack(CCard &creBeattacked);						//英雄攻击随从
 	//void CreatureCommon(CCard card, vector<CCardinBattlefield> cardIB);//由引用构造
-	void CardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int num2,int battlePlace=0);//召唤
+
+	void cardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int num2,int battlePlace=0);//召唤 
+	void cardCummon(int srcPool, int destPool, int num1, int num2, int battlePlace = 0);//召唤 重载
 	//void CardTranslate(vector<CCard>&card1, vector<CCard>&card2, int num1,int num2);//传递卡牌 1为原来 2为传递之后 num为序列
 	//void CardTranslate(CCard &card, vector<CCard>&card2, int num2);
 	void cardTransfer(int srcPool,int destPool, int srcNum, int destNum,int battlePlace=0);
 
 
-	void CardDead(int num);
-	//void CardDead(CCard &card);
-	//void CardDeadE(CCard &card);
+	void cardDead(int num);
+	//void cardDead(CCard &card);
+	//void cardDeadE(CCard &card);
 
-	void Check();//检测所有发生事件后续
-	void CheckDead();
+	void check();//检测所有发生事件后续
+	void checkDead();
 
 
-	void SpellCheck();
+	void spellCheck();
 	//技能发动共分几个时段 回合开始00 回合结束01 召唤02 死亡03
-	void SpellCheck(int sTime);
-	void SpellCheck(int srcPool, int srcNum, int sTime);
-	void SpellCheckPlayer(int sTime);
-	void SpellCheckEnemy(int sTime);
-	void Spelling(int spell_num);//发动技能 技能ID号
+	void spellCheck(int sTime);
+	void spellCheck(int srcPool, int srcNum, int sTime);
+	void spellCheckPlayer(int sTime);
+	void spellCheckEnemy(int sTime);
+	void spelling(int spell_num);//发动技能 技能ID号
 //	bool Spelling(int spell_num, CCard &card1);
-	bool Spelling(int spell_num, int srcPool, int srcNum);
+	bool spelling(int spell_num, int srcPool, int srcNum);
 	void skillSpelling(int spellNum, int srcPool, int srcNum);
 	void skillSpelling();//触发被动技能
 	int getCardPos(int cardPool,CCard &card);//获取card在数组中的位置,没有则返回-1
 	//void CreatureDead(CCardinBattlefield &creature);
-	void CreatureDead(CCard &card);
-	bool HeroIsDead();
+	void creatureDead(CCard &card);
+	bool heroIsDead();
 	/*
 	成员变量 vector类
 	牌库的牌 手牌 场地 墓地
@@ -112,7 +114,7 @@ public:
 	vector<CCard> _cardPool[4];
 
 	BoardRole *_hero;
-	int ActionPoints,ActPtsMax;//行动点数及最大值
+	int actionPoints,ActPtsMax;//行动点数及最大值
 
 
 	int *_battleID;				// 用于储存交互用的ID地址
@@ -139,9 +141,10 @@ public:
 	void buffCheck(int,CCard&);
 	//10.28
 	//void spellAttackCheck(CCard&, CCard&){}
-	void SpellCheck(int,int, CCard &card);
-	void Spelling(CCard&, int,int,int);
+	void spellCheck(int,int, CCard &card);
+	void spelling(CCard&, int,int,int);
 	//10.30
-	void SpellLaunch(vector<CCard>&, int);
+	void spellLaunch(vector<CCard>&, int);
+	void spellLaunch(int cardPool, int);
 	//void relife();
 };

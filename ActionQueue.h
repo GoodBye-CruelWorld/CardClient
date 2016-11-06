@@ -45,6 +45,11 @@ public:
 	*@brief 提前到上一个动作的时间
 	*/
 	void advanceToLastAction();
+
+	/**
+	*@brief 在下一个动作push入队列的动作结束后延迟时间
+	*/
+	void delayAfterNextAction(float time);
 private:
 	void pushCallBack();
 	void resetCallBack();
@@ -59,4 +64,7 @@ private:
 	int _curActionNum;/*当前执行到动作序列的位置*/
 	Vector<Action*> _actions;/*动作序列*/
 	std::vector<float> _delays;/*动作延迟时间数组:为对应动作结束时间*/
+
+	bool _delayAfter;
+	float _delayAfterTime;
 };
