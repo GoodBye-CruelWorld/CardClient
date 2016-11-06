@@ -87,13 +87,14 @@ void BoardCard::initElement(CCard& card)
 	_laCost->setString(c);
 	_laCost->setPosition(17, 105);
 
-	sprintf(c, "%d", _card->get_armor());
+	//sprintf(c, "%d", _card->get_armor());
 	_laArmor = Tool::createEnglishLabel();
 	//setCurrentArmor(_card->get_armor());
-	_laArmor->setString(c);
+	//_laArmor->setString(c);
 	//setCurrentArmor(1);
 	_laArmor->setPosition(80, 29.5);
-
+	setCurrentArmor(_card->get_armor());
+	
 	this->setContentSize(_frame->getContentSize());
 
 	_frame->addChild(_laName);
@@ -216,7 +217,8 @@ void BoardCard::setCurrentArmor(int CurArmor)
 	_curArmor = CurArmor;
 	if (CurArmor)
 	{
-		//_armor->setVisible(true);
+		_armor->setVisible(true);
+		_laArmor->setVisible(true);
 		char s[3];
 		sprintf(s, "%d", CurArmor);
 		_laArmor->setString(s);	
@@ -224,7 +226,8 @@ void BoardCard::setCurrentArmor(int CurArmor)
 	}
 	else
 	{	
-		//_armor->setVisible(false);
+		_armor->setVisible(false);
+		_laArmor->setVisible(false);
 	}
 }
 //*卡牌翻面,动画长度为1s

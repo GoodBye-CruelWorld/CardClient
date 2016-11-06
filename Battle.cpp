@@ -559,6 +559,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	case 001:{
 		spellCard.set_armor(spellCard.get_armor() + numX);
 		_gameboard->setCardProperties(srcPool, srcNum, _camp, spellCard.get_armor(),3);
+		//_gameboard->addEffect()
 		break; 
 	}
 	case 002:
@@ -615,10 +616,11 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		spelling( 2001000,srcPool, srcNum,srcCamp);
 		break;
 	}
-	case 601:{
+	case 601:{ //ÓÑ·½Ëæ´Ó+2»¤¼×
 		if (_camp == 1) break;
 		auto i = _battleID % 10+1;
 		spelling( 2001000, srcPool, i,srcCamp);
+		
 		break;
 	}
 	case 602:{
