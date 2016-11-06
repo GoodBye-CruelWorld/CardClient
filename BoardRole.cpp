@@ -483,7 +483,7 @@ BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
 
 		role->_maxHealth = 20;
 		role->setHealthData(role->_maxHealth);
-		role->setAttack(0);
+		role->setAttack(1);
 		role->setHealth(role->_maxHealth);
 
 	}

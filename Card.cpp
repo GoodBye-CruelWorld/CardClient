@@ -55,6 +55,7 @@ void CCard::cardCreate(int num)
 		}
 		//spell测试
 		if (_cardID == 10001){
+			_cardID = 12001;
 			//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
 			//set_armor(1);
 			_spellID.push_back(721007);
