@@ -50,6 +50,7 @@ void GameBoard::onEnter()
 
 	//创建效果管理器
 	_effect = BoardEffect::getInstance();
+	_effect->addEffect(EFFECT_DEBUFF, NULL, NULL,NULL);
 	//_effect->addEffect(0,_bg->getDecoration(0),10); //测试用
 	//_effect->addEffect(4,_bg->getDecoration(3),5);   //测试用
 	//_effect->addEffect(1, _bg->getDecoration(1), 8);   
