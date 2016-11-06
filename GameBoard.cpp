@@ -271,10 +271,10 @@ void GameBoard::cardAttack(int srcOrder, int srcCamp, int srcHealth, int destOrd
 	_actionQueue->push(act, this,time+0.1);
 }
 
-void GameBoard::setCardProperties(int srcPool, int srcNum, int srcCamp, int destAttack, int destHealth, int destCost)
+void GameBoard::setCardProperties(int srcPool, int srcNum, int srcCamp, int value,int type)
 {
 	//TODO 如果是亡语的话，应该延迟执行或者将卡牌死亡插入在亡语前
-	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::setCardPropertiesCallBack, this,srcPool,srcNum,srcCamp,destAttack,destHealth,destCost));
+	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::setCardPropertiesCallBack, this,srcPool,srcNum,srcCamp,value,type));
 	_actionQueue->push(act, this, 0.0f);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -400,15 +400,29 @@ void GameBoard::showCardDescribe(int cardPool,int num)
 
 }
 
-void GameBoard::setCardPropertiesCallBack(int srcPool, int srcNum, int srcCamp, int destAttack, int destHealth, int destCost)
+void GameBoard::setCardPropertiesCallBack(int srcPool, int srcNum, int srcCamp, int value,int type)
 {
 	auto card = _cardPools[srcPool + 4 * srcCamp].at(srcNum);
-	if (destAttack != -1)
-		card->setCurrentAttack(destAttack);
-	if (destHealth != -1)
-		card->setCurrentHealth(destHealth);
-	if (destCost != -1)
-		card->setCurrentCost(destCost);
+	switch (type)
+	{
+	case 0:
+		card->setCurrentCost(value);
+		break;
+	case 1:
+		card->setCurrentAttack(value);
+
+		break;
+	case 2:
+		card->setCurrentHealth(value);
+		break;
+	case 3:
+		card->setCurrentArmor(value);
+		break;
+	default:
+		break;
+	}
+
+	
 	//还有三个属性未实现
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

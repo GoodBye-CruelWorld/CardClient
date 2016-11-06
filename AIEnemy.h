@@ -23,7 +23,7 @@ public:
 	void Turning();//ai回合
 	bool AICardUse(vector<CCard>&card);//ai使用卡牌
 	void AICheckAttack();
-	void AICardAttack(vector<CCard>&card,CCard &beAttCard);//ai攻击随从
+	void AIcardAttack(vector<CCard>&card,CCard &beAttCard);//ai攻击随从
 	int Value_Mode[10], Mode;
 	double Value(CCard &card);
 	double Value_EXMin(CCard &card, vector<CCard>&cardT);

@@ -25,7 +25,7 @@ float CAIEnemy::AiTurn(){
 
 void CAIEnemy::AiCummom(){
 	auto c = bat->_cardPool[POOL_HAND];//手牌
-	int pts = bat->ActionPoints;//行动点
+	int pts = bat->actionPoints;//行动点
 	int k = c.size();//手牌数量
 	vector<int> p,v, n;
 	for (int i = 0; i < k; i++){
@@ -144,7 +144,7 @@ void CAIEnemy::AiAttackTo(int num1, int num2, int s1, int s2)
 	num1 -= s1 - bat->_cardPool[POOL_BATTLE].size();
 	if (num2 >= 0) num2 -= s2 - bat->_enemy->_cardPool[POOL_BATTLE].size();
 	if (num2 < 0){
-		bat->CardAttack(num1);
+		bat->cardAttack(num1);
 	}
 	else
 	{
@@ -154,11 +154,11 @@ void CAIEnemy::AiAttackTo(int num1, int num2, int s1, int s2)
 }
 
 bool CAIEnemy::AiCummon(int num){
-	//bat->ActionPoints;
+	//bat->actionPoints;
 	//bat->_cardPool[POOL_HAND][0].flagNum=1;
 	int t = setPlace();
 	if (t == -1) return false;
-	bat->CardCummon(bat->_cardPool[POOL_HAND], bat->_cardPool[POOL_BATTLE], num, 0,t);
+	bat->cardCummon(bat->_cardPool[POOL_HAND], bat->_cardPool[POOL_BATTLE], num, 0,t);
 
 	//bat->_gameboard->getCard(bat->_cardPool[POOL_BATTLE][0].flagNum)->transFromHandToBattle(t,1);
 	//bat->_gameboard->cardTransfer(POOL_HAND,POOL_BATTLE,0,1,1,)
@@ -199,16 +199,16 @@ void CAIEnemy::AICheckAttack(){
 			}
 		}
 		//调用攻击
-		AICardAttack(cardTemp, cardT);
+		AIcardAttack(cardTemp, cardT);
 	} while (v >= 0);//若检测下来发下不能获得正价值 则结束
 }
 
 
-void CAIEnemy::AICardAttack(vector<CCard>&card, CCard &beAttCard){
+void CAIEnemy::AIcardAttack(vector<CCard>&card, CCard &beAttCard){
 	int k = card.size;
 	for (int i = 0; i < k; i++){
 		if (beAttCard.Pos == 2){
-			CardAttack(card[i], beAttCard);
+			cardAttack(card[i], beAttCard);
 		}
 		else
 			return;

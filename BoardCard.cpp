@@ -2,6 +2,7 @@
 #include"Tool.h"
 #include"BoardEffect.h"
 #include"BoardCardBuilder.h"
+#include"GameResource.h"
 //*类初始化
 void BoardCard::onEnter()
 {
@@ -19,67 +20,10 @@ void BoardCard::onEnter()
 //*静态创建卡牌显示类
 BoardCard *BoardCard::create(CCard& card)
 {
-	/*
-	card由2大部分组成
-	1.卡背
-	2.卡框：包括卡片图画,数值等
-	*/
 	auto boardcard = new (std::nothrow) BoardCard();
 	if (boardcard   && boardcard->init())
 	{
-		boardcard->_frame= Sprite::create("card/frameMM.png");
-		boardcard->_frame->setRotation3D(Vec3(0, 180, 0));
-		boardcard->_normal = BoardCardBuilder::buildCardInBattle(card.get_cardID());
-		boardcard->_normal->setRotation3D(Vec3(0, 180, 0));
-
-		boardcard->_cardBack = Sprite::create("card/back.png");
-		boardcard->_cardBack->setScale(0.25f);
-		
-
-		boardcard->_card = &card;
-		boardcard->_oAttack= card.get_attack();
-		boardcard->_oHealth = card.get_health();
-		boardcard->_oCost = card.get_cost();
-		//添加名称label
-		boardcard->_laName = Tool::createTitleLabel();
-		Tool::setLabelString(boardcard->_laName, boardcard->_card->get_cardName());
-		boardcard->_laName->setPosition(boardcard->_frame->getContentSize().width / 2, boardcard->_frame->getContentSize().height *0.35);
-		//添加描述label
-		boardcard->_laDescription = Tool::createTextLabel();
-		Tool::setLabelString(boardcard->_laDescription, boardcard->_card->get_cardDescribe());
-		boardcard->_laDescription->setDimensions(75,45 );
-		boardcard->_laDescription->setPosition(boardcard->_frame->getContentSize().width / 2, boardcard->_frame->getContentSize().height*0.185);
-		//添加攻击label
-		char s[3];
-		sprintf(s, "%d", boardcard->_card->getFinalAttack());//取最终
-		boardcard->_laAttack = Tool::createEnglishLabel();
-		boardcard->_laAttack->setString(s);
-		boardcard->_laAttack->setPosition(20,9.5);
-
-		//添加生命label
-		char h[3];
-		sprintf(h,"%d", boardcard->_card->getFinalHealth());//取实际
-		boardcard->_laHealth = Tool::createEnglishLabel();
-		boardcard->_laHealth->setString(h);
-		boardcard->_laHealth->setPosition(80,9.5);  
-
-		//添加费用label
-		char c[3];
-		sprintf(c, "%d", boardcard->_card->getFinalCost());
-		boardcard->_laCost = Tool::createEnglishLabel();
-		boardcard->_laCost->setString(c);
-		boardcard->_laCost->setPosition(17, 105);
-
-		boardcard->setContentSize(boardcard->_frame->getContentSize());
-
-		boardcard->_frame->addChild(boardcard->_laName);
-		boardcard->_frame->addChild(boardcard->_laCost);
-		boardcard->_frame->addChild(boardcard->_laDescription);
-		boardcard->_frame->addChild(boardcard->_laHealth);
-		boardcard->_frame->addChild(boardcard->_laAttack);
-		boardcard->_state = CARD_STATE_UNDEFINE;
-		boardcard->autorelease();
-		
+		boardcard->initElement(card);
 	}
 	else
 	{
@@ -87,7 +31,84 @@ BoardCard *BoardCard::create(CCard& card)
 	}
 	return boardcard;
 }
+void BoardCard::initElement(CCard& card)
+{
+	/*
+	card由2大部分组成
+	1.卡背
+	2.卡框：包括卡片图画,数值等
+	*/
+	/*建立卡牌框*/
+	_frame = Sprite::create("card/frameMM.png");
+	_frame->setRotation3D(Vec3(0, 180, 0));
 
+	/*建立卡牌图片*/
+	_normal = BoardCardBuilder::buildCardInBattle(card.get_cardID());
+	_normal->setRotation3D(Vec3(0, 180, 0));
+
+	/*建立卡背*/
+	_cardBack = Sprite::create("card/back.png");
+	_cardBack->setScale(0.25f);
+
+	/*建立护甲*/
+	_armor = Sprite::create(s_png_battle_armor);
+	//_armor->setScale(0.5f);
+	_armor->setPosition(80, 29.5);
+	_card = &card;
+	//初始攻击,生命,费用
+	_oAttack = card.get_attack();
+	_oHealth = card.get_health();
+	_oCost = card.get_cost();
+	//添加名称label
+	_laName = Tool::createTitleLabel();
+	Tool::setLabelString(_laName, _card->get_cardName());
+	_laName->setPosition(_frame->getContentSize().width / 2, _frame->getContentSize().height *0.35);
+	//添加描述label
+	_laDescription = Tool::createTextLabel();
+	Tool::setLabelString(_laDescription, _card->get_cardDescribe());
+	_laDescription->setDimensions(75, 45);
+	_laDescription->setPosition(_frame->getContentSize().width / 2, _frame->getContentSize().height*0.185);
+	//添加攻击label
+	char s[3];
+	sprintf(s, "%d", _card->getFinalAttack());//取最终
+	_laAttack = Tool::createEnglishLabel();
+	_laAttack->setString(s);
+	_laAttack->setPosition(20, 9.5);
+	//添加生命label
+	char h[3];
+	sprintf(h, "%d", _card->getFinalHealth());//取实际
+	_laHealth = Tool::createEnglishLabel();
+	_laHealth->setString(h);
+	_laHealth->setPosition(80, 9.5);
+	//添加费用label
+	char c[3];
+	sprintf(c, "%d", _card->getFinalCost());
+	_laCost = Tool::createEnglishLabel();
+	_laCost->setString(c);
+	_laCost->setPosition(17, 105);
+
+	sprintf(c, "%d", _card->get_armor());
+	_laArmor = Tool::createEnglishLabel();
+	//setCurrentArmor(_card->get_armor());
+	_laArmor->setString(c);
+	//setCurrentArmor(1);
+	_laArmor->setPosition(80, 29.5);
+
+	this->setContentSize(_frame->getContentSize());
+
+	_frame->addChild(_laName);
+	_frame->addChild(_laCost);
+	_frame->addChild(_laDescription);
+	_frame->addChild(_laHealth);
+	_frame->addChild(_laAttack);
+	_frame->addChild(_armor);
+	_frame->addChild(_laArmor);
+	_state = CARD_STATE_UNDEFINE;
+	autorelease();
+
+
+
+}
 
 //*卡牌爆炸,销毁对象,等同于die()
 void BoardCard::exploside()
@@ -180,6 +201,7 @@ void BoardCard::setCurrentCost(int CurCost)
 	_curCost = CurCost;
 	char s[3];
 	sprintf(s, "%d", CurCost);
+
 	_laCost->setString(s);
 	if (CurCost>_oCost)
 		_laCost->setColor(Color3B::GREEN);
@@ -187,6 +209,23 @@ void BoardCard::setCurrentCost(int CurCost)
 		_laCost->setColor(Color3B::GRAY);
 	else
 		_laCost->setColor(Color3B::WHITE);
+}
+
+void BoardCard::setCurrentArmor(int CurArmor)
+{
+	_curArmor = CurArmor;
+	if (CurArmor)
+	{
+		//_armor->setVisible(true);
+		char s[3];
+		sprintf(s, "%d", CurArmor);
+		_laArmor->setString(s);	
+	
+	}
+	else
+	{	
+		//_armor->setVisible(false);
+	}
 }
 //*卡牌翻面,动画长度为1s
 void BoardCard::turnSide()

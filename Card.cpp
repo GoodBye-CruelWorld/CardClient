@@ -19,8 +19,7 @@ void CCard::cardCreate(int num)
 
 	GameSqlite _gSql;
 	Tool _tool;
-	_cardPath = "card/2.png";
-	//int cardid = num;
+
 	_armor = 0;
 	_cardID = num;
 	_profession = num / 10000;

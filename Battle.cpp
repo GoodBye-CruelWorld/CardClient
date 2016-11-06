@@ -15,7 +15,7 @@ CBattle::CBattle(GameBoard * gameboard, int *battleID, bool * battleState, int *
 	_gameSocket = gameSocket;
 	_gameMode = gameMode;
 	_firstHand = firstHand;
-	ActionPoints = ActPtsMax = 1;
+	actionPoints = ActPtsMax = 1;
 
 };
 void CBattle::setEnemy(CBattle *e)
@@ -23,9 +23,9 @@ void CBattle::setEnemy(CBattle *e)
 	_enemy = e;
 }
 
-void CBattle::TurnStart(){
+void CBattle::turnStart(){
 	//回合开始 行动上限+1 行动充满 检测上限点数 抽牌 待完善
-	ActionPoints = ActPtsMax++;
+	actionPoints = ActPtsMax++;
 	_gameState = GAME_RUN;
 	//
 
@@ -38,12 +38,12 @@ void CBattle::TurnStart(){
 	_gameboard->getActionPointBar(_camp)->addTotalActionPoint();
 	_gameboard->getActionPointBar(_camp)->fullAvailActionPoint();
 	//?检测行动
-	DrawCard();
+	drawCard();
 	_gameboard->getActionQueue()->reset(false);
 	//ai->AiTurn();
 	//技能发动检测
-	SpellCheck(00);
-	Check();
+	spellCheck(00);
+	check();
 
 
 	//将上回合的随从变成可以攻击
@@ -59,11 +59,11 @@ void CBattle::TurnStart(){
 	//如果是敌方,转到Ai中
 	if (_camp)
 	{
-		Turning();
+		turning();
 	}
 }
 
-void CBattle::Turning()
+void CBattle::turning()
 {
 	if (!_gameMode)//如果是单机模式
 	{
@@ -71,7 +71,7 @@ void CBattle::Turning()
 		_gameboard->getActionQueue()->reset(false);
 		this->runAction(Sequence::create(
 			DelayTime::create(t),
-			CallFunc::create(CC_CALLBACK_0(CBattle::TurnOver, this)),
+			CallFunc::create(CC_CALLBACK_0(CBattle::turnOver, this)),
 			NULL));
 	}
 	else
@@ -81,7 +81,7 @@ void CBattle::Turning()
 
 }
 
-void CBattle::TurnOver()
+void CBattle::turnOver()
 {
 	//buff check
 	for (int i = 0; i < _cardPool[POOL_CEME].size(); i++){
@@ -115,70 +115,70 @@ void CBattle::TurnOver()
 		}
 	}
 
-	SpellCheck(01);
-	Check();
+	spellCheck(01);
+	check();
 	if (_camp)
 	{
 
 		if (_gameMode)
 			_gameSocket->_recv = false;
 	}
+	
 	//发送回合开始的命令
 	_gameState = GAME_WAIT;
-	*_enemy->_battleState = true;
-	*_enemy->_battleID = 5000000;
+	_enemy->turnStart();
 }
-void CBattle::ActionChange(int num){
-	ActionPoints += num;
+void CBattle::actionChange(int num){
+	actionPoints += num;
 }
 
 
-vector<CCard>& CBattle::CheckPosition(CCard &card){
+vector<CCard>& CBattle::checkPosition(CCard &card){
 	return _cardPool[card.get_state()];
 }
-void CBattle::SpellCheck(int sTime){
+void CBattle::spellCheck(int sTime){
 	//检测玩家自身以及对面战场随从 是否符合法术发动sTime
-	SpellCheckPlayer(sTime);
-	SpellCheckEnemy(sTime);
+	spellCheckPlayer(sTime);
+	spellCheckEnemy(sTime);
 }
 
-void CBattle::SpellCheck(int srcPool, int srcNum, int sTime){
+void CBattle::spellCheck(int srcPool, int srcNum, int sTime){
 
 	auto &card = _cardPool[srcPool][srcNum];
 	int jS = card.get_spellID().size();
 	for (int j = 0; j < jS; j++)
 		if (card.get_spellID()[j] % 100 == sTime){
-		Spelling(card.get_spellID()[j], srcPool, srcNum);
+		spelling(card.get_spellID()[j], srcPool, srcNum);
 		}
 }
 
-void CBattle::SpellCheck(int srcPool, int srcNum, CCard &card1){
+void CBattle::spellCheck(int srcPool, int srcNum, CCard &card1){
 	auto &card = _cardPool[srcPool][srcNum];
 	int jS = card.get_spellID().size();
 	for (int j = 0; j < jS; j++)
 		if (card.get_spellID()[j] % 100 == 4){
-			Spelling(card1,card.get_spellID()[j], srcPool, srcNum);
+			spelling(card1,card.get_spellID()[j], srcPool, srcNum);
 		}
 }
 
 
 
-void CBattle::SpellCheckPlayer(int sTime){
+void CBattle::spellCheckPlayer(int sTime){
 
 	int iP = _cardPool[POOL_BATTLE].size();
 	for (int i = 0; i < iP; i++){
-		SpellCheck(POOL_BATTLE, i, sTime);
+		spellCheck(POOL_BATTLE, i, sTime);
 	}
 }
 
-void CBattle::SpellCheckEnemy(int sTime){
+void CBattle::spellCheckEnemy(int sTime){
 
 
 }
 
 
 
-void CBattle::Spelling(int spell_num)
+void CBattle::spelling(int spell_num)
 {
 
 }
@@ -202,7 +202,7 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		destCard = &_cardPool[POOL_BATTLE].at(destNum);
 	else
 		destCard = &_enemy->_cardPool[POOL_BATTLE].at(destNum);
-	SpellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
+	spellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
 	reduceAttack(_cardPool[POOL_BATTLE].at(srcNum));
 
 	//随从实际和显示血量的改变
@@ -217,8 +217,8 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	else
 		destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : srcCard->getFinalAttack() - destCard->get_armor());
 	//显示血量
-	_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp, -1, _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), -1);
-	_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, -1, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
+	_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp,_cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), 2);
+	_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp,_enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), 2);
 
 	//取消本回合随从的攻击能力
 	srcCard->set_isAttack(true);
@@ -228,21 +228,21 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 
 	if (srcCard->isDead()){
 		if (srcCamp == _camp)
-			CardDead(srcNum);
+			cardDead(srcNum);
 		else
-			_enemy->CardDead(srcNum);
+			_enemy->cardDead(srcNum);
 	}
 
 	if (destCard->isDead()){
 		if (destCamp == _camp)
-			CardDead(destNum);
+			cardDead(destNum);
 		else
-			_enemy->CardDead(destNum);
+			_enemy->cardDead(destNum);
 	}
 }
 
 
-void CBattle::CardAttack(int num)						//随从攻击英雄 重载+1
+void CBattle::cardAttack(int num)						//随从攻击英雄 重载+1
 {
 
 	auto creAttack = _cardPool[POOL_BATTLE][num];
@@ -255,13 +255,13 @@ void CBattle::CardAttack(int num)						//随从攻击英雄 重载+1
 	{
 		_gameState = GAME_WIN;
 		_enemy->_gameState = GAME_LOSE;
-		GameOver();
+		gameOver();
 	}
 }
 
 
 
-void CBattle::DrawCard(){
+void CBattle::drawCard(){
 
 	int num1 = _cardPool[POOL_DECK].size() - 1, num2 = _cardPool[POOL_HAND].size();
 
@@ -271,16 +271,16 @@ void CBattle::DrawCard(){
 	//数据操作
 	//CardTranslate(_cardPool[POOL_DECK], _cardPool[POOL_HAND], num1, num2);
 	cardTransfer(POOL_DECK, POOL_HAND, num1, num2);
-	SpellCheck(5);
-	Check();
+	spellCheck(5);
+	check();
 
 
 }
 
-void CBattle::CardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int num2, int battlePlace){
+void CBattle::cardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int num2, int battlePlace){
 	num2 = 0;
 	//检测是否可召唤 召唤随从 卡牌传递 技能检测 
-	SpellCheck(12);
+	spellCheck(12);
 	_resourceNumber++;
 	//暂不函数化的卡牌召唤光环添加
 	card1[num1].relife();
@@ -292,22 +292,33 @@ void CBattle::CardCummon(vector<CCard>&card1, vector<CCard>&card2, int num1, int
 	card1[num1]._attacktime = 0;
 	card1[num1].canAttack();
 
-	ActionChange(-card1[num1].get_cost());
+	actionChange(-card1[num1].get_cost());
 	_gameboard->getActionPointBar(_camp)->reduceAvailActionPoint(card1[num1].get_cost());
 	//CardTranslate(card1, card2, num1, num2);
 	cardTransfer(POOL_HAND, POOL_BATTLE, num1, num2, battlePlace);
 
-	SpellCheck(POOL_BATTLE, num2, 2);
+	spellCheck(POOL_BATTLE, num2, 2);
 	//card2[num2].Pos = num2;
-	Check();
+	check();
 
 }
+//召唤 重载
+void CBattle::cardCummon(int srcPool, int destPool, int num1, int num2, int battlePlace)
+{
+	cardCummon(_cardPool[srcPool], _cardPool[destPool], num1, num2, battlePlace);
+}
 
-void CBattle::SpellLaunch(vector<CCard>&card, int num){
-	ActionChange(-card[num].get_cost());
+void CBattle::spellLaunch(vector<CCard>&card, int num)
+{
+	actionChange(-card[num].get_cost());
 	_gameboard->getActionPointBar(_camp)->reduceAvailActionPoint(card[num].get_cost());
 	cardTransfer(POOL_HAND, POOL_CEME, num, 0);
-	SpellCheck(POOL_CEME, 0, 7);
+	spellCheck(POOL_CEME, 0, 7);
+}
+
+void CBattle::spellLaunch(int cardPool, int num)
+{
+	spellLaunch(_cardPool[cardPool],num);
 }
 
 
@@ -332,23 +343,23 @@ CBattle::~CBattle()
 }
 
 
-void CBattle::CardDead(int num){
+void CBattle::cardDead(int num){
 	//CardTranslate(card, _cardPool[POOL_CEME], 0);
 	auto card = _cardPool[POOL_BATTLE].at(num);
 	if (card.get_place() < 0 || card.get_place()>4) card.set_place(0);
 	ai->place[card.get_place()] = true;
-	SpellCheck(POOL_BATTLE, num, 03);
+	spellCheck(POOL_BATTLE, num, 03);
 	cardTransfer(POOL_BATTLE, POOL_CEME, num, 0);
 
-	//SpellCheck(13);
-	//SpellCheck(card, 03);
+	//spellCheck(13);
+	//spellCheck(card, 03);
 }
-void CBattle::CheckDead(){
+void CBattle::checkDead(){
 	int k = _cardPool[POOL_BATTLE].size();
 	vector<int>t;
 	for (int i = 0; i < k; i++){
 		if (_cardPool[POOL_BATTLE][i].isDead()){
-			CardDead(i);
+			cardDead(i);
 			i--; k--;
 			//			t.push_back(i); 还须统一死亡结算
 		}
@@ -394,77 +405,77 @@ void CBattle::update(float dt)
 
 
 
-	while (*_battleState)
-	{
-		switch (BattleID / 1000000)
-		{
-		case 1:					//表示随从召唤
-		{
-			auto place = BattleID / 100 % 10;
-			CardCummon(_cardPool[POOL_HAND], _cardPool[POOL_BATTLE], BattleID / 1000 % 10, BattleID % 10, BattleID / 100 % 10);
-			_gameboard->getActionQueue()->reset(false);
-			break;
-		}
-		case 02:					//道具法术装备的使用
-		{
-			auto place = BattleID / 100 % 10;
-			SpellLaunch(_cardPool[POOL_HAND], BattleID / 1000 % 10);
-			_gameboard->getActionQueue()->reset(false);
-			break;
-		}
-		case 03:					//	技能的使用
-		{
-			skillSpelling(BattleID / 1000 % 10, BattleID % 1000 / 10, BattleID % 10);
+	//while (*_battleState)
+	//{
+	//	switch (BattleID / 1000000)
+	//	{
+	//	case 1:					//表示随从召唤
+	//	{
+	//		auto place = BattleID / 100 % 10;
+	//		cardCummon(_cardPool[POOL_HAND], _cardPool[POOL_BATTLE], BattleID / 1000 % 10, BattleID % 10, BattleID / 100 % 10);
+	//		_gameboard->getActionQueue()->reset(false);
+	//		break;
+	//	}
+	//	case 02:					//道具法术装备的使用
+	//	{
+	//		auto place = BattleID / 100 % 10;
+	//		SpellLaunch(_cardPool[POOL_HAND], BattleID / 1000 % 10);
+	//		_gameboard->getActionQueue()->reset(false);
+	//		break;
+	//	}
+	//	case 03:					//	技能的使用
+	//	{
+	//		skillSpelling(BattleID / 1000 % 10, BattleID % 1000 / 10, BattleID % 10);
 
-			_gameboard->getActionQueue()->reset(false);
-			break;
-		}
-		case 4:					//攻击
-		{
-			if (BattleID / 10 % 10 != 7)
-				//CardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10), /*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10));
-			{
-				cardAttack(BattleID / 1000 % 10, 0, BattleID % 10, 1);
-				_gameboard->getActionQueue()->reset(false);
-			}
-			else
-				//CardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10));
-			{
-				CardAttack(BattleID / 1000 % 10);
-				_gameboard->getActionQueue()->reset(false);
-			}
-			break;
+	//		_gameboard->getActionQueue()->reset(false);
+	//		break;
+	//	}
+	//	case 4:					//攻击
+	//	{
+	//		if (BattleID / 10 % 10 != 7)
+	//			//cardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10), /*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10));
+	//		{
+	//			cardAttack(BattleID / 1000 % 10, 0, BattleID % 10, 1);
+	//			_gameboard->getActionQueue()->reset(false);
+	//		}
+	//		else
+	//			//cardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10));
+	//		{
+	//			cardAttack(BattleID / 1000 % 10);
+	//			_gameboard->getActionQueue()->reset(false);
+	//		}
+	//		break;
 
-		}
-		case 5:  //回合开始
-		{
-			TurnStart();
-			break;
-		}
-		case 6: //回合结束
-		{
-			TurnOver();
-			break;
-		}
-		default:
-			break;
-		}
-		*_battleState = false;
-		Check();
-	}
+	//	}
+	//	case 5:  //回合开始
+	//	{
+	//		turnStart();
+	//		break;
+	//	}
+	//	case 6: //回合结束
+	//	{
+	//		TurnOver();
+	//		break;
+	//	}
+	//	default:
+	//		break;
+	//	}
+	//	*_battleState = false;
+	//	Check();
+	//}
 
 
 }
-void CBattle::Check()
+void CBattle::check()
 {
-	SpellCheck(99);
+	spellCheck(99);
 }
 
 
 
 
 //游戏开始 - 准备牌库 - 抽初始牌
-void CBattle::GameStart()
+void CBattle::gameStart()
 {
 	//准备牌库
 	for (int i = 0; i < 30; i++)
@@ -480,18 +491,18 @@ void CBattle::GameStart()
 	//抽初始牌
 	/*	this->runAction(Sequence::create(
 	DelayTime::create(1.f),
-	CallFunc::create(CC_CALLBACK_0(CBattle::DrawCard,this)),
+	CallFunc::create(CC_CALLBACK_0(CBattle::drawCard,this)),
 	NULL));*/
 	if (_camp)
 	{
 		_gameboard->getActionQueue()->advance(1.5f);
-		this->DrawCard();
+		this->drawCard();
 		_gameboard->getActionQueue()->advance(0.4f);
-		_enemy->DrawCard();
+		_enemy->drawCard();
 		_gameboard->getActionQueue()->advance(1.5f);
-		this->DrawCard();
+		this->drawCard();
 		_gameboard->getActionQueue()->advance(0.4f);
-		_enemy->DrawCard();
+		_enemy->drawCard();
 
 
 		_gameboard->getActionQueue()->reset(false);
@@ -508,17 +519,17 @@ void CBattle::GameStart()
 	else
 	{
 		_gameState = GAME_RUN;
-		TurnStart();
+		turnStart();
 	}
-	Gaming();
+	gaming();
 }
 
-void CBattle::Gaming()
+void CBattle::gaming()
 {
 	this->scheduleUpdate();
 }
 
-void CBattle::GameOver()
+void CBattle::gameOver()
 {
 	//移除定时器
 	this->unscheduleAllSelectors();
@@ -533,45 +544,46 @@ void CBattle::GameOver()
 }
 
 
-bool CBattle::Spelling(int spell_num, int srcPool, int srcNum){
-	CCard &SpellCard = _cardPool[srcPool][srcNum];
-	Spelling(SpellCard, spell_num, srcPool, srcNum);
+bool CBattle::spelling(int spell_num, int srcPool, int srcNum){
+	CCard &spellCard = _cardPool[srcPool][srcNum];
+	spelling(spellCard, spell_num, srcPool, srcNum);
 	return false;
 }
 
-void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
+void CBattle::spelling(CCard&spellCard,int spell_num,int srcPool,int srcNum){
 	int numX = spell_num / 1000000, numID = spell_num % 1000000 / 1000, numChoose = spell_num / 100 % 10;
 	switch (numID)
 	{
 	case 001:{
-		SpellCard.set_armor(SpellCard.get_armor() + numX);
+		spellCard.set_armor(spellCard.get_armor() + numX);
+		_gameboard->setCardProperties(srcPool, srcNum, _camp, spellCard.get_armor(),3);
 		break; 
 	}
 	case 002:
-		SpellCard.get_buffID().push_back(0000);
+		spellCard.get_buffID().push_back(0000);
 		break;
 	case 003:
-		SpellCard.damaged(numX);
+		spellCard.damaged(numX);
 		break;
 	case 004:
 		if (numX == 0){
 			numX = 9999;
 		}
-		SpellCard.heal(numX);
+		spellCard.heal(numX);
 		break;
 	case 005:
 		if (numX == 0)numX++;
 		for (int i = 0; i < numX; i++){
-			DrawCard();
+			drawCard();
 		}
 		break;
 	case 200:
 	{
 		//待完善
-		SpellCard.set_attackBuff(0);
+		spellCard.set_attackBuff(0);
 		int s = /*CinBattle*/_cardPool[POOL_BATTLE].size();
 		for (int i = 0; i < s; i++){
-			SpellCard.set_attackBuff(SpellCard.get_attackBuff() + _cardPool[POOL_BATTLE][i].get_armor());
+			spellCard.set_attackBuff(spellCard.get_attackBuff() + _cardPool[POOL_BATTLE][i].get_armor());
 		}
 		break;
 	}
@@ -581,7 +593,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		//Spelling(4100, srcPool, srcNum);
 		break;
 	case 501:{
-		DrawCard();
+		drawCard();
 		//hero 类互动
 		break; }
 	case 502:
@@ -591,20 +603,20 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 	{
 		int s = /*CinBattle*/_cardPool[POOL_BATTLE].size();
 		for (int i = 0; i < s; i++){
-			if (/*CinBattle*/_cardPool[POOL_BATTLE][i].get_armor() > 0) DrawCard();
+			if (/*CinBattle*/_cardPool[POOL_BATTLE][i].get_armor() > 0) drawCard();
 		}
 		break;
 	}
 	//10.30 战士随从
 	case 600:{
-		Spelling(SpellCard, 2001000, 0, 0);
-		//SpellCard.set_armor(0);
+		spelling(spellCard, 2001000, 0, 0);
+		//spellCard.set_armor(0);
 		break;
 	}
 	case 601:{
 		if (_camp == 1) break;
 		auto i = *_battleID % 10+1;
-		Spelling(_cardPool[POOL_BATTLE].at(i), 2001000, 0, 0);
+		spelling(_cardPool[POOL_BATTLE].at(i), 2001000, 0, 0);
 		break;
 	}
 	case 602:{
@@ -616,13 +628,13 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		break;
 	}
 	case 603:{
-		Spelling(SpellCard, 2001000, 0, 0);
+		spelling(spellCard, 2001000, 0, 0);
 		break;
 	}
 	case 604:{
-		for (int i = 0; i < SpellCard._cardbuff.size();i++){
-			if (SpellCard._cardbuff[i]._bufftype == 0 && SpellCard._cardbuff[i]._buffid == 5){
-				SpellCard.deleteBuff(i);
+		for (int i = 0; i < spellCard._cardbuff.size();i++){
+			if (spellCard._cardbuff[i]._bufftype == 0 && spellCard._cardbuff[i]._buffid == 5){
+				spellCard.deleteBuff(i);
 				break;
 			}
 		}
@@ -632,14 +644,14 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		}
 		Buff buff(0, 5);
 		buff.setdata(0, addarmor, 0);
-		SpellCard.addBuff(buff);
+		spellCard.addBuff(buff);
 		break;
 	}
 	case 620:{
 		if (_camp == 1) break;
 		auto i = *_battleID % 10;
 		_cardPool[POOL_BATTLE][i].heal(100);
-		Spelling(_cardPool[POOL_BATTLE][i], 1001000, 0, 0);
+		spelling(_cardPool[POOL_BATTLE][i], 1001000, 0, 0);
 		break;
 	}
 	case 621:{
@@ -652,11 +664,11 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		break;
 	}
 	case 622:{
-		if (_hero->getArmor()>0) DrawCard();
+		if (_hero->getArmor()>0) drawCard();
 		for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++)
 		{
 			if (_cardPool[POOL_BATTLE][i].get_armor())
-				DrawCard();
+				drawCard();
 		}
 		break;
 	}
@@ -664,10 +676,10 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 	case 700:{
 		Buff buff(2, 1);
 		buff.setdata(0, 1, 0);
-		SpellCard.addBuff(buff);
+		spellCard.addBuff(buff);
 		for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++){
-			if (_cardPool[POOL_BATTLE].at(i)._resourceID != SpellCard._resourceID){
-				buffAdd(buff, SpellCard._resourceID, _cardPool[POOL_BATTLE].at(i));
+			if (_cardPool[POOL_BATTLE].at(i)._resourceID != spellCard._resourceID){
+				buffAdd(buff, spellCard._resourceID, _cardPool[POOL_BATTLE].at(i));
 			}
 		}
 		break;
@@ -678,7 +690,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 	case 702:{
 		Buff buff(1, 2);
 		buff._times = 3;
-		SpellCard.addBuff(buff);
+		spellCard.addBuff(buff);
 		break;
 	}
 	case 703:{
@@ -690,7 +702,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 			_enemy->_cardPool[POOL_BATTLE][ran].damaged(10);
 			if (_enemy->_cardPool[POOL_BATTLE][ran].isDead()){
 				//CCard *card = &(_enemy->_cardPool[POOL_BATTLE][ran]);
-				_enemy->CardDead(ran);
+				_enemy->cardDead(ran);
 			}
 		}
 		break;
@@ -710,7 +722,7 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 	case 706:{
 		Buff buff(0, 1);
 		buff.setdata(0, 1, 0);
-		int p=SpellCard.get_pos();
+		int p=spellCard.get_pos();
 		for (int i = 1; i < _cardPool[POOL_BATTLE].size(); i++){
 			if (_cardPool[POOL_BATTLE][i].get_pos() == p + 1 || _cardPool[POOL_BATTLE][i].get_pos()==p-1){
 				_cardPool[POOL_BATTLE][i].addBuff(buff);
@@ -719,14 +731,14 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 	}
 	case 708:{
 		Buff buff(1, 3);
-		SpellCard.addBuff(buff);
+		spellCard.addBuff(buff);
 		break;
 	}
 	case 709:{
 		//Buff buff(1,)
-		SpellCard._attacktime = 1;
-		SpellCard.canAttack();
-		//SpellCard.set_armor(1);
+		spellCard._attacktime = 1;
+		spellCard.canAttack();
+		//spellCard.set_armor(1);
 		break;
 	}
 	case 710:{
@@ -760,14 +772,14 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 
 		if (_camp == 1) break;
 		auto i = *_battleID % 10;
-		_enemy->CardDead(i);
+		_enemy->cardDead(i);
 		break;
 	}
 	case 721:{
 		for (int i = 0; i < _enemy->_cardPool[POOL_BATTLE].size(); i++){
 			_enemy->_cardPool[POOL_BATTLE][i].damaged(10);
 		}
-		_enemy->CheckDead();
+		_enemy->checkDead();
 		break;
 	}
 	case 722:{
@@ -797,7 +809,8 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		for (int i = 0; i < s; i++){
 			_cardPool[POOL_BATTLE][i].getBuff(1, 1);
 
-			_gameboard->setCardProperties(POOL_BATTLE, i, _camp, _cardPool[POOL_BATTLE][i].get_attackBattle(), _cardPool[POOL_BATTLE][i].get_healthBattle());
+			_gameboard->setCardProperties(POOL_BATTLE, i, _camp, _cardPool[POOL_BATTLE][i].get_attackBattle(), 1);
+			_gameboard->setCardProperties(POOL_BATTLE, i, _camp, _cardPool[POOL_BATTLE][i].get_healthBattle(), 2);
 		}
 		break;
 	}
@@ -822,9 +835,10 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		if (_camp == 1) break;
 		auto i = *_battleID % 10;
 		_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
+		_gameboard->setCardProperties(POOL_BATTLE, i, !_camp, _enemy->_cardPool[POOL_BATTLE][i].getFinalHealth(), 2);
 		if (_enemy->_cardPool[POOL_BATTLE][i].isDead()){
 			//CCard *card = &(_enemy->_cardPool[POOL_BATTLE][ran]);
-			_enemy->CardDead(i);
+			_enemy->cardDead(i);
 		}
 		break;
 	}
@@ -835,10 +849,10 @@ void CBattle::Spelling(CCard&SpellCard,int spell_num,int srcPool,int srcNum){
 		//随从豁免
 		break;
 	case 904:
-		if (ActionPoints < numX) break;
-		ActionChange(-numX);
-		//CardTranslate(SpellCard, /*CinBattle*/_cardPool[POOL_BATTLE], SpellCard.Pos);//可能有问题 回头再看看
-		cardTransfer(SpellCard.get_state(), /*CinBattle*/POOL_BATTLE, SpellCard.get_pos(), SpellCard.get_pos());//可能有问题 回头再看看
+		if (actionPoints < numX) break;
+		actionChange(-numX);
+		//CardTranslate(spellCard, /*CinBattle*/_cardPool[POOL_BATTLE], spellCard.Pos);//可能有问题 回头再看看
+		cardTransfer(spellCard.get_state(), /*CinBattle*/POOL_BATTLE, spellCard.get_pos(), spellCard.get_pos());//可能有问题 回头再看看
 		break;
 	default:
 		break;
@@ -893,10 +907,10 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 			/*特效处理*/
 			_gameboard->addEffect(EFFECT_FIRE_FLASH, 0.2f, _hero,POOL_BATTLE,destNum,_camp);
 			//显示扣血
-			_gameboard->setCardProperties(POOL_BATTLE, destNum, _camp, -1, _cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
+			_gameboard->setCardProperties(POOL_BATTLE, destNum, _camp,  _cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), 2);
 
 			if (_cardPool[POOL_BATTLE].at(destNum).isDead())
-				CardDead(destNum);
+				cardDead(destNum);
 			
 			break;
 		case 4:			//敌方随从
@@ -905,7 +919,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 			/*特效处理*/
 			_gameboard->addEffect(EFFECT_FIRE_FLASH, 0.4f, _hero, POOL_BATTLE, destNum, !_camp);
 			//实际扣血
-			_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, -1, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), -1);
+			_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), 2);
 			if (ActPtsMax >= 0)
 			{
 				Buff _buff(1, 4);
@@ -914,7 +928,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 			}
 
 			if (_enemy->_cardPool[POOL_BATTLE].at(destNum).isDead())
-				_enemy->CardDead(destNum);
+				_enemy->cardDead(destNum);
 			
 			break;
 		case 6:		//己方英雄
@@ -969,11 +983,11 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 				aq->advanceToLastAction();
 				aq->delay(keytime*0.5);
 				//_gameboard->setHeroHealth(!_camp, _enemy->_hero->getHealthData());
-				_gameboard->setCardProperties(POOL_BATTLE, num, !_camp, -1, _enemy->_cardPool[POOL_BATTLE].at(num).getFinalHealth(), -1);
+				_gameboard->setCardProperties(POOL_BATTLE, num, !_camp, _enemy->_cardPool[POOL_BATTLE].at(num).getFinalHealth(), 2);
 				aq->delay((1 - keytime)*0.5);
 
 				if (_enemy->_cardPool[POOL_BATTLE].at(num).isDead())
-					_enemy->CardDead(num);
+					_enemy->cardDead(num);
 			}
 		}
 	}
@@ -1006,7 +1020,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 	{
 		_gameState = GAME_WIN;
 		_enemy->_gameState = GAME_LOSE;
-		GameOver();
+		gameOver();
 	}
 
 

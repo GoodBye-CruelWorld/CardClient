@@ -35,7 +35,8 @@ static const char s_png_main_versus_bn[] = "mainScene/versus_bn.png";   //
 
 //战斗界面
 static const char s_png_battle_exit[] = "battleScene/exit.png";
-
+static const char s_png_battle_armor[] = "battleScene/icon/armor.png";
+static const char s_png_battle_health[] = "battleScene/icon/health.png";
 //英雄
 
 //技能

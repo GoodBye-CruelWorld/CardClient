@@ -50,12 +50,12 @@ void MyLayer2::onEnter()
 {
 	Layer::onEnter();
 	auto s = Director::getInstance()->getWinSize();
-
-
+	
+	/*初始化棋盘*/
 	_gameBoard = GameBoard::getInstance();
 	_gameBoard->setPosition(Vec2(s.width / 2, s.height / 2));
 	addChild(_gameBoard);
-
+	/*初始化棋盘完毕*/
 
 	/*初始化牌库*/
 
@@ -67,7 +67,9 @@ void MyLayer2::onEnter()
 		warriorId[i] = rand() % 8;
 	}
 	armorId[0] = 0;
-	////////////////////////////////////////////////////////////////////
+	/*初始化牌库完毕*/
+
+	/*先后手顺序*/
 	bool firstHand[2];
 	firstHand[0] = false;
 	firstHand[1] = true;
@@ -77,6 +79,7 @@ void MyLayer2::onEnter()
 		firstHand[1] = false;
 	}
 
+	/*初始化Battle*/
 	for (int i = 0; i < 2; i++)
 	{
 		_battleID[i] = 0;
@@ -91,11 +94,18 @@ void MyLayer2::onEnter()
 
 	_battles[0]->setEnemy(_battles[1]);
 	_battles[1]->setEnemy(_battles[0]);
-	_battles[0]->GameStart();
-	_battles[1]->GameStart();
-	_tool = new BattleTool2D(_gameBoard, _battles[0], _battles[1], & _battleID[0], &_battleState[0]);
+	_battles[0]->gameStart();
+	_battles[1]->gameStart();
+
+	/*初始化Command*/
+
+	Command::getInstance()->setBattles(_battles[0], _battles[1]);
+
+	/*初始化tool2D*/
+	_tool = new BattleTool2D(_gameBoard, _battles[0], _battles[1]);
 	addChild(_tool);
 
+	/*返回按钮*/
 	auto backBn = Button::create(s_png_battle_exit);
 	backBn->setPosition(Vec2(s.width*0.9,s.height*0.1));
 	backBn->addTouchEventListener(this, toucheventselector(MyLayer2::backToMainEvent));
