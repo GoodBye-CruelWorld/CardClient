@@ -2,7 +2,7 @@
 #include"GameBoard.h"
 void Command::sendCommand(int command, int camp)
 {
-	
+		_battles[camp]->setBattleID(command);
 		switch (command / 1000000)
 		{
 		case 1:					//±íÊ¾Ëæ´ÓÕÙ»½

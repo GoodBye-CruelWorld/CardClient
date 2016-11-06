@@ -98,13 +98,14 @@ public:
 	void spellCheckEnemy(int sTime);
 	void spelling(int spell_num);//发动技能 技能ID号
 //	bool Spelling(int spell_num, CCard &card1);
-	bool spelling(int spell_num, int srcPool, int srcNum);
+	void spelling(int spell_num, int srcPool, int srcNum,int srcCamp);
 	void skillSpelling(int spellNum, int srcPool, int srcNum);
 	void skillSpelling();//触发被动技能
 	int getCardPos(int cardPool,CCard &card);//获取card在数组中的位置,没有则返回-1
 	//void CreatureDead(CCardinBattlefield &creature);
 	void creatureDead(CCard &card);
 	bool heroIsDead();
+	void setBattleID(int battleID);
 	/*
 	成员变量 vector类
 	牌库的牌 手牌 场地 墓地
@@ -116,8 +117,8 @@ public:
 	BoardRole *_hero;
 	int actionPoints,ActPtsMax;//行动点数及最大值
 
-
-	int *_battleID;				// 用于储存交互用的ID地址
+	int _battleID;
+//	int *_battleID;				// 用于储存交互用的ID地址
 	bool *_battleState;			// 用户信息响应的标志
 	GameState _gameState;  //判断游戏进行状态
 
@@ -142,7 +143,7 @@ public:
 	//10.28
 	//void spellAttackCheck(CCard&, CCard&){}
 	void spellCheck(int,int, CCard &card);
-	void spelling(CCard&, int,int,int);
+	//void spelling(CCard&, int,int,int,int);
 	//10.30
 	void spellLaunch(vector<CCard>&, int);
 	void spellLaunch(int cardPool, int);
