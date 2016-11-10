@@ -16,7 +16,6 @@ CBattle::CBattle(GameBoard * gameboard, int *battleID, bool * battleState, int *
 	_gameMode = gameMode;
 	_firstHand = firstHand;
 	actionPoints = ActPtsMax = 1;
-
 };
 
 void CBattle::setWild(CBattle *e){
@@ -135,6 +134,8 @@ void CBattle::turnOver()
 			_enemy->_cardPool[j][i].reduceBuffTimes();
 		}
 	}
+
+	if (rand() % 4 == 3) _wild->addWild();
 
 	spellCheck(01);
 	check();
@@ -1142,4 +1143,19 @@ void CBattle::skillSpelling()
 void  CBattle::setBattleID(int battleID)
 {
 	_battleID = battleID;
+}
+
+void CBattle::addWild(){
+	bool f = true; int i = 0;
+	for (i = 0; i < 4; i++){
+		if (_posf[i] == false){
+			f = true;
+			break;
+		}
+	}
+	if (f){
+		CCard card;
+		card.cardCreate(10001);
+		_cardPool[POOL_BATTLE].push_back(card);
+	}
 }
