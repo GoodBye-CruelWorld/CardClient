@@ -16,7 +16,6 @@ CBattle::CBattle(GameBoard * gameboard, int *battleID, bool * battleState, int *
 	_gameMode = gameMode;
 	_firstHand = firstHand;
 	actionPoints = ActPtsMax = 1;
-
 };
 
 void CBattle::setWild(CBattle *e){
@@ -135,6 +134,8 @@ void CBattle::turnOver()
 			_enemy->_cardPool[j][i].reduceBuffTimes();
 		}
 	}
+
+	if (rand() % 4 == 3) _wild->addWild();
 
 	spellCheck(01);
 	check();
@@ -409,11 +410,12 @@ CBattle::~CBattle()
 
 void CBattle::cardDead(int num){
 	//CardTranslate(card, _cardPool[POOL_CEME], 0);
-	auto card = _cardPool[POOL_BATTLE].at(num);
+	CCard& card = _cardPool[POOL_BATTLE].at(num);
 	if (card.get_place() < 0 || card.get_place()>5) card.set_place(0);
-	ai->place[card.get_place()] = true;
+	if (_camp<2) ai->place[card.get_place()] = true;
 	spellCheck(POOL_BATTLE, num, 03);
-	cardTransfer(POOL_BATTLE, POOL_CEME, num, 0);
+	if (_camp<2) cardTransfer(POOL_BATTLE, POOL_CEME, num, 0);
+	else _cardPool[POOL_BATTLE].erase(_cardPool[POOL_BATTLE].begin() + num);
 
 	//spellCheck(13);
 	//spellCheck(card, 03);
@@ -654,10 +656,12 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	}
 	case 400:{
 		CCard ncard;
+		//无中生有
 		ncard.cardCreate(6);
 		CBattle *run;
 		if (_wild->_gameState = GAME_RUN) run = _wild; else run = _enemy;
-		run->_cardPool[POOL_HAND].push_back(ncard);
+		//run->_cardPool[POOL_DECK].insert(_cardPool[POOL_DECK].begin(), ncard);
+		run->drawCard();
 		break;
 	}
 	case 500:
@@ -1142,4 +1146,25 @@ void CBattle::skillSpelling()
 void  CBattle::setBattleID(int battleID)
 {
 	_battleID = battleID;
+}
+
+void CBattle::addWild(){
+	bool f = true; int i = 0;
+	for (i = 0; i < 4; i++){
+		f = true;
+		for (int j = 0; j < _cardPool[POOL_BATTLE].size();j++){
+			if (_cardPool[POOL_BATTLE][j].get_pos() == i){
+				f = false;
+				break;
+			}
+		}
+		if (f) break;
+	}
+	if (f){
+		CCard card;
+		card.cardCreate(10001);
+		card.set_pos(i);
+		//无中生有
+		_cardPool[POOL_BATTLE].push_back(card);
+	}
 }

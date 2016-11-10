@@ -796,8 +796,6 @@ int BattleTool2D::judgeTouchPoint(cocos2d::Point tp, int PartID)
 			if (_battle2->_cardPool[POOL_BATTLE].at(i).get_pos() == number)
 				return 500 + 0 * 10 + i;
 		}
-		//test
-		return 500;
 		
 		return 0;
 		//return   500 + 0 * 10 + number;

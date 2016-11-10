@@ -56,12 +56,12 @@ void CCard::cardCreate(int num)
 		}
 		//spell测试
 		if (_cardID == 10001){
-			_cardID == 11001;
+			//_cardID == 11001;
 			//int a = _spellID[0];//数据库中为3703001,为测试方便改为5801003
 			//set_armor(1);
-			_spellID.push_back(1710102);
-			//_health = 2;
-			//_attack = 2;
+			_spellID.push_back(400003);
+			_health = 2;
+			_attack = 2;
 			//缩小3攻
 			//1705002;//眩晕全场
 			//	1711102	;//石化
