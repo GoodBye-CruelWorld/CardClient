@@ -17,7 +17,8 @@ USING_NS_CC;
 #define POOL_HAND 1 //手牌池
 #define POOL_BATTLE 2 //战斗池
 #define POOL_CEME 3 //墓地池
-#define POOL_HERO 10 //墓地池
+#define POOL_MONSTER 8 //野怪池
+#define POOL_HERO 10 //英雄池
 /*
 *@GameBoard
 *@brief 游戏面板类主要负责有关游戏的显示.
@@ -196,7 +197,7 @@ private:
 	BoardRole *_role[2]; //0表示己方，1表示敌方
 	Sprite*_winbg, *_losebg;//胜利与失败的背景
 	ActionQueue*_actionQueue;//TODO动画顺序管理，要分成2个camp
-	Vector<BoardCard*>_cardPools[8];/*8个卡牌显示类的数组*/
+	Vector<BoardCard*>_cardPools[9];/*8个卡牌显示类的数组*/
 public:
 	/*回合结束按钮*/
 	Button *_endTurnButton;
