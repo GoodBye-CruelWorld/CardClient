@@ -450,7 +450,7 @@ void GameBoard::setCardPropertiesCallBack(int srcPool, int srcNum, int srcCamp, 
 		}
 		return;
 	}
-	auto card = _cardPools[srcPool + 4 * srcCamp].at(srcNum);
+	auto card = srcCamp == 2 ? _cardPools[POOL_MONSTER].at(srcNum) : _cardPools[srcPool + 4 * srcCamp].at(srcNum);
 	switch (type)
 	{
 	case 0:
@@ -604,6 +604,15 @@ void GameBoard::addCardCallBack(CCard &card, int cardPool, int num, int camp)
 
 void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int DestNum, int camp, CCard &newCard, int battlePlace)
 {
+	//Ò°¹Ö´¦Àí
+	if (camp == 2)
+	{
+		auto pool = &_cardPools[POOL_MONSTER];
+		getCard(POOL_MONSTER, SrcNum, 0)->die();
+		pool->erase(SrcNum);
+		return;
+	}
+
 	auto SrcCPool = &_cardPools[SrcPool + camp * 4];
 	auto DestCPool = &_cardPools[DestPool + camp * 4];
 	if (DestCPool->size() == 0 || DestNum>DestCPool->size()){

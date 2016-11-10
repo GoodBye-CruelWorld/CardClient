@@ -153,7 +153,7 @@ public:
 	void equipLaunch(int ,int);
 	//11.10
 //	void cardAttack(Card*,Card*)
-	bool _posf[4] = {};
+	bool _posf[4] ;
 	void addWild();
 
 };
