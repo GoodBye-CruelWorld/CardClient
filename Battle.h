@@ -152,5 +152,8 @@ public:
 	//11.6
 	void equipLaunch(int ,int);
 	//11.10
-	void cardAttack(CCard*, CCard*);
+//	void cardAttack(Card*,Card*)
+	bool _posf[4] = {};
+	void addWild();
+
 };

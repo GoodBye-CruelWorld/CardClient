@@ -80,7 +80,7 @@ class BattleTool2D : public cocos2d::Node
 {
 	/***************************************************构造析构初始化********************************************/
 public:
-	BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* battleIt);
+	BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* battleIt, CBattle* battle2);
 	virtual void onEnter() override;
 	/*****************************************************触摸检测************************************************/
 public:
@@ -127,7 +127,7 @@ private:
 	int *_battleID;				//负责与battle的通信的battleID的指针,当准备好通信时才使用
 private:
 	GameBoard * _gameboard;     //面板指针
-	CBattle	*_battleMy,*_battleIt; //战斗流程对象指针
+	CBattle	*_battleMy,*_battleIt,*_battle2; //战斗流程对象指针
 	Command *_cmd;
 private:
 	bool _gameMode;             //游戏形式 0=单机 1=对战
