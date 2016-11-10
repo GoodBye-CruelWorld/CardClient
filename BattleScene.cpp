@@ -91,12 +91,21 @@ void MyLayer2::onEnter()
 		this->addChild(_battles[i]);	
 	}
 
-
+	_battles[2] = new CBattle(_gameBoard, &_battleID[1], &_battleState[1], warriorId, 2, _socket, _mode, firstHand[1]);
+	_battles[2]->setEnemy(_battles[1]);
+	_battles[2]->setWild(_battles[0]);
+	this->addChild(_battles[2]);
 	_battles[0]->setEnemy(_battles[1]);
 	_battles[1]->setEnemy(_battles[0]);
+	_battles[0]->setWild(_battles[0]);
+	_battles[1]->setWild(_battles[1]);
 	_battles[0]->gameStart();
 	_battles[1]->gameStart();
 
+	
+	CCard card;
+	card.cardCreate(10001);
+	_battles[2]->_cardPool[POOL_BATTLE].push_back(card);
 	/*³õÊ¼»¯Command*/
 
 	Command::getInstance()->setBattles(_battles[0], _battles[1]);

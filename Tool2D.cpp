@@ -772,9 +772,15 @@ int BattleTool2D::judgeTouchPoint(cocos2d::Point tp, int PartID)
 	}
 	else
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////野怪区
-	if (false/*tp判定是否是野怪区范围*/)
+	if (judgePointIn(tp, Vec2(175, 440), Vec2(245, 440), Vec2(245, 350)) || judgePointIn(tp, Vec2(175, 350))/*tp判定是否是野怪区范围*/)
 	{
-		return   500 + 0 * 10 + 0;
+		int number = judgePointIn(tp, Vec2(175, 440), Vec2(245, 440), Vec2(175, 350)) - 1;
+		if (number == -1)
+			number = judgePointIn(tp, Vec2(245, 350))?3:-1;
+		if (number == -1)
+			return 0;
+
+		return   500 + 0 * 10 + number;
 	}
 	else
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////我方技能
