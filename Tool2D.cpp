@@ -384,7 +384,22 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						_gameboard->setCardOraginState();//还原卡牌位置	
 					break;
 				}
-				case 2:		//表示为装备，传值判断与法术一样
+				case 2:		//表示为武器，传值判断与法术一样
+				{
+					//判断鼠标抬起的落点是否在手牌区外
+					if ((_endID / 100 != 1)  &(_endID != 0)&  _battleMy->actionPoints >= _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_cost())		//在手牌区外
+					{
+						int Number = _battleMy->_cardPool[POOL_BATTLE].size();
+
+						_gameboard->getRole(0)->addWeapon(_cradID);
+						//调用Cbattle类的随从召唤				
+						_t_battleID = 2 * 1000000 + 01 * 10000 + _beginID % 10 * 1000;
+					}
+					else
+						_gameboard->setCardOraginState();//还原卡牌位置	
+					break;
+				}
+				case 3:		//表示为装备，传值判断与法术一样
 				{
 					//判断鼠标抬起的落点是否在手牌区外
 					if ((_endID / 100 != 1)  &(_endID != 0)&  _battleMy->actionPoints >= _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_cost())		//在手牌区外
@@ -533,6 +548,16 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 					if (result == -1)
 						break;
 
+					//获得法术的SPELLID
+					int spellID = -1;
+					for (int i = 0; i < _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().size(); i++)
+						if (_battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i) / 100 % 10 >= 1)
+							spellID = _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i);
+
+					if (!judgeAimed(SPELL, spellID, _endID / 100, result))
+					{
+						break;
+					}
 
 					_t_battleID = 2 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + _endID / 100 * 10 + result;
 				
@@ -638,7 +663,8 @@ void  BattleTool2D::onTouchMoved(Touch* touch, Event* event)
 			}
 			break;
 		case 6:
-			if ((_beginID % 100) / 10)//英雄可攻击
+			//if ((_beginID % 100) / 10)//英雄可攻击
+			if (_gameboard->getRole(0)->_hero.get_canAttack() && !_gameboard->getRole(0)->_hero.get_isAttack())
 			{
 				_sight = 1;
 			}

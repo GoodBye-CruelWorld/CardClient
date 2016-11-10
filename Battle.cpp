@@ -30,6 +30,12 @@ void attackReset(CCard&card){
 }
 
 void CBattle::turnStart(){
+	//武器攻击初始化
+	//for (int i = 0;i<her)
+	int p = _hero->checkWeapon();
+	if (p > 0)
+		_hero->_hero._attackBattle += _hero->_equip[p]._attackBattle;
+
 	//回合开始 行动上限+1 行动充满 检测上限点数 抽牌 待完善
 	actionPoints = ActPtsMax++;
 	_gameState = GAME_RUN;
@@ -89,6 +95,10 @@ void CBattle::turning()
 
 void CBattle::turnOver()
 {
+	//武器结束
+	int p = _hero->checkWeapon();
+	if (p > 0)
+		_hero->_hero._attackBattle -= _hero->_equip[p]._attackBattle;
 	//buff check
 	for (int i = 0; i < _cardPool[POOL_CEME].size(); i++){
 		if (_cardPool[POOL_CEME][i].buffCheck(1, 5)){
@@ -225,40 +235,40 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		srcCard->damaged((destCard->getFinalAttack() - srcCard->get_armor()) <= 0 ? 0 : (destCard->getFinalAttack() - srcCard->get_armor()) * 2);
 	else
 		srcCard->damaged((destCard->getFinalAttack() - srcCard->get_armor()) <= 0 ? 0 : destCard->getFinalAttack() - srcCard->get_armor());
-	if (destCard->buffCheck(buff))
-		destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : (srcCard->getFinalAttack() - destCard->get_armor())*2);
-	else
-		destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : srcCard->getFinalAttack() - destCard->get_armor());
+	if (srcNum == 7 && _hero->checkWBuff(2)){
+		spelling(721007,0,0,0);
+	}
+	else{
+		
+		if (destCard->buffCheck(buff))
+			destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : (srcCard->getFinalAttack() - destCard->get_armor()) * 2);
+		else
+			destCard->damaged((srcCard->getFinalAttack() - destCard->get_armor()) <= 0 ? 0 : srcCard->getFinalAttack() - destCard->get_armor());
+	}
 	//显示血量
-	int srcHealth;
-	int destHealth;
-	if (srcNum != 7)
-		srcHealth = _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth();
-	else
-		srcHealth = _hero->getHealthData();
-	if (destNum!= 7)
-		destHealth = _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth();
-	else
-		destHealth = _enemy->_hero->getHealthData();
-	_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp,srcHealth, 2);
-	_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp,destHealth, 2);
-
+	if (srcNum != 7){
+		_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp, _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), 2);
+		_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), 2);
+	}
 	//取消本回合随从的攻击能力
 	srcCard->set_isAttack(true);
-
+	if (srcNum==7&&_hero->checkWBuff(1)&&destCard->_healthBattle<destCard->get_healthMax()){
+		destCard->_healthBattle = 0;
+	}
 	if (srcNum == 7){
 		_hero->link();
 	}
+	else 
 		_gameboard->cardAttack(srcNum, srcCamp, srcCard->getFinalHealth(), destNum, destCamp, destCard->getFinalHealth()); 
 	
-		
+	if (srcNum!=7)
 	if (srcCard->isDead()){
 		if (srcCamp == _camp)
 			cardDead(srcNum);
 		else
 			_enemy->cardDead(srcNum);
 	}
-
+	if (!(srcNum == 7 && _hero->checkWBuff(2)))
 	if (destCard->isDead()){
 		if (destCamp == _camp)
 			cardDead(destNum);
@@ -282,7 +292,8 @@ void CBattle::cardAttack(int num)						//随从攻击英雄 重载+1
 	if (num == 7){
 		_hero->link();
 	}
-	_gameboard->cardAttack(num, _camp, creAttack.getFinalHealth(), 7, !_camp, _enemy->_hero->getHealthData());
+	else
+		_gameboard->cardAttack(num, _camp, creAttack.getFinalHealth(), -1, !_camp, _enemy->_hero->getHealthData());
 	if (_enemy->_hero->getHealth() <= 0)
 	{
 		_gameState = GAME_WIN;
@@ -358,7 +369,11 @@ void CBattle::spellLaunch(int cardPool, int num)
 
 //11.6
 void CBattle::equipLaunch(int cardPool, int num){
-	_hero->_equip.push_back
+	//_hero->_equip.push_back()
+	actionChange(-_cardPool[cardPool][num].get_cost());
+	_gameboard->getActionPointBar(_camp)->reduceAvailActionPoint(_cardPool[cardPool][num].get_cost());
+	_hero->realAddWeapon(_cardPool[cardPool][num]);
+	cardTransfer(POOL_HAND, POOL_CEME, num, 0);
 }
 
 
@@ -385,8 +400,6 @@ CBattle::~CBattle()
 
 void CBattle::cardDead(int num){
 	//CardTranslate(card, _cardPool[POOL_CEME], 0);
-	if (num == 7)
-		return;
 	auto card = _cardPool[POOL_BATTLE].at(num);
 	if (card.get_place() < 0 || card.get_place()>5) card.set_place(0);
 	ai->place[card.get_place()] = true;
@@ -447,7 +460,64 @@ void CBattle::update(float dt)
 
 
 
+	//while (*_battleState)
+	//{
+	//	switch (BattleID / 1000000)
+	//	{
+	//	case 1:					//表示随从召唤
+	//	{
+	//		auto place = BattleID / 100 % 10;
+	//		cardCummon(_cardPool[POOL_HAND], _cardPool[POOL_BATTLE], BattleID / 1000 % 10, BattleID % 10, BattleID / 100 % 10);
+	//		_gameboard->getActionQueue()->reset(false);
+	//		break;
+	//	}
+	//	case 02:					//道具法术装备的使用
+	//	{
+	//		auto place = BattleID / 100 % 10;
+	//		SpellLaunch(_cardPool[POOL_HAND], BattleID / 1000 % 10);
+	//		_gameboard->getActionQueue()->reset(false);
+	//		break;
+	//	}
+	//	case 03:					//	技能的使用
+	//	{
+	//		skillSpelling(BattleID / 1000 % 10, BattleID % 1000 / 10, BattleID % 10);
 
+	//		_gameboard->getActionQueue()->reset(false);
+	//		break;
+	//	}
+	//	case 4:					//攻击
+	//	{
+	//		if (BattleID / 10 % 10 != 7)
+	//			//cardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10), /*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10));
+	//		{
+	//			cardAttack(BattleID / 1000 % 10, 0, BattleID % 10, 1);
+	//			_gameboard->getActionQueue()->reset(false);
+	//		}
+	//		else
+	//			//cardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(BattleID / 1000 % 10));
+	//		{
+	//			cardAttack(BattleID / 1000 % 10);
+	//			_gameboard->getActionQueue()->reset(false);
+	//		}
+	//		break;
+
+	//	}
+	//	case 5:  //回合开始
+	//	{
+	//		turnStart();
+	//		break;
+	//	}
+	//	case 6: //回合结束
+	//	{
+	//		TurnOver();
+	//		break;
+	//	}
+	//	default:
+	//		break;
+	//	}
+	//	*_battleState = false;
+	//	Check();
+	//}
 
 
 }
@@ -535,14 +605,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 
 	CCard &spellCard = srcCamp == _camp ? _cardPool[srcPool][srcNum] : _enemy->_cardPool[srcPool][srcNum];
 
-	/*将卡牌设为英雄*/
-	if (srcPool == POOL_HERO)
-	{
-		if (srcCamp == _camp)
-			spellCard = _hero->_hero;
-		else
-			spellCard = _enemy->_hero->_hero;
-	}
+
 
 	int numX = spell_num / 1000000, numID = spell_num % 1000000 / 1000, numChoose = spell_num / 100 % 10;
 	switch (numID)
@@ -550,7 +613,6 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	case 001:{
 		spellCard.set_armor(spellCard.get_armor() + numX);
 		_gameboard->setCardProperties(srcPool, srcNum, _camp, spellCard.get_armor(),3);
-		//_gameboard->addEffect()
 		break; 
 	}
 	case 002:
@@ -607,11 +669,10 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		spelling( 2001000,srcPool, srcNum,srcCamp);
 		break;
 	}
-	case 601:{ //友方随从+2护甲
+	case 601:{
 		if (_camp == 1) break;
 		auto i = _battleID % 10+1;
 		spelling( 2001000, srcPool, i,srcCamp);
-		
 		break;
 	}
 	case 602:{
@@ -896,7 +957,6 @@ void CBattle::reduceAttack(CCard &card){
 
 void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 {
-
 
 	auto skillID = _gameboard->getRole(_camp)->getRoleSkill(spell_num)->getSkillID();
 	//猎人的技能

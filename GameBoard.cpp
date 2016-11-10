@@ -254,6 +254,10 @@ void GameBoard::cardTransfer(int srcPool, int destPool, int srcNum, int destNum,
 }
 void GameBoard::cardAttack(int srcOrder, int srcCamp, int srcHealth, int destOrder, int destCamp, int destHealth)
 {
+	if (srcOrder == -1)
+		srcOrder = 7;
+	if (destOrder == -1)
+		destOrder = 7;
 	auto act = CallFunc::create(CC_CALLBACK_0(GameBoard::cardAttackCallBack, this, srcOrder, srcCamp, srcHealth,destOrder,destCamp,destHealth));
 	
 	//¼ÆËã¹¥»÷Ê±³¤
