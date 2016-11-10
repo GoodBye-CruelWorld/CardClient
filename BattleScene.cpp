@@ -111,7 +111,7 @@ void MyLayer2::onEnter()
 	Command::getInstance()->setBattles(_battles[0], _battles[1]);
 
 	/*初始化tool2D*/
-	_tool = new BattleTool2D(_gameBoard, _battles[0], _battles[1]);
+	_tool = new BattleTool2D(_gameBoard, _battles[0], _battles[1],_battles[2]);
 	addChild(_tool);
 
 	/*返回按钮*/

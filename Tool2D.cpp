@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /************************************************************初始化*******************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-BattleTool2D::BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* battleIt)
+BattleTool2D::BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* battleIt, CBattle*battle2)
 {
 	//初始化变量
 	_sight = 0;
@@ -20,6 +20,7 @@ BattleTool2D::BattleTool2D(GameBoard * gameboard, CBattle* battleMy, CBattle* ba
 
 	_battleIt = battleIt;
 	_battleMy = battleMy;
+	_battle2 = battle2;
 
 	_cmd = Command::getInstance();
 
@@ -468,14 +469,18 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						result = _endID%10;
 					
 					}
-				
+					
+					if (_endID / 100 == 5)
+					{
+						result = _endID % 10;
+					}
 					//获得该指向性战吼的ID
 					int spellID = -1;
 					for (int i = 0; i < _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().size(); i++)
 						if (_battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i) / 100 % 10 >= 1)
 							spellID = _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i);
 
-					if (!judgeAimed(RETINUE, spellID, _endID / 100, result))
+					if (!judgeAimed(RETINUE, spellID, _endID / 100 == 5 ? 4 : _endID / 100, result))
 					{
 						break;
 					}
@@ -544,6 +549,11 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 					{
 						result = 0;
 					}
+					//指向野怪区
+					if (_endID / 100 == 5)
+					{
+						result = _endID % 10;
+					}
 					//如果result=-1表示指向失败
 					if (result == -1)
 						break;
@@ -554,7 +564,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						if (_battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i) / 100 % 10 >= 1)
 							spellID = _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i);
 
-					if (!judgeAimed(SPELL, spellID, _endID / 100, result))
+					if (!judgeAimed(SPELL, spellID, _endID / 100 == 5 ? 4 : _endID / 100, result))
 					{
 						break;
 					}
@@ -582,6 +592,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 	{
 		if ((_endID / 100 == 4) || (_endID / 100 == 5) || (_endID / 100 == 7))
 		{
+
 			_t_battleID = 4 * 1000000 + 3 * 10000 + _beginID % 10 * 1000 + _endID / 100 * 10 + _endID % 10;					
 		}		
 	}
@@ -780,7 +791,16 @@ int BattleTool2D::judgeTouchPoint(cocos2d::Point tp, int PartID)
 		if (number == -1)
 			return 0;
 
-		return   500 + 0 * 10 + number;
+		for (int i = 0; i < _battle2->_cardPool[POOL_BATTLE].size(); i++)
+		{
+			if (_battle2->_cardPool[POOL_BATTLE].at(i).get_pos() == number)
+				return 500 + 0 * 10 + i;
+		}
+		//test
+		return 500;
+		
+		return 0;
+		//return   500 + 0 * 10 + number;
 	}
 	else
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////我方技能
@@ -1074,8 +1094,8 @@ bool BattleTool2D::judgeAimed(int type, int ID, int destType, int destNum)
 	if (!result)
 		return false;
 
-	//判定特殊情况，例如免疫指向性战吼
-	if (destType == 3 || destType == 4)
+	//判定特殊情况，例如免疫指向性战吼,野怪区特殊判断
+	if ((destType == 3 || destType == 4) && _endID / 100 != 5)
 	{
 		CCard* _card = NULL;
 		if (destType == 4)
