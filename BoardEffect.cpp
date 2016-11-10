@@ -137,6 +137,7 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 		break;
 	case EFFECT_DEBUFF:
 	{
+		auto par = addParticle("particles/Stone.plist", src);
 
 		
 	}
@@ -144,9 +145,21 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 		//»ðÑæ³å»÷
 	case EFFECT_FIRE_FLASH:
 	{
+		//auto par = addParticle("particles/Sky.plist", src);
 		auto par=addParticle("particles/fireFlash.plist", src);
 		par->runAction(Sequence::create(DelayTime::create(lastTime), CallFunc::create(CC_CALLBACK_0(BoardEffect::endCallback, this, par)), NULL));
 		par->runAction(MoveTo::create(lastTime, dest->getPosition3D()));
+	}
+		break;
+	case EFFECT_BUFF_BOARD:
+	{auto par = addParticle("particles/Sky.plist", src); }
+		break;
+	case EFFECT_HEAL:
+	{
+		auto par = addParticle("particles/Stone.plist", dest);
+		par->runAction(MoveBy::create(lastTime, Vec2(0,50)));
+		par->runAction(Sequence::create(DelayTime::create(lastTime), CallFunc::create(CC_CALLBACK_0(BoardEffect::endCallback, this, par)), NULL));
+
 	}
 		break;
 	default:
@@ -165,7 +178,7 @@ void BoardEffect::endCallback(Node *sender)
 ParticleSystemQuad* BoardEffect::addParticle(std::string fileName, Node* dest, float scale, float rotation, Vec2 position)
 {
 	auto par = ParticleSystemQuad::create(fileName);
-	if (position !=Vec2(0,0))
+	if (position !=Vec2(0,0)||dest==NULL)
 		par->setPosition(position);
 	else
 		par->setPosition(dest->getPosition());

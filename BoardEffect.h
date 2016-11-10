@@ -12,6 +12,8 @@ USING_NS_CC;
 #define EFFECT_DEBUFF 7
 #define EFFECT_FIRE_FLASH 8
 #define EFFECT_FROZEN 9
+#define EFFECT_BUFF_BOARD 10
+#define EFFECT_HEAL 11
 /*
 *@BoardEffect
 *brief a union of effects which can  be used in chessboard,including changes of board,effects manifest on the board.
