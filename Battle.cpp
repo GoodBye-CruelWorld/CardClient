@@ -17,6 +17,7 @@ CBattle::CBattle(GameBoard * gameboard, int *battleID, bool * battleState, int *
 	_firstHand = firstHand;
 	actionPoints = ActPtsMax = 1;
 
+
 };
 
 void CBattle::setWild(CBattle *e){
@@ -65,7 +66,7 @@ void CBattle::turnStart(){
 
 	//将上回合的随从变成可以攻击
 
-	//_hero->_hero
+
 	attackReset(_hero->_hero);
 	for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++)
 	{
@@ -261,11 +262,8 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	if (srcNum==7&&_hero->checkWBuff(1)&&destCard->_healthBattle<destCard->get_healthMax()){
 		destCard->_healthBattle = 0;
 	}
-	if (srcNum == 7){
-		_hero->link();
-	}
-	else 
-		//_gameboard->cardAttack(srcNum, srcCamp, srcCard->getFinalHealth(), destNum, destCamp, destCard->getFinalHealth()); 
+
+	_gameboard->cardAttack(srcNum, srcCamp, srcCard->getFinalHealth(), destNum, destCamp, destCard->getFinalHealth()); 
 	
 	if (srcNum!=7)
 	if (srcCard->isDead()){
@@ -290,19 +288,17 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 void CBattle::cardAttack(int num)						//随从攻击英雄 重载+1
 {
 
-	CCard& creAttack = _hero->_hero;
-	if (num <5){
-		creAttack = _cardPool[POOL_BATTLE][num];
-	}
+	CCard& creAttack = num < 5 ? _cardPool[POOL_BATTLE][num] : _hero->_hero;
+	//CCard& creAttack = _hero->_hero;
+	//if (num <5){
+	//	creAttack = _cardPool[POOL_BATTLE][num];
+	//}
 	reduceAttack(creAttack);
 
 	//TODO 创建一个hero数据类
 	_enemy->_hero->setHealthData(_enemy->_hero->getHealthData() - creAttack.getFinalAttack());
-	if (num == 7){
-		_hero->link();
-	}
-	else
-		_gameboard->cardAttack(num, _camp, creAttack.getFinalHealth(), -1, !_camp, _enemy->_hero->getHealthData());
+
+	_gameboard->cardAttack(num, _camp, creAttack.getFinalHealth(), 7, !_camp, _enemy->_hero->getHealthData());
 	if (_enemy->_hero->getHealth() <= 0)
 	{
 		_gameState = GAME_WIN;

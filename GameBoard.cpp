@@ -47,7 +47,8 @@ void GameBoard::onEnter()
 	//创建英雄
 	initRole(1, 0);
 	initRole(0, 1);
-
+	//_role[0]->setAttack(1);
+	_role[0]->_hero.set_attackBattle(1);
 	//创建效果管理器
 	_effect = BoardEffect::getInstance();
 	_effect->addEffect(EFFECT_DEBUFF, NULL, NULL,NULL);
@@ -58,9 +59,9 @@ void GameBoard::onEnter()
 	//addChild(_effect);
 
 	//test 
-	CCard a(0);
-	a.set_pos(0);
-	addCard(a, POOL_MONSTER, 0, 0, 0);
+	//CCard a(0);
+	//a.set_pos(0);
+	//addCard(a, POOL_MONSTER, 0, 0, 0);
 	
 	//winbg
 	_winbg = Sprite::create("bg/win.png");

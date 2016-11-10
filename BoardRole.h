@@ -29,6 +29,7 @@ private:
 	Sprite *_phote;   //头像
 	Sprite *_wordChoices[4];  //语句选择
 	Sprite *_wordSpeak[4];    //说话语句
+
 	int _wordSpeakOnScreen;
 	//GameLibrary _library //数据库
 };
@@ -190,7 +191,8 @@ private:
 	RoleWeapon *_roleWeapon;
 
 	//CCard hero
-
+	Sprite *_attackFrame;
+	Sprite *_healthFrame;
 
 
 	int  _curEquipNum;  //装备总数

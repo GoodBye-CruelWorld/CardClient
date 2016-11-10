@@ -37,6 +37,7 @@ static const char s_png_main_versus_bn[] = "mainScene/versus_bn.png";   //
 static const char s_png_battle_exit[] = "battleScene/exit.png";
 static const char s_png_battle_armor[] = "battleScene/icon/armor.png";
 static const char s_png_battle_health[] = "battleScene/icon/health.png";
+static const char s_png_battle_attack[] = "battleScene/icon/attack.png";
 //Ó¢ÐÛ
 
 //¼¼ÄÜ
