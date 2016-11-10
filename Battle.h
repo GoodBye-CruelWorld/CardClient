@@ -25,13 +25,14 @@ public:
 	CAIEnemy* ai;
 
 	void setEnemy(CBattle*enemy);
+	void setWild(CBattle*enemy);
 	/*
 	战斗流程
 		游戏开始-准备牌库-抽初始牌
 		游戏中
 		游戏结束
 	*/
-	CBattle *_enemy;//传递对面战斗类的指针
+	CBattle *_enemy,*_wild;//传递对面战斗类的指针
 
 	void gameStart();
 	void gameOver();
@@ -150,4 +151,6 @@ public:
 	//void relife();
 	//11.6
 	void equipLaunch(int ,int);
+	//11.10
+	void cardAttack(Card*,Card*)
 };

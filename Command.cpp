@@ -39,8 +39,11 @@ void Command::sendCommand(int command, int camp)
 			if (command / 10 % 10 != 7)
 				//cardAttack(/*CinBattle*/_cardPool[POOL_BATTLE].at(command / 1000 % 10), /*CinBattle*/_cardPool[POOL_BATTLE].at(command / 1000 % 10));
 			{
-				
-				_battles[camp]->cardAttack(p, 0, command % 10, 1);
+				auto a = command / 10 % 10;
+				if (a == 5)
+					_battles[camp]->cardAttack(p, 0, command % 10, 2);
+				else
+					_battles[camp]->cardAttack(p, 0, command % 10, 1);
 				GameBoard::getInstance()->getActionQueue()->reset(false);
 			}
 			else

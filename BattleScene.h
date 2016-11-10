@@ -30,7 +30,7 @@ public:
 private:
 	GameBoard *_gameBoard;
 	BattleTool2D *_tool;
-	CBattle *_battles[2];
+	CBattle *_battles[3];
 	Command *_cmd;
 	int _battleID[2];
 	bool _battleState[2];

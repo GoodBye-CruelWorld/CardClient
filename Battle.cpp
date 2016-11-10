@@ -18,6 +18,11 @@ CBattle::CBattle(GameBoard * gameboard, int *battleID, bool * battleState, int *
 	actionPoints = ActPtsMax = 1;
 
 };
+
+void CBattle::setWild(CBattle *e){
+	_wild = e;
+}
+
 void CBattle::setEnemy(CBattle *e)
 {
 	_enemy = e;
@@ -201,8 +206,7 @@ void CBattle::spelling(int spell_num)
 
 
 
-
-
+//void CBattle::cardAttack(int srcNum,int src)
 
 void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 {
@@ -224,6 +228,8 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		destCard = &_cardPool[POOL_BATTLE].at(destNum);
 	else
 		destCard = &_enemy->_cardPool[POOL_BATTLE].at(destNum);
+	if (destCamp==2)
+		destCard = &_wild->_cardPool[POOL_BATTLE].at(destNum);
 	if (srcNum!=7)
 		spellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
 	reduceAttack(*srcCard);
@@ -247,8 +253,8 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	}
 	//显示血量
 	if (srcNum != 7){
-		_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp, _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), 2);
-		_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), 2);
+		//_gameboard->setCardProperties(POOL_BATTLE, srcNum, _camp, _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth(), 2);
+		//_gameboard->setCardProperties(POOL_BATTLE, destNum, !_camp, _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth(), 2);
 	}
 	//取消本回合随从的攻击能力
 	srcCard->set_isAttack(true);
@@ -259,7 +265,7 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		_hero->link();
 	}
 	else 
-		_gameboard->cardAttack(srcNum, srcCamp, srcCard->getFinalHealth(), destNum, destCamp, destCard->getFinalHealth()); 
+		//_gameboard->cardAttack(srcNum, srcCamp, srcCard->getFinalHealth(), destNum, destCamp, destCard->getFinalHealth()); 
 	
 	if (srcNum!=7)
 	if (srcCard->isDead()){
@@ -273,7 +279,10 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 		if (destCamp == _camp)
 			cardDead(destNum);
 		else
-			_enemy->cardDead(destNum);
+			if (destCamp < 2)
+				_enemy->cardDead(destNum);
+			else
+				_wild->cardDead(destNum);
 	}
 }
 
@@ -641,6 +650,14 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		for (int i = 0; i < s; i++){
 			spellCard.set_attackBuff(spellCard.get_attackBuff() + _cardPool[POOL_BATTLE][i].get_armor());
 		}
+		break;
+	}
+	case 400:{
+		CCard ncard;
+		ncard.cardCreate(6);
+		CBattle *run;
+		if (_wild->_gameState = GAME_RUN) run = _wild; else run = _enemy;
+		run->_cardPool[POOL_HAND].push_back(ncard);
 		break;
 	}
 	case 500:
