@@ -57,9 +57,11 @@ void GameBoard::onEnter()
 	//_effect->addEffect(1, _bg->getDecoration(2), 15);
 	//addChild(_effect);
 
-
-
-
+	//test 
+	CCard a(0);
+	a.set_pos(0);
+	addCard(a, POOL_MONSTER, 0, 0, 0);
+	
 	//winbg
 	_winbg = Sprite::create("bg/win.png");
 	_winbg->setVisible(false);
@@ -218,6 +220,7 @@ void GameBoard::startAiTurn()
 
 void GameBoard::addCard(CCard &card, int cardPool, int num, int camp,float delay)
 {
+
 	/*延时处理*/
 	/*有Bug,并不会执行callfunc语句*/
 	//this->runAction(Sequence::create(DelayTime::create(delay),
@@ -316,10 +319,19 @@ void GameBoard::setHeroAttackCallBack(int camp, int value)
 
 void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int destOrder, int destCamp, int destHealth)
 {
+	BoardCard* srcCard, *destCard;
+
 	if (srcOrder != 7 && destOrder != 7)
 	{
-		auto srcCard = _cardPools[POOL_BATTLE + 4 * srcCamp].at(srcOrder);
-		auto destCard = _cardPools[POOL_BATTLE + 4 * destCamp].at(destOrder);
+		if (srcCamp == 2)
+			srcCard = _cardPools[POOL_MONSTER].at(srcOrder);
+		else
+			srcCard = _cardPools[POOL_BATTLE + 4 * srcCamp].at(srcOrder);
+		if (destCamp == 2)
+			destCard = _cardPools[POOL_MONSTER].at(destOrder);
+		else
+			destCard = _cardPools[POOL_BATTLE + 4 * destCamp].at(destOrder);
+
 		auto delay = srcCard->attackCard(destCard);
 	//	_effect->addEffect(4, destCard, delay);
 		this->runAction(Sequence::create(
@@ -332,6 +344,11 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 	}
 	if (srcOrder == 7 && destOrder != 7)
 	{
+		if (destCamp == 2)
+			destCard = _cardPools[POOL_MONSTER].at(destOrder);
+		else
+			destCard = _cardPools[POOL_BATTLE + 4 * destCamp].at(destOrder);
+	
 		auto srcHero = _role[srcCamp]->getRolePhote();
 		auto destCard = _cardPools[POOL_BATTLE + 4 * destCamp].at(destOrder);
 		auto delay = srcHero->attack(destCard->getPosition());
@@ -345,6 +362,11 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 	}
 	if (srcOrder != 7 && destOrder == 7)
 	{
+		if (srcCamp == 2)
+			srcCard = _cardPools[POOL_MONSTER].at(srcOrder);
+		else
+			srcCard = _cardPools[POOL_BATTLE + 4 * srcCamp].at(srcOrder);
+		
 		auto srcCard = _cardPools[POOL_BATTLE + 4 * srcCamp].at(srcOrder);
 		auto destHero = _role[destCamp]->getRolePhote();
 		auto delay = srcCard->attackHero(destCamp);
@@ -538,13 +560,23 @@ void GameBoard::addCardCallBack(CCard &card, int cardPool, int num, int camp)
 	auto BCard = BoardCard::create(card);
 	addChild(BCard);
 	//创建目标卡牌池指针
+	if (cardPool == 8)
+		camp = 0;
 	auto pool = &_cardPools[cardPool + camp * 4];
-
-	if (pool->size() == 0 || num >pool->size())
-		pool->pushBack(BCard);
+	if (cardPool != 8)
+	{
+		if (pool->size() == 0 || num > pool->size())
+			pool->pushBack(BCard);
+		else
+			pool->insert(num, BCard);
+	}
 	else
-		pool->insert(num, BCard);
+	{
+		num = card.get_pos();
+		pool->pushBack(BCard);
+	}
 
+	
 	/*动画处理*/
 	switch (cardPool)
 	{
@@ -557,6 +589,11 @@ void GameBoard::addCardCallBack(CCard &card, int cardPool, int num, int camp)
 	case POOL_BATTLE:
 		break;
 	case POOL_CEME:
+		break;
+	case POOL_MONSTER:
+		BCard->setScaleY(0.8);
+		BCard->turnSide();
+		BCard->setPosition3D(Vec3(175-512+num%2*70,440-384+90-(num+2)/2*90,0));
 		break;
 	default:
 		break;
