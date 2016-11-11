@@ -85,7 +85,7 @@ void MyLayer2::onEnter()
 		if (i==0)
 			_battles[i] = new CBattle(_gameBoard,armorId, i,_socket,_mode,firstHand[i]);
 		else
-			_battles[i] = new CBattle(_gameBoard,warriorId, i, _socket, _mode, firstHand[i]);
+			_battles[i] = new CBattle(_gameBoard, armorId, i, _socket, _mode, firstHand[i]);
 		this->addChild(_battles[i]);	
 	}
 
