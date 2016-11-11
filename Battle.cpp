@@ -445,10 +445,11 @@ void CBattle::update(float dt)
 	{
 		if (BattleID != 0 && _battleState)
 		{
-			char c[10];
-			sprintf(c, "%d", BattleID);
-			_gameSocket->sendMsg(c);
-			_battleState = false;
+			;
+		//	char c[10];
+		//	sprintf(c, "%d", BattleID);
+		//	_gameSocket->sendMsg(c);
+		//	_battleState = false;
 		}
 
 	}
@@ -464,10 +465,12 @@ void CBattle::update(float dt)
 		{
 			int msg1;
 			sscanf(msg.c_str(), "%d", &msg1);
+			if (msg1 < 0)
+				return;
 			if (msg1 != 6000000)
 				_gameSocket->recvMsg();
 			//turnOver();
-			Command::getInstance()->sendCommand(msg1, _camp);
+			Command::getInstance()->sendCommand(msg1, _camp,false);
 			//_battleState = true;
 			//BattleID = msg1;
 			//_gameSocket->recvMsg();
