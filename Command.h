@@ -9,7 +9,7 @@ class Command
 {
 public:
 	static Command* getInstance();
-	void sendCommand(int battleID,int camp=0);
+	void sendCommand(int battleID,int camp=0,bool remote=true);
 	void setBattles(CBattle*my, CBattle*enemy);
 private:
 	CBattle*_battles[2];

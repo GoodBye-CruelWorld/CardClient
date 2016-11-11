@@ -1,6 +1,6 @@
 #include"Command.h"
 #include"GameBoard.h"
-void Command::sendCommand(int command, int camp)
+void Command::sendCommand(int command, int camp,bool remote)
 {
 		_battles[camp]->setBattleID(command);
 		switch (command / 1000000)
@@ -71,11 +71,12 @@ void Command::sendCommand(int command, int camp)
 		default:
 			break;
 		}
-		
-		char c[10];
-		sprintf(c, "%d", command);
-		_battles[camp]->_gameSocket->sendMsg(c);
-
+		if (remote)
+		{
+			char c[10];
+			sprintf(c, "%d", command);
+			_battles[camp]->_gameSocket->sendMsg(c);
+		}
 		_battles[camp]->check();
 	
 }
