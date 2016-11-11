@@ -1,6 +1,6 @@
 #include "Battle.h"
 #include "AIEnemy.h"
-
+#include "Command.h"
 CBattle::CBattle(GameBoard * gameboard,  int *cardId, int camp, GameSocket *gameSocket, bool gameMode, bool firstHand)
 {
 
@@ -464,10 +464,14 @@ void CBattle::update(float dt)
 		{
 			int msg1;
 			sscanf(msg.c_str(), "%d", &msg1);
+			if (msg1 < 0)
+				return;
 			if (msg1 != 6000000)
 				_gameSocket->recvMsg();
-			_battleState = true;
-			BattleID = msg1;
+			//turnOver();
+			Command::getInstance()->sendCommand(msg1, _camp);
+			//_battleState = true;
+			//BattleID = msg1;
 			//_gameSocket->recvMsg();
 		}
 	}
