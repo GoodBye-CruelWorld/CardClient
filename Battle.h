@@ -19,7 +19,7 @@ enum GameState{
 class CBattle: public cocos2d::Node
 {
 public:
-	CBattle(GameBoard *gameboard, int *battleID, bool * battleState,int *cardId,int camp,GameSocket *gameSocket,bool gameMode,bool firstHand);
+	CBattle(GameBoard *gameboard,int *cardId,int camp,GameSocket *gameSocket,bool gameMode,bool firstHand);
 	~CBattle();
 
 	CAIEnemy* ai;
@@ -120,7 +120,7 @@ public:
 
 	int _battleID;
 //	int *_battleID;				// 用于储存交互用的ID地址
-	bool *_battleState;			// 用户信息响应的标志
+	bool _battleState;			// 用户信息响应的标志
 	GameState _gameState;  //判断游戏进行状态
 
 
