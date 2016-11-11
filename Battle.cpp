@@ -468,6 +468,7 @@ void CBattle::update(float dt)
 			sscanf(msg.c_str(), "%d", &msg1);
 			if (msg1 < 0 || msg1 > 6000000)
 				return;
+
 			if (msg1 != 6000000)
 			{
 				_gameSocket->recvMsg();
