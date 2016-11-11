@@ -480,7 +480,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						if (_battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i) / 100 % 10 >= 1)
 							spellID = _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i);
 
-					if (!judgeAimed(RETINUE, spellID, _endID / 100 == 5 ? 4 : _endID / 100, result))
+					if (!judgeAimed(RETINUE, spellID, _endID / 100 , result))
 					{
 						break;
 					}
@@ -564,7 +564,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 						if (_battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i) / 100 % 10 >= 1)
 							spellID = _battleMy->_cardPool[POOL_HAND].at(_beginID % 10).get_spellID().at(i);
 
-					if (!judgeAimed(SPELL, spellID, _endID / 100 == 5 ? 4 : _endID / 100, result))
+					if (!judgeAimed(SPELL, spellID, _endID / 100, result))
 					{
 						break;
 					}

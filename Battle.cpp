@@ -634,13 +634,13 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 601:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10+1;
 		spelling( 2001000, srcPool, i,srcCamp);
 		break;
 	}
 	case 602:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		//Buff buff(1, 2);
 		Buff buff(1,2);
@@ -675,7 +675,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 620:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		_cardPool[POOL_BATTLE][i].heal(100);
 		spelling(1001000, POOL_BATTLE, i,srcCamp);
@@ -769,7 +769,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 710:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10 + 1;
 		Buff buff(1, 2);
 		buff._times = 3;
@@ -779,7 +779,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 711:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		Buff buff(1, 2);
 		buff._times = 7;
@@ -787,7 +787,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 712:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		Buff buff(0, 1);
 		buff._times = 1;
@@ -797,7 +797,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	}
 	case 720:{
 
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		_enemy->cardDead(i);
 		break;
@@ -810,7 +810,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 722:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		_enemy->_cardPool[POOL_BATTLE][i].damaged(6);
 		break;
@@ -859,7 +859,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	}
 	case 707:{
 		//3 damage
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
 		_gameboard->setCardProperties(POOL_BATTLE, i, !_camp, _enemy->_cardPool[POOL_BATTLE][i].getFinalHealth(), 2);
