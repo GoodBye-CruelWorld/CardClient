@@ -72,6 +72,10 @@ void Command::sendCommand(int command, int camp)
 			break;
 		}
 		
+		char c[10];
+		sprintf(c, "%d", command);
+		_battles[camp]->_gameSocket->sendMsg(c);
+
 		_battles[camp]->check();
 	
 }

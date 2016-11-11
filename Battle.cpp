@@ -448,6 +448,7 @@ void CBattle::update(float dt)
 			char c[10];
 			sprintf(c, "%d", BattleID);
 			_gameSocket->sendMsg(c);
+			_battleState = false;
 		}
 
 	}
@@ -471,7 +472,7 @@ void CBattle::update(float dt)
 		}
 	}
 
-	_battleState = false;
+	
 
 
 }
