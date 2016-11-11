@@ -448,6 +448,7 @@ void CBattle::update(float dt)
 			char c[10];
 			sprintf(c, "%d", BattleID);
 			_gameSocket->sendMsg(c);
+			_battleState = false;
 		}
 
 	}
@@ -471,7 +472,7 @@ void CBattle::update(float dt)
 		}
 	}
 
-	_battleState = false;
+	
 
 
 }
@@ -504,13 +505,13 @@ void CBattle::gameStart()
 	NULL));*/
 	if (_camp)
 	{
-		_gameboard->getActionQueue()->advance(1.5f);
+		//_gameboard->getActionQueue()->advance(1.5f);
 		this->drawCard();
-		_gameboard->getActionQueue()->advance(0.4f);
+		//_gameboard->getActionQueue()->advance(0.4f);
 		_enemy->drawCard();
-		_gameboard->getActionQueue()->advance(1.5f);
+		//_gameboard->getActionQueue()->advance(1.5f);
 		this->drawCard();
-		_gameboard->getActionQueue()->advance(0.4f);
+		//_gameboard->getActionQueue()->advance(0.4f);
 		_enemy->drawCard();
 
 
