@@ -46,7 +46,7 @@ void GameBoard::onEnter()
 
 	//创建英雄
 	initRole(1, 0);
-	initRole(0, 1);
+	initRole(1, 1);
 	//_role[0]->setAttack(1);
 	_role[0]->_hero.set_attackBattle(1);
 	//创建效果管理器
