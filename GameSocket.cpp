@@ -16,7 +16,7 @@ bool GameSocket::connect()
 	_socket->Create(AF_INET, SOCK_STREAM, 0);
 
 	//auto isConnect=_socket->Connect("127.0.0.1", 9999);  //≤‚ ‘”√
-	auto isConnect = _socket->Connect("127.0.0.1", 10000);  //≤‚ ‘”√
+	auto isConnect = _socket->Connect("223.3.113.217", 10000);  //≤‚ ‘”√
 	if (isConnect == true)
 	{
 		std::thread t1(&GameSocket::Thread, this);

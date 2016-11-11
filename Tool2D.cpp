@@ -54,6 +54,8 @@ void BattleTool2D::onEnter()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool BattleTool2D::onTouchBegan(Touch* touch, Event* event)
 {
+	if (_battleMy->_gameState != GAME_RUN)
+		return false;
 	_t_battleID = 0;
 
 	_mouseDown = true;
