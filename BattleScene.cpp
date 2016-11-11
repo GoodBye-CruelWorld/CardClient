@@ -94,6 +94,7 @@ void MyLayer2::onEnter()
 	_battles[2] = new CBattle(_gameBoard, &_battleID[1], &_battleState[1], warriorId, 2, _socket, _mode, firstHand[1]);
 	_battles[2]->setEnemy(_battles[1]);
 	_battles[2]->setWild(_battles[0]);
+	_battles[2]->addWild();
 	this->addChild(_battles[2]);
 	_battles[0]->setEnemy(_battles[1]);
 	_battles[1]->setEnemy(_battles[0]);
@@ -103,10 +104,10 @@ void MyLayer2::onEnter()
 	_battles[1]->gameStart();
 
 	
-	CCard card;
+	/*CCard card;
 	card.cardCreate(10001);
 	card.set_pos(0);
-	_battles[2]->_cardPool[POOL_BATTLE].push_back(card); 
+	_battles[2]->_cardPool[POOL_BATTLE].push_back(card); */
 	
 	//_gameBoard->addCard(card, POOL_MONSTER, 0, 0, 0);
 
@@ -115,7 +116,7 @@ void MyLayer2::onEnter()
 	Command::getInstance()->setBattles(_battles[0], _battles[1]);
 
 	/*初始化tool2D*/
-	_tool = new BattleTool2D(_gameBoard, _battles[0], _battles[1]);
+	_tool = new BattleTool2D(_gameBoard, _battles[0], _battles[1],_battles[2]);
 	addChild(_tool);
 
 	/*返回按钮*/

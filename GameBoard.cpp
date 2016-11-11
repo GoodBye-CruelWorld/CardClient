@@ -47,7 +47,8 @@ void GameBoard::onEnter()
 	//创建英雄
 	initRole(1, 0);
 	initRole(0, 1);
-
+	//_role[0]->setAttack(1);
+	_role[0]->_hero.set_attackBattle(1);
 	//创建效果管理器
 	_effect = BoardEffect::getInstance();
 	_effect->addEffect(EFFECT_DEBUFF, NULL, NULL,NULL);
@@ -58,9 +59,9 @@ void GameBoard::onEnter()
 	//addChild(_effect);
 
 	//test 
-	CCard a(0);
-	a.set_pos(0);
-	addCard(a, POOL_MONSTER, 0, 0, 0);
+	//CCard a(0);
+	//a.set_pos(0);
+	//addCard(a, POOL_MONSTER, 0, 0, 0);
 	
 	//winbg
 	_winbg = Sprite::create("bg/win.png");
@@ -449,7 +450,7 @@ void GameBoard::setCardPropertiesCallBack(int srcPool, int srcNum, int srcCamp, 
 		}
 		return;
 	}
-	auto card = _cardPools[srcPool + 4 * srcCamp].at(srcNum);
+	auto card = srcCamp == 2 ? _cardPools[POOL_MONSTER].at(srcNum) : _cardPools[srcPool + 4 * srcCamp].at(srcNum);
 	switch (type)
 	{
 	case 0:
@@ -603,6 +604,15 @@ void GameBoard::addCardCallBack(CCard &card, int cardPool, int num, int camp)
 
 void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int DestNum, int camp, CCard &newCard, int battlePlace)
 {
+	//野怪处理
+	if (camp == 2)
+	{
+		auto pool = &_cardPools[POOL_MONSTER];
+		getCard(POOL_MONSTER, SrcNum, 0)->die();
+		pool->erase(SrcNum);
+		return;
+	}
+
 	auto SrcCPool = &_cardPools[SrcPool + camp * 4];
 	auto DestCPool = &_cardPools[DestPool + camp * 4];
 	if (DestCPool->size() == 0 || DestNum>DestCPool->size()){

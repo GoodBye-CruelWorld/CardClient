@@ -1,6 +1,7 @@
 #include"BoardRole.h"
 #include"Tool.h"
 #include"HeroBuilder.h"
+#include"GameResource.h"
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //RolePhote
@@ -438,7 +439,7 @@ void RoleEquip::resetUsable()
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-//RoleRole
+//BoardRole
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 void BoardRole::onEnter()
@@ -452,7 +453,7 @@ void BoardRole::onEnter()
 	}
 }
 
-BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
+BoardRole *BoardRole::create(int RoleID)
 {
 	auto role = new (std::nothrow)BoardRole();
 	role->_chessID = RoleID;
@@ -471,14 +472,25 @@ BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
 
 
 		role->_roleWeapon = NULL;
+		role->_attackFrame = Sprite::create(s_png_battle_attack);
+		role->_attackFrame->setPosition(-45, -30);
+		role->_attackFrame->setScale(0.5);
+		role->_rolePhote->addChild(role->_attackFrame);
+
+		role->_healthFrame = Sprite::create(s_png_battle_health);
+		role->_healthFrame->setPosition(45, -30);
+		role->_healthFrame->setScale(0.5);
+		role->_rolePhote->addChild(role->_healthFrame);
 
 		role->_attackLb = Tool::createTitleLabel(45);
-		role->_attackLb->setPosition(10, 10);
+		role->_attackLb->setPosition(-45, -30);
+		role->_attackLb->setScale(0.5);
 		role->_rolePhote->addChild(role->_attackLb);
 
-		role->_healthLb = Tool::createTitleLabel(60);
-		role->_healthLb->setPosition(50, 10);
-		//role->_healthLb->setScale(3);
+		role->_healthLb = Tool::createTitleLabel(45);
+		role->_healthLb->setPosition(45, -30);
+		role->_healthLb->setScale(0.5);
+		
 		role->_rolePhote->addChild(role->_healthLb);
 
 
@@ -488,7 +500,7 @@ BoardRole *BoardRole::create(int RoleID/*,GameLibrary *_library*/)
 		role->setAttack(1);
 		role->setHealth(role->_maxHealth);
 
-
+		role->_hero.cardCreate(0);
 		role->_hero.set_health(20);
 		role->_hero.set_attack(0);
 		role->_hero.relife();
@@ -545,7 +557,7 @@ int BoardRole::getHealth()
 
 int BoardRole::getHealthData()
 {
-	return _healthData;
+	return _hero.get_healthBattle();
 }
 
 
@@ -586,7 +598,7 @@ void BoardRole::setHealth(int health, float delay)
 void BoardRole::setHealthData(int health)
 {
 
-	_healthData = health >= _maxHealth ? _maxHealth : health;
+	_hero.set_healthBattle (health >= _maxHealth ? _maxHealth : health);
 }
 
 void BoardRole::setArmor(int armor)

@@ -41,7 +41,7 @@ void Command::sendCommand(int command, int camp)
 			{
 				auto a = command / 10 % 10;
 				if (a == 5)
-					_battles[camp]->cardAttack(p, 0, 0, 2);
+					_battles[camp]->cardAttack(p, 0, command % 10, 2);
 				else
 					_battles[camp]->cardAttack(p, 0, command % 10, 1);
 				GameBoard::getInstance()->getActionQueue()->reset(false);
