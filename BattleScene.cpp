@@ -89,7 +89,7 @@ void MyLayer2::onEnter()
 		this->addChild(_battles[i]);	
 	}
 
-	_battles[2] = new CBattle(_gameBoard, &_battleID[1], &_battleState[1], warriorId, 2, _socket, _mode, firstHand[1]);
+	_battles[2] = new CBattle(_gameBoard, warriorId, 2, _socket, _mode, firstHand[1]);
 	_battles[2]->setEnemy(_battles[1]);
 	_battles[2]->setWild(_battles[0]);
 	_battles[2]->addWild();
