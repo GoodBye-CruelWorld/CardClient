@@ -304,7 +304,7 @@ void CBattle::cardAttack(int num)						//Ëæ´Ó¹¥»÷Ó¢ÐÛ ÖØÔØ+1
 	}
 	else
 		_gameboard->cardAttack(num, _camp, creAttack.getFinalHealth(), -1, !_camp, _enemy->_hero->getHealthData());
-	if (_enemy->_hero->getHealth() <= 0)
+	if (_enemy->_hero->getHealth() <= 0) 
 	{
 		_gameState = GAME_WIN;
 		_enemy->_gameState = GAME_LOSE;
