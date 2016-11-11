@@ -1,12 +1,12 @@
 #include "Battle.h"
 #include "AIEnemy.h"
 
-CBattle::CBattle(GameBoard * gameboard, int *battleID, bool * battleState, int *cardId, int camp, GameSocket *gameSocket, bool gameMode, bool firstHand)
+CBattle::CBattle(GameBoard * gameboard,  int *cardId, int camp, GameSocket *gameSocket, bool gameMode, bool firstHand)
 {
 
 	// 储存两者的指针
-	//_battleID = battleID;
-	_battleState = battleState;
+	_battleID =0;
+	_battleState = false;
 	_gameState = GAME_BEGIN;
 	_gameboard = gameboard;
 	_camp = camp;
@@ -443,7 +443,7 @@ void CBattle::update(float dt)
 	//当是己方,且为对战模式，且处于回合中,则发送命令
 	if ((!_camp) && _gameMode&&_gameState == GAME_RUN)
 	{
-		if (BattleID != 0 && *_battleState)
+		if (BattleID != 0 && _battleState)
 		{
 			char c[10];
 			sprintf(c, "%d", BattleID);
@@ -465,13 +465,13 @@ void CBattle::update(float dt)
 			sscanf(msg.c_str(), "%d", &msg1);
 			if (msg1 != 6000000)
 				_gameSocket->recvMsg();
-			*_battleState = true;
+			_battleState = true;
 			BattleID = msg1;
 			//_gameSocket->recvMsg();
 		}
 	}
 
-
+	_battleState = false;
 
 
 }
@@ -1089,6 +1089,7 @@ void CBattle::skillSpelling()
 void  CBattle::setBattleID(int battleID)
 {
 	_battleID = battleID;
+	_battleState = true;
 }
 
 void CBattle::addWild(){
