@@ -92,8 +92,13 @@ void CBattle::turning()
 	}
 	else
 	{
-		_gameSocket->recvMsg();
-		log("turning recv");
+		this->runAction(Sequence::create(
+			DelayTime::create(0.5f),
+			CallFunc::create(CC_CALLBACK_0(GameSocket::recvMsg,_gameSocket)),
+			CallFunc::create(CC_CALLBACK_0(cocos2d::log, "turning recv")),
+			NULL));
+		//_gameSocket->recvMsg();
+		//log("turning recv");
 	}
 
 }

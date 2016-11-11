@@ -32,12 +32,12 @@ void GameSocket::Thread()
 	{
 		if (_send)
 		{
-		
-			log(("is sending"+_sendMsg).c_str());
+
+			log(("is sending" + _sendMsg).c_str());
 			_socket->Send(_sendMsg.c_str(), strlen(_sendMsg.c_str()) + 1, 1);
 			_sendMsg = "";
 			_send = false;
-		
+
 		}
 		if (_recv)
 		{
