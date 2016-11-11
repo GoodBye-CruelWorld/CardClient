@@ -93,6 +93,7 @@ void CBattle::turning()
 	else
 	{
 		_gameSocket->recvMsg();
+		log("turning recv");
 	}
 
 }
@@ -465,15 +466,18 @@ void CBattle::update(float dt)
 		{
 			int msg1;
 			sscanf(msg.c_str(), "%d", &msg1);
-			if (msg1 < 0)
+			if (msg1 < 0 || msg1 > 6000000)
 				return;
 			if (msg1 != 6000000)
+			{
 				_gameSocket->recvMsg();
+				log("update-recv");
+			}
 			//turnOver();
 			Command::getInstance()->sendCommand(msg1, _camp,false);
 			//_battleState = true;
 			//BattleID = msg1;
-			//_gameSocket->recvMsg();
+		
 		}
 	}
 

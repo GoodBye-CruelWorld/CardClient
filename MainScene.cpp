@@ -82,14 +82,14 @@ void MainLayer::update(float dt)
 {
 	if (_gameState == GAME_STATE_PREPARED&&_socket->_recv == false)
 	{
-		log("received msg");
-		if (_socket->_recvMsg == "rank1")
+		
+		if (_socket->getMsg()== "rank1")
 		{
 			log("rank1");
 			_gameState = GAME_STATE_NORMAL;
 			startGame(true, true);
 		}
-		if (_socket->_recvMsg == "rank2")
+		if (_socket->getMsg()== "rank2")
 		{
 			log("rank2");
 			_gameState = GAME_STATE_NORMAL;
@@ -182,6 +182,7 @@ void MainLayer::startVersusEvent(Ref*pSender, TouchEventType type)
 		//string b = "usernameok" ;
 		//_socket->sendMsg(b);
 		_socket->recvMsg();
+
 		_gameState = GAME_STATE_PREPARED;
 
 
