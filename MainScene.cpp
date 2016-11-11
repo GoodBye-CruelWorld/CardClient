@@ -138,7 +138,7 @@ void MainLayer::startAdventureEvent(Ref*pSender, TouchEventType type)
 		break;
 	}
 }
-
+//开始练习
 void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 {
 
@@ -164,7 +164,7 @@ void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 
 
 }
-
+//开始对战
 void MainLayer::startVersusEvent(Ref*pSender, TouchEventType type)
 {
 
@@ -177,7 +177,9 @@ void MainLayer::startVersusEvent(Ref*pSender, TouchEventType type)
 		//string a = _userName->getText();
 		//if (a == "")
 		//	return;
-		//string b = "username:" + a;
+		std::string b = "username:" + _account;
+		_socket->sendMsg(b);
+		//string b = "usernameok" ;
 		//_socket->sendMsg(b);
 		_socket->recvMsg();
 		_gameState = GAME_STATE_PREPARED;
@@ -255,4 +257,10 @@ void MainLayer::setGameSocket(GameSocket* socket)
 void MainLayer::setMode(int mode)
 {
 	_mode= mode;
+}
+
+
+void MainLayer::setAccount(std::string acc)
+{
+	_account = acc;
 }

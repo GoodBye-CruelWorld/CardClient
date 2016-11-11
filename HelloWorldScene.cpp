@@ -161,11 +161,12 @@ void HelloWorld::loginEvent(Ref*pSender, TouchEventType type)
 			}
 
 
-			std::string b = "username:" + a;
-			_socket->sendMsg(b);
+		//	std::string b = "username:" + a;
+			//_socket->sendMsg(b);
 
 			Scene* s = new Scene();
 			auto l = new MainLayer();
+			l->setAccount(a);
 			l->setGameSocket(_socket);
 			s->addChild(l);
 			Director::getInstance()->replaceScene(s);

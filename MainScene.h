@@ -20,6 +20,7 @@ public:
 
 	void setGameSocket(GameSocket* socket);
 	void setMode(int mode);
+	void setAccount(std::string);
 private:
 	GameSocket *_socket;
 	int _gameState;
@@ -29,5 +30,5 @@ private:
 	Sprite *_modeImg;
 	Button *_buttons[6];
 	Sprite *_arrow;
-
+	std::string _account;
 };
