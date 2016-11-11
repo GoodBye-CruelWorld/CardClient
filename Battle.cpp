@@ -504,13 +504,13 @@ void CBattle::gameStart()
 	NULL));*/
 	if (_camp)
 	{
-		_gameboard->getActionQueue()->advance(1.5f);
+		//_gameboard->getActionQueue()->advance(1.5f);
 		this->drawCard();
-		_gameboard->getActionQueue()->advance(0.4f);
+		//_gameboard->getActionQueue()->advance(0.4f);
 		_enemy->drawCard();
-		_gameboard->getActionQueue()->advance(1.5f);
+		//_gameboard->getActionQueue()->advance(1.5f);
 		this->drawCard();
-		_gameboard->getActionQueue()->advance(0.4f);
+		//_gameboard->getActionQueue()->advance(0.4f);
 		_enemy->drawCard();
 
 

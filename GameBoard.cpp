@@ -604,6 +604,8 @@ void GameBoard::addCardCallBack(CCard &card, int cardPool, int num, int camp)
 
 void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int DestNum, int camp, CCard &newCard, int battlePlace)
 {
+	//test
+
 	//“∞π÷¥¶¿Ì
 	if (camp == 2)
 	{
