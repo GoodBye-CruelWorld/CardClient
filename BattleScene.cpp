@@ -82,12 +82,10 @@ void MyLayer2::onEnter()
 	/*≥ı ºªØBattle*/
 	for (int i = 0; i < 2; i++)
 	{
-		_battleID[i] = 0;
-		_battleState[i] = false;
 		if (i==0)
-			_battles[i] = new CBattle(_gameBoard, &_battleID[i], &_battleState[i], armorId, i,_socket,_mode,firstHand[i]);
+			_battles[i] = new CBattle(_gameBoard,armorId, i,_socket,_mode,firstHand[i]);
 		else
-			_battles[i] = new CBattle(_gameBoard, &_battleID[i], &_battleState[i],warriorId, i, _socket, _mode, firstHand[i]);
+			_battles[i] = new CBattle(_gameBoard,warriorId, i, _socket, _mode, firstHand[i]);
 		this->addChild(_battles[i]);	
 	}
 

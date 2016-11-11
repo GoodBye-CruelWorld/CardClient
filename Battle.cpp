@@ -1,12 +1,12 @@
 #include "Battle.h"
 #include "AIEnemy.h"
 
-CBattle::CBattle(GameBoard * gameboard, int *battleID, bool * battleState, int *cardId, int camp, GameSocket *gameSocket, bool gameMode, bool firstHand)
+CBattle::CBattle(GameBoard * gameboard,  int *cardId, int camp, GameSocket *gameSocket, bool gameMode, bool firstHand)
 {
 
 	// 储存两者的指针
-	//_battleID = battleID;
-	_battleState = battleState;
+	_battleID =0;
+	_battleState = false;
 	_gameState = GAME_BEGIN;
 	_gameboard = gameboard;
 	_camp = camp;
@@ -443,7 +443,7 @@ void CBattle::update(float dt)
 	//当是己方,且为对战模式，且处于回合中,则发送命令
 	if ((!_camp) && _gameMode&&_gameState == GAME_RUN)
 	{
-		if (BattleID != 0 && *_battleState)
+		if (BattleID != 0 && _battleState)
 		{
 			char c[10];
 			sprintf(c, "%d", BattleID);
@@ -465,13 +465,13 @@ void CBattle::update(float dt)
 			sscanf(msg.c_str(), "%d", &msg1);
 			if (msg1 != 6000000)
 				_gameSocket->recvMsg();
-			*_battleState = true;
+			_battleState = true;
 			BattleID = msg1;
 			//_gameSocket->recvMsg();
 		}
 	}
 
-
+	_battleState = false;
 
 
 }
@@ -634,13 +634,13 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 601:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10+1;
 		spelling( 2001000, srcPool, i,srcCamp);
 		break;
 	}
 	case 602:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		//Buff buff(1, 2);
 		Buff buff(1,2);
@@ -675,7 +675,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 620:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		_cardPool[POOL_BATTLE][i].heal(100);
 		spelling(1001000, POOL_BATTLE, i,srcCamp);
@@ -769,7 +769,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 710:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10 + 1;
 		Buff buff(1, 2);
 		buff._times = 3;
@@ -779,7 +779,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 711:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		Buff buff(1, 2);
 		buff._times = 7;
@@ -787,7 +787,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 712:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		Buff buff(0, 1);
 		buff._times = 1;
@@ -797,7 +797,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	}
 	case 720:{
 
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		_enemy->cardDead(i);
 		break;
@@ -810,7 +810,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 722:{
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		_enemy->_cardPool[POOL_BATTLE][i].damaged(6);
 		break;
@@ -859,7 +859,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	}
 	case 707:{
 		//3 damage
-		if (_camp == 1) break;
+		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
 		_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
 		_gameboard->setCardProperties(POOL_BATTLE, i, !_camp, _enemy->_cardPool[POOL_BATTLE][i].getFinalHealth(), 2);
@@ -1089,6 +1089,7 @@ void CBattle::skillSpelling()
 void  CBattle::setBattleID(int battleID)
 {
 	_battleID = battleID;
+	_battleState = true;
 }
 
 void CBattle::addWild(){
