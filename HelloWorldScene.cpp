@@ -16,6 +16,7 @@ Scene* HelloWorld::createScene()
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
 
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/Pegasus_Stinger_Fuse_Timer.mp3",true);
     // add layer as a child to scene
     scene->addChild(layer);
     // return the scene
