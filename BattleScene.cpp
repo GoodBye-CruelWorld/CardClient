@@ -67,6 +67,7 @@ void MyLayer2::onEnter()
 		warriorId[i] = rand() % 8;
 	}
 	armorId[0] = 0;
+	warriorId[0] = 0;
 	/*初始化牌库完毕*/
 
 	/*先后手顺序*/

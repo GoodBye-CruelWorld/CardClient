@@ -634,14 +634,16 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 601:{
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10+1;
+		if (_camp == 1&&_gameMode==0) i=ai->chooseCardofMaxAtk(false);
+		if (i < 0) break;
 		spelling( 2001000, srcPool, i,srcCamp);
 		break;
 	}
 	case 602:{
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		//Buff buff(1, 2);
 		Buff buff(1,2);
 		buff._times = 3;
@@ -769,8 +771,9 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 710:{
-		if (_camp == 1&&_gameMode==0) break;
-		auto i = _battleID % 10 + 1;
+		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		Buff buff(1, 2);
 		buff._times = 3;
 		_cardPool[POOL_BATTLE][i].addBuff(buff);
@@ -779,16 +782,18 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 711:{
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		Buff buff(1, 2);
 		buff._times = 7;
 		_enemy->_cardPool[POOL_BATTLE][i].addBuff(buff);
 		break;
 	}
 	case 712:{
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		Buff buff(0, 1);
 		buff._times = 1;
 		buff.setdata(0, -3, 0);
@@ -859,8 +864,9 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	}
 	case 707:{
 		//3 damage
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
 		_gameboard->setCardProperties(POOL_BATTLE, i, !_camp, _enemy->_cardPool[POOL_BATTLE][i].getFinalHealth(), 2);
 		if (_enemy->_cardPool[POOL_BATTLE][i].isDead()){
@@ -1113,3 +1119,9 @@ void CBattle::addWild(){
 		_gameboard->addCard(card, POOL_MONSTER, 0, 0, 0);
 	}
 }
+/*
+CCard& CBattle::chooseCard(int bid){
+	CBattle
+	return 
+}*/
+//10-w5-p3-e4

@@ -155,5 +155,6 @@ public:
 //	void cardAttack(Card*,Card*)
 	bool _posf[4] ;
 	void addWild();
-
+	//11.11
+	CCard& chooseCard(int);
 };
