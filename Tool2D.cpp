@@ -366,7 +366,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 
 						_battleMy->_cardPool[POOL_HAND].at(_beginID % 10).set_pos(_endID % 10);
 						//调用Cbattle类的随从召唤				
-						_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + 10 * (_endID % 10) + 03 * 10 + Number % 10;
+						_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + 100 * (_endID % 10) + 03 * 10 + Number % 10;
 					}
 					else
 						_gameboard->setCardOraginState();//还原卡牌位置	
@@ -508,7 +508,7 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 							//设置随从的实际位置
 							_battleMy->_cardPool[POOL_HAND].at(_beginID % 10).set_pos(j);
 							//设置BattleID
-							_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000 + _endID/100 * 10 +result;
+							_t_battleID = 1 * 1000000 + 01 * 10000 + _beginID % 10 * 1000+j*100 + _endID/100 * 10 +result;
 
 							break;
 						}

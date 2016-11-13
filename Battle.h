@@ -155,5 +155,14 @@ public:
 //	void cardAttack(Card*,Card*)
 	bool _posf[4] ;
 	void addWild();
+	
+	//11.13
+	int rand_wrapped();  //wrap rand() in order to send and recv msg;
+	int _randRemote;
 
+
+
+private:
+	int _randlist[5];
+	int _randPos;
 };
