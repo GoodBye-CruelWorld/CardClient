@@ -1,4 +1,6 @@
 #include"GameBoard.h"
+#include"audio\include\SimpleAudioEngine.h"
+using namespace CocosDenshion;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /************************************************************³õÊ¼»¯*******************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +146,8 @@ void GameBoard::gameBegin()
 void GameBoard::gameWin()
 {
 	this->stopAllActions();
-
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	SimpleAudioEngine::getInstance()->playEffect("bgm/Pegasus_Stinger_Alliance.mp3");
 	//²¥·ÅÕ½¶·Ê¤ÀûÒôÀÖ
 	//SimpleAudioEngine::getInstance()->playEffect("bgm/battlewin.wav");
 
@@ -169,7 +172,8 @@ void GameBoard::gameLose()
 
 	//²¥·ÅÒôÀÖ
 	//SimpleAudioEngine::getInstance()->playEffect("bgm/LOST.wav");
-
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	SimpleAudioEngine::getInstance()->playEffect("bgm/Pegasus_Stinger_Naxx_5.mp3");
 	//ÏÔÊ¾Ê§°ÜÃæ°å
 	_losebg->setVisible(true);
 	_losebg->setOpacity(0);
@@ -322,6 +326,7 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 {
 	BoardCard* srcCard, *destCard;
 
+	SimpleAudioEngine::getInstance()->playEffect("bgm/Fatigue_blade_shing.mp3");
 	if (srcOrder != 7 && destOrder != 7)
 	{
 		if (srcCamp == 2)

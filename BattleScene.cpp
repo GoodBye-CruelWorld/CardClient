@@ -51,6 +51,11 @@ void MyLayer2::onEnter()
 	Layer::onEnter();
 	auto s = Director::getInstance()->getWinSize();
 	
+	//test
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/battle.mp3",true);
+	//SimpleAudioEngine::getInstance()->playEffect("bgm/battle.mp3",true);
+	
+
 	/*初始化棋盘*/
 	_gameBoard = GameBoard::getInstance();
 	_gameBoard->setPosition(Vec2(s.width / 2, s.height / 2));
@@ -139,6 +144,7 @@ void MyLayer2::backToMain(){
 
 void MyLayer2::backToMainEvent(Ref*pSender, TouchEventType type) //返回主界面
 {
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 	switch (type)
 	{
 	case TOUCH_EVENT_ENDED:
