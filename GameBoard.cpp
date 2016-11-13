@@ -1,4 +1,7 @@
 #include"GameBoard.h"
+#include"audio\include\SimpleAudioEngine.h" //音频
+using namespace CocosDenshion;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /************************************************************初始化*******************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -605,7 +608,6 @@ void GameBoard::addCardCallBack(CCard &card, int cardPool, int num, int camp)
 void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int DestNum, int camp, CCard &newCard, int battlePlace)
 {
 	//test
-
 	//野怪处理
 	if (camp == 2)
 	{
@@ -639,6 +641,7 @@ void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int 
 	}
 	if (SrcPool == 1 && DestPool == 2)
 	{
+		SimpleAudioEngine::getInstance()->playEffect("bgm/FX_MinionSummon_Cast.mp3");
 		float delay = 0;
 		//ai操作时
 		if (camp!= 0)//当为敌方，会多出一个从手牌移到战场的动画
