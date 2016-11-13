@@ -1,6 +1,6 @@
 #include "Battle.h"
 #include "AIEnemy.h"
-
+#include "Command.h"
 CBattle::CBattle(GameBoard * gameboard,  int *cardId, int camp, GameSocket *gameSocket, bool gameMode, bool firstHand)
 {
 
@@ -92,7 +92,13 @@ void CBattle::turning()
 	}
 	else
 	{
-		_gameSocket->recvMsg();
+		this->runAction(Sequence::create(
+			DelayTime::create(0.5f),
+			CallFunc::create(CC_CALLBACK_0(GameSocket::recvMsg,_gameSocket)),
+			CallFunc::create(CC_CALLBACK_0(cocos2d::log, "turning recv")),
+			NULL));
+		//_gameSocket->recvMsg();
+		//log("turning recv");
 	}
 
 }
@@ -445,9 +451,11 @@ void CBattle::update(float dt)
 	{
 		if (BattleID != 0 && _battleState)
 		{
-			char c[10];
-			sprintf(c, "%d", BattleID);
-			_gameSocket->sendMsg(c);
+			;
+		//	char c[10];
+		//	sprintf(c, "%d", BattleID);
+		//	_gameSocket->sendMsg(c);
+		//	_battleState = false;
 		}
 
 	}
@@ -463,15 +471,23 @@ void CBattle::update(float dt)
 		{
 			int msg1;
 			sscanf(msg.c_str(), "%d", &msg1);
+			if (msg1 < 0 || msg1 > 6000000)
+				return;
+
 			if (msg1 != 6000000)
+			{
 				_gameSocket->recvMsg();
-			_battleState = true;
-			BattleID = msg1;
-			//_gameSocket->recvMsg();
+				log("update-recv");
+			}
+			//turnOver();
+			Command::getInstance()->sendCommand(msg1, _camp,false);
+			//_battleState = true;
+			//BattleID = msg1;
+		
 		}
 	}
 
-	_battleState = false;
+	
 
 
 }
@@ -504,13 +520,13 @@ void CBattle::gameStart()
 	NULL));*/
 	if (_camp)
 	{
-		_gameboard->getActionQueue()->advance(1.5f);
+		//_gameboard->getActionQueue()->advance(1.5f);
 		this->drawCard();
-		_gameboard->getActionQueue()->advance(0.4f);
+		//_gameboard->getActionQueue()->advance(0.4f);
 		_enemy->drawCard();
-		_gameboard->getActionQueue()->advance(1.5f);
+		//_gameboard->getActionQueue()->advance(1.5f);
 		this->drawCard();
-		_gameboard->getActionQueue()->advance(0.4f);
+		//_gameboard->getActionQueue()->advance(0.4f);
 		_enemy->drawCard();
 
 

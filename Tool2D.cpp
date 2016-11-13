@@ -54,6 +54,8 @@ void BattleTool2D::onEnter()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool BattleTool2D::onTouchBegan(Touch* touch, Event* event)
 {
+	if (_battleMy->_gameState != GAME_RUN)
+		return false;
 	_t_battleID = 0;
 
 	_mouseDown = true;
@@ -587,6 +589,10 @@ void  BattleTool2D::onTouchEnded(Touch* touch, Event* event)
 		
 	}
 
+	//指向性战吼的手牌使用的特殊情况，手牌未移除手牌区
+	if (_sight == 3)
+		_gameboard->setCardOraginState();
+
 	////////////////////////////////////////////////////////////////////////////////////////////////随从攻击
 	if (_beginID / 100 == 3)
 	{
@@ -643,7 +649,7 @@ void  BattleTool2D::onTouchMoved(Touch* touch, Event* event)
 {
 	Point tp = touch->getLocation();
 
-	if ((_sight != -1) && (_sight != 2))//-1表示图片正移动中，不进行其他判断
+	if ((_sight != -1) && (_sight != 2) && (_sight != 3))//-1表示图片正移动中，不进行其他判断,1表示变成准星，3表示指向性战吼手牌的使用，2表示手牌随鼠标移到
 	{
 		switch (_beginID / 100)
 		{
@@ -657,7 +663,7 @@ void  BattleTool2D::onTouchMoved(Touch* touch, Event* event)
 			}
 			else
 			{
-				_sight = 1;
+				_sight = 3;
 			}
 			break;
 		}
@@ -698,6 +704,11 @@ void  BattleTool2D::onTouchMoved(Touch* touch, Event* event)
 		}
 	}
 
+	if (_sight == 3 && tp.y > Point(1024, 768).x * 1 / 7)
+	{
+		_sight = 1;
+	}
+
 	
 	if (_sight == 1)					//设定鼠标正在移动，取消再一次的判定
 	{
@@ -706,10 +717,11 @@ void  BattleTool2D::onTouchMoved(Touch* touch, Event* event)
 		_mouseSprite->setPosition(tp);
 		_mouseSprite->setVisible(true);
 	}
+	
 	if (_sight==-1)					//_sight==-1 表示鼠标变成准星移动
 		_mouseSprite->setPosition(tp);
-	if (_sight == 2)
-		_cardSel->setPosition(tp-Vec2(1024/2,768/2));
+	if (_sight == 2 || _sight == 3)
+		_cardSel->setPosition(tp - Vec2(1024 / 2, 768 / 2));
 
 }
 

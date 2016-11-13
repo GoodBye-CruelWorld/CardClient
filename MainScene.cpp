@@ -25,14 +25,14 @@ void MainLayer::onEnter()
 	addChild(_bg);
 
 	_frame = Sprite::create(s_png_main_frame);
-	_frame->setPosition(s.width/2,s.height *0.48);
+	_frame->setPosition(s.width / 2, s.height *0.48);
 	_frame->setScaleX(0.84);
 	addChild(_frame);
 
 	auto fs = _frame->getContentSize();
 
 	_modeImg = Sprite::create(s_png_main_mode);
-	_modeImg->setPosition(fs.width/2 ,fs.height*0.87);
+	_modeImg->setPosition(fs.width / 2, fs.height*0.87);
 	_frame->addChild(_modeImg);
 
 	_arrow = Sprite::create(s_png_main_arrow);
@@ -57,10 +57,10 @@ void MainLayer::onEnter()
 		_buttons[i] = Button::create(buttonPath[i * 2], buttonPath[i * 2 + 1]);
 		_buttons[i]->setTouchEnabled(true);
 		if (i<3)
-			_buttons[i]->setPosition(Vec2(fs.width*(0.6+i*0.1), fs.height*(0.77-i*0.07)));
+			_buttons[i]->setPosition(Vec2(fs.width*(0.6 + i*0.1), fs.height*(0.77 - i*0.07)));
 		else
-			_buttons[i]->setPosition(Vec2(fs.width/2, fs.height*(0.7 - i*0.1)));
-	
+			_buttons[i]->setPosition(Vec2(fs.width / 2, fs.height*(0.7 - i*0.1)));
+
 		_frame->addChild(_buttons[i]);
 	}
 	_buttons[0]->addTouchEventListener(this, toucheventselector(MainLayer::startTrainingEvent));
@@ -138,7 +138,7 @@ void MainLayer::startAdventureEvent(Ref*pSender, TouchEventType type)
 		break;
 	}
 }
-
+//开始练习
 void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 {
 
@@ -164,7 +164,7 @@ void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 
 
 }
-
+//开始对战
 void MainLayer::startVersusEvent(Ref*pSender, TouchEventType type)
 {
 
@@ -177,7 +177,9 @@ void MainLayer::startVersusEvent(Ref*pSender, TouchEventType type)
 		//string a = _userName->getText();
 		//if (a == "")
 		//	return;
-		//string b = "username:" + a;
+		std::string b = "username:" + _account;
+		_socket->sendMsg(b);
+		//string b = "usernameok" ;
 		//_socket->sendMsg(b);
 		_socket->recvMsg();
 		_gameState = GAME_STATE_PREPARED;
@@ -254,5 +256,11 @@ void MainLayer::setGameSocket(GameSocket* socket)
 }
 void MainLayer::setMode(int mode)
 {
-	_mode= mode;
+	_mode = mode;
+}
+
+
+void MainLayer::setAccount(std::string acc)
+{
+	_account = acc;
 }
