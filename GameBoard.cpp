@@ -1,4 +1,6 @@
 #include"GameBoard.h"
+#include"audio\include\SimpleAudioEngine.h"
+using namespace CocosDenshion;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /************************************************************³õÊ¼»¯*******************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +146,8 @@ void GameBoard::gameBegin()
 void GameBoard::gameWin()
 {
 	this->stopAllActions();
-
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	SimpleAudioEngine::getInstance()->playEffect("bgm/Pegasus_Stinger_Alliance.mp3");
 	//²¥·ÅÕ½¶·Ê¤ÀûÒôÀÖ
 	//SimpleAudioEngine::getInstance()->playEffect("bgm/battlewin.wav");
 
@@ -169,7 +172,8 @@ void GameBoard::gameLose()
 
 	//²¥·ÅÒôÀÖ
 	//SimpleAudioEngine::getInstance()->playEffect("bgm/LOST.wav");
-
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	SimpleAudioEngine::getInstance()->playEffect("bgm/Pegasus_Stinger_Naxx_5.mp3");
 	//ÏÔÊ¾Ê§°ÜÃæ°å
 	_losebg->setVisible(true);
 	_losebg->setOpacity(0);
@@ -322,6 +326,7 @@ void GameBoard::cardAttackCallBack(int srcOrder, int srcCamp, int srcHealth, int
 {
 	BoardCard* srcCard, *destCard;
 
+	SimpleAudioEngine::getInstance()->playEffect("bgm/Fatigue_blade_shing.mp3");
 	if (srcOrder != 7 && destOrder != 7)
 	{
 		if (srcCamp == 2)
@@ -493,7 +498,9 @@ void GameBoard::adjustPool(int CardPool,int camp,int delay)
 		{
 			float angle, x, y;
 			auto card = _cardPools[CardPool + camp * 4].at(i);
+			card->setScale(1.2);
 			card->calculatePosAndAngle(i, size, angle, x, y, camp);
+
 			auto a = card->getRotation3D();
 			card->runAction(Sequence::create(
 				DelayTime::create(delay),
@@ -508,6 +515,7 @@ void GameBoard::adjustPool(int CardPool,int camp,int delay)
 		for (int i = 0; i < size; i++)
 		{
 			auto card = _cardPools[CardPool + camp * 4].at(i);
+			//card->setScale(1.2);
 			int place = (card->getPositionX() + 155.2) / 82.5+0.5;
 			card->runAction(MoveTo::create(0.1f, Vec2(-155.2 + place*82.5, -61 + 122 * camp)));
 			if (card->_cardside)
@@ -586,8 +594,11 @@ void GameBoard::addCardCallBack(CCard &card, int cardPool, int num, int camp)
 		BCard->setPosition3D(Vec3(285, -45 + 95 * camp, pool->size() % 30 * 1.5));
 		break;
 	case POOL_HAND:
+		BCard->turnSide();
+		adjustPool(POOL_HAND, camp, 0);
 		break;
 	case POOL_BATTLE:
+		adjustPool(POOL_BATTLE, camp, 0);
 		break;
 	case POOL_CEME:
 		break;

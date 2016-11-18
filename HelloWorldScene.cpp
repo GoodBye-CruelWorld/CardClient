@@ -16,6 +16,7 @@ Scene* HelloWorld::createScene()
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
 
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/Pegasus_Stinger_Fuse_Timer.mp3",true);
     // add layer as a child to scene
     scene->addChild(layer);
     // return the scene
@@ -153,12 +154,12 @@ void HelloWorld::loginEvent(Ref*pSender, TouchEventType type)
 				return;
 			}
 
-
-			if (!_socket->connect())
-			{
-				log("connect failed!");
-				//return;  //为了测试test
-			}
+			//测试
+			//if (!_socket->connect())
+			//{
+			//	log("connect failed!");
+			//	//return;  //为了测试test
+			//}
 
 
 		//	std::string b = "username:" + a;

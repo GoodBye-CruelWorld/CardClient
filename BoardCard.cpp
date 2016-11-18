@@ -3,6 +3,9 @@
 #include"BoardEffect.h"
 #include"BoardCardBuilder.h"
 #include"GameResource.h"
+#include"audio\include\SimpleAudioEngine.h" //音频
+using namespace CocosDenshion;
+
 //*类初始化
 void BoardCard::onEnter()
 {
@@ -119,6 +122,7 @@ void BoardCard::exploside()
 //*卡牌爆炸,销毁对象
 void BoardCard::die()
 {
+	SimpleAudioEngine::getInstance()->playEffect("bgm/CS2_050_Death_SearingTotem.mp3");
 	auto die_par = ParticleSystemQuad::create("particles/MISS.plist");
 	die_par->setPosition(_frame->getContentSize().width / 2, _frame->getContentSize().height*0.05);
 	die_par->setScale(0.2);
@@ -233,6 +237,7 @@ void BoardCard::setCurrentArmor(int CurArmor)
 //*卡牌翻面,动画长度为1s
 void BoardCard::turnSide()
 {
+
 	this->runAction(Sequence::create(RotateBy::create(0.5f, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardCard::turnSideCallback, this)), RotateBy::create(0.5f, Vec3(0, 90, 0)), NULL));
 }
 

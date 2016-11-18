@@ -241,13 +241,14 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 			srcCard = &_enemy->_cardPool[POOL_BATTLE].at(srcNum);
 	}
 
-	if (destCamp == _camp)
+	if (destCamp == 2)
+		destCard = &_wild->_cardPool[POOL_BATTLE].at(destNum);
+	else if (destCamp == _camp)
 		destCard = &_cardPool[POOL_BATTLE].at(destNum);
 	else
 		destCard = &_enemy->_cardPool[POOL_BATTLE].at(destNum);
-	if (destCamp==2)
-		destCard = &_wild->_cardPool[POOL_BATTLE].at(destNum);
-	if (srcNum!=7)
+
+	if (srcNum != 7 && destCamp != 2)
 		spellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
 	reduceAttack(*srcCard);
 
@@ -271,14 +272,11 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	//显示血量
 	int srcHealth;
 	int destHealth;
-	if (srcNum != 7)
-		srcHealth = _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth();
-	else
-		srcHealth = _hero->getHealthData();
-	if (destNum != 7)
-		destHealth = _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth();
-	else
-		destHealth = _enemy->_hero->getHealthData();
+
+	srcHealth = srcCard->getFinalHealth();
+
+	destHealth = destCard->getFinalHealth();
+
 	_gameboard->setCardProperties(POOL_BATTLE, srcNum, srcCamp ,srcHealth, 2);
 	_gameboard->setCardProperties(POOL_BATTLE, destNum,destCamp, destHealth, 2);
 
@@ -321,7 +319,7 @@ void CBattle::cardAttack(int num)						//随从攻击英雄 重载+1
 	_enemy->_hero->setHealthData(_enemy->_hero->getHealthData() - creAttack.getFinalAttack());
 
 	_gameboard->cardAttack(num, _camp, creAttack.getFinalHealth(),7, !_camp, _enemy->_hero->getHealthData());
-	if (_enemy->_hero->getHealth() <= 0)
+	if (_enemy->_hero->getHealthData() <= 0)
 	{
 		_gameState = GAME_WIN;
 		_enemy->_gameState = GAME_LOSE;
@@ -434,7 +432,19 @@ void CBattle::cardDead(int num){
 	//if (_camp<2) 
 		cardTransfer(POOL_BATTLE, POOL_CEME, num, 0);
 	//else _cardPool[POOL_BATTLE].erase(_cardPool[POOL_BATTLE].begin() + num);
-
+		//增加手牌
+		if (_camp == 2)
+		{
+			CCard ncard;
+			//无中生有
+			ncard.cardCreate(6);
+			CBattle *run;
+			if (_wild->_gameState = GAME_RUN) run = _wild; else run = _enemy;
+			//run->_cardPool[POOL_DECK].insert(_cardPool[POOL_DECK].begin(), ncard);
+			//run->drawCard();
+			run->_cardPool[POOL_HAND].push_back(ncard);
+			_gameboard->addCard(ncard, POOL_HAND, run->_cardPool[POOL_HAND].size(), run->_camp);
+		}
 	//spellCheck(13);
 	//spellCheck(card, 03);
 }
@@ -581,7 +591,9 @@ void CBattle::gameOver()
 		else if (_gameState == GAME_LOSE)
 			_gameboard->gameLose();
 	}
-}
+	else
+		_gameboard->gameLose();
+}	
 
 
 
@@ -635,7 +647,9 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		CBattle *run;
 		if (_wild->_gameState = GAME_RUN) run = _wild; else run = _enemy;
 		//run->_cardPool[POOL_DECK].insert(_cardPool[POOL_DECK].begin(), ncard);
-		run->drawCard();
+		//run->drawCard();
+		run->_cardPool[POOL_BATTLE].push_back(ncard);
+		_gameboard->addCard(ncard, POOL_HAND, _cardPool[POOL_BATTLE].size(), run->_camp);
 		break;
 	}
 	case 500:
@@ -665,14 +679,16 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 601:{
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10+1;
+		if (_camp == 1&&_gameMode==0) i=ai->chooseCardofMaxAtk(false);
+		if (i < 0) break;
 		spelling( 2001000, srcPool, i,srcCamp);
 		break;
 	}
 	case 602:{
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		//Buff buff(1, 2);
 		Buff buff(1,2);
 		buff._times = 3;
@@ -802,8 +818,9 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 710:{
-		if (_camp == 1&&_gameMode==0) break;
-		auto i = _battleID % 10 + 1;
+		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		Buff buff(1, 2);
 		buff._times = 3;
 		_cardPool[POOL_BATTLE][i].addBuff(buff);
@@ -812,16 +829,18 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		break;
 	}
 	case 711:{
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		Buff buff(1, 2);
 		buff._times = 7;
 		_enemy->_cardPool[POOL_BATTLE][i].addBuff(buff);
 		break;
 	}
 	case 712:{
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		Buff buff(0, 1);
 		buff._times = 1;
 		buff.setdata(0, -3, 0);
@@ -892,8 +911,9 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	}
 	case 707:{
 		//3 damage
-		if (_camp == 1&&_gameMode==0) break;
 		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
 		_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
 		_gameboard->setCardProperties(POOL_BATTLE, i, !_camp, _enemy->_cardPool[POOL_BATTLE][i].getFinalHealth(), 2);
 		if (_enemy->_cardPool[POOL_BATTLE][i].isDead()){
@@ -1149,8 +1169,16 @@ void CBattle::addWild(){
 
 
 
+
 int CBattle::rand_wrapped()
 {
 	return _randlist[_randPos++ % 5];
 
 }
+
+/*
+CCard& CBattle::chooseCard(int bid){
+	CBattle
+	return 
+}*/
+

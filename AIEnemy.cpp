@@ -275,3 +275,15 @@ int CAIEnemy::setPlace(){
 	while (!place[p[i]]) i++;
 	return p[i];
 }
+
+
+int CAIEnemy::chooseCardofMaxAtk(bool f){
+	auto e = f?bat->_enemy:bat;
+	if (e->_cardPool[POOL_BATTLE].size() == f?0:1) return -1;
+	int j = f?0:1;
+	for (int i = f?1:2; i < e->_cardPool[POOL_BATTLE].size(); i++){
+		if (e->_cardPool[POOL_BATTLE][i]._attackBattle > e->_cardPool[POOL_BATTLE][j]._attackBattle)
+			j = i;
+	}
+	return j;
+}

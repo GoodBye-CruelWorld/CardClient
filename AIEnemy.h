@@ -38,5 +38,7 @@ public:
 	int _atkF[5];
 	int setPlace();
 	float delayTime;	
+	//11.11
+	int chooseCardofMaxAtk(bool);
 };
 
