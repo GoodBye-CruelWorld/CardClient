@@ -15,7 +15,17 @@ CBattle::CBattle(GameBoard * gameboard,  int *cardId, int camp, GameSocket *game
 	_gameSocket = gameSocket;
 	_gameMode = gameMode;
 	_firstHand = firstHand;
+	_randRemote = -999;
 	actionPoints = ActPtsMax = 1;
+	_randlist[0] = 4;
+	_randlist[1] = 41;
+	_randlist[2] = 32;
+	_randlist[3] = 342;
+	_randlist[4] = 1;
+	_randPos = 0;
+
+
+	//_randlist = randlist;
 };
 
 void CBattle::setWild(CBattle *e){
@@ -93,7 +103,7 @@ void CBattle::turning()
 	else
 	{
 		this->runAction(Sequence::create(
-			DelayTime::create(0.5f),
+			DelayTime::create(1.5f),
 			CallFunc::create(CC_CALLBACK_0(GameSocket::recvMsg,_gameSocket)),
 			CallFunc::create(CC_CALLBACK_0(cocos2d::log, "turning recv")),
 			NULL));
@@ -141,7 +151,7 @@ void CBattle::turnOver()
 		}
 	}
 
-	if (rand() % 4 == 3) _wild->addWild();
+	if (rand_wrapped() % 4 == 3) _wild->addWild();
 
 	spellCheck(01);
 	check();
@@ -231,13 +241,14 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 			srcCard = &_enemy->_cardPool[POOL_BATTLE].at(srcNum);
 	}
 
-	if (destCamp == _camp)
+	if (destCamp == 2)
+		destCard = &_wild->_cardPool[POOL_BATTLE].at(destNum);
+	else if (destCamp == _camp)
 		destCard = &_cardPool[POOL_BATTLE].at(destNum);
 	else
 		destCard = &_enemy->_cardPool[POOL_BATTLE].at(destNum);
-	if (destCamp==2)
-		destCard = &_wild->_cardPool[POOL_BATTLE].at(destNum);
-	if (srcNum!=7)
+
+	if (srcNum != 7 && destCamp != 2)
 		spellCheck(POOL_BATTLE, srcNum, _enemy->_cardPool[POOL_BATTLE].at(destNum));
 	reduceAttack(*srcCard);
 
@@ -261,14 +272,11 @@ void CBattle::cardAttack(int srcNum, int srcCamp, int destNum, int destCamp)
 	//显示血量
 	int srcHealth;
 	int destHealth;
-	if (srcNum != 7)
-		srcHealth = _cardPool[POOL_BATTLE].at(srcNum).getFinalHealth();
-	else
-		srcHealth = _hero->getHealthData();
-	if (destNum != 7)
-		destHealth = _enemy->_cardPool[POOL_BATTLE].at(destNum).getFinalHealth();
-	else
-		destHealth = _enemy->_hero->getHealthData();
+
+	srcHealth = srcCard->getFinalHealth();
+
+	destHealth = destCard->getFinalHealth();
+
 	_gameboard->setCardProperties(POOL_BATTLE, srcNum, srcCamp ,srcHealth, 2);
 	_gameboard->setCardProperties(POOL_BATTLE, destNum,destCamp, destHealth, 2);
 
@@ -424,7 +432,19 @@ void CBattle::cardDead(int num){
 	//if (_camp<2) 
 		cardTransfer(POOL_BATTLE, POOL_CEME, num, 0);
 	//else _cardPool[POOL_BATTLE].erase(_cardPool[POOL_BATTLE].begin() + num);
-
+		//增加手牌
+		if (_camp == 2)
+		{
+			CCard ncard;
+			//无中生有
+			ncard.cardCreate(6);
+			CBattle *run;
+			if (_wild->_gameState = GAME_RUN) run = _wild; else run = _enemy;
+			//run->_cardPool[POOL_DECK].insert(_cardPool[POOL_DECK].begin(), ncard);
+			//run->drawCard();
+			run->_cardPool[POOL_HAND].push_back(ncard);
+			_gameboard->addCard(ncard, POOL_HAND, run->_cardPool[POOL_HAND].size(), run->_camp);
+		}
 	//spellCheck(13);
 	//spellCheck(card, 03);
 }
@@ -469,15 +489,20 @@ void CBattle::update(float dt)
 		string msg = _gameSocket->getMsg();
 		if (msg != "")
 		{
+
 			int msg1;
 			sscanf(msg.c_str(), "%d", &msg1);
-			if (msg1 < 0 || msg1 > 6000000)
-				return;
+
+	
+
+			//if (msg1 < 0 || msg1 > 6000000)
+			//	return;
 
 			if (msg1 != 6000000)
 			{
 				_gameSocket->recvMsg();
-				log("update-recv");
+				log(("recved msg: " + msg).c_str());
+			
 			}
 			//turnOver();
 			Command::getInstance()->sendCommand(msg1, _camp,false);
@@ -622,7 +647,9 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		CBattle *run;
 		if (_wild->_gameState = GAME_RUN) run = _wild; else run = _enemy;
 		//run->_cardPool[POOL_DECK].insert(_cardPool[POOL_DECK].begin(), ncard);
-		run->drawCard();
+		//run->drawCard();
+		run->_cardPool[POOL_BATTLE].push_back(ncard);
+		_gameboard->addCard(ncard, POOL_HAND, _cardPool[POOL_BATTLE].size(), run->_camp);
 		break;
 	}
 	case 500:
@@ -742,11 +769,13 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	}
 	case 703:{
 		int k = _enemy->_cardPool[POOL_BATTLE].size();
-		int ran = rand() % (k + 1);
+		
+		//
+		int ran = rand_wrapped() % (k + 1);
 		if (ran == k)
 			_enemy->_hero->setHealth(_enemy->_hero->getHealth() - 3);
 		else{
-			_enemy->_cardPool[POOL_BATTLE][ran].damaged(10);
+			_enemy->_cardPool[POOL_BATTLE][ran].damaged(3);
 			if (_enemy->_cardPool[POOL_BATTLE][ran].isDead()){
 				//CCard *card = &(_enemy->_cardPool[POOL_BATTLE][ran]);
 				_enemy->cardDead(ran);
@@ -1003,7 +1032,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 	{
 		for (int i = 1; i <= 15; i++)
 		{
-			int num = rand() % (_enemy->_cardPool[POOL_BATTLE].size() + 1);
+			int num = rand_wrapped() % (_enemy->_cardPool[POOL_BATTLE].size() + 1);
 			if (num == _enemy->_cardPool[POOL_BATTLE].size())
 
 			{
@@ -1137,9 +1166,19 @@ void CBattle::addWild(){
 		_gameboard->addCard(card, POOL_MONSTER, 0, 0, 0);
 	}
 }
+
+
+
+
+int CBattle::rand_wrapped()
+{
+	return _randlist[_randPos++ % 5];
+
+}
+
 /*
 CCard& CBattle::chooseCard(int bid){
 	CBattle
 	return 
 }*/
-//10-w5-p3-e4
+

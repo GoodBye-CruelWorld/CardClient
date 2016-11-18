@@ -83,13 +83,14 @@ void MainLayer::update(float dt)
 	if (_gameState == GAME_STATE_PREPARED&&_socket->_recv == false)
 	{
 		log("received msg");
-		if (_socket->_recvMsg == "rank1")
+		auto msg = _socket->getMsg();
+		if (msg== "rank1")
 		{
 			log("rank1");
 			_gameState = GAME_STATE_NORMAL;
 			startGame(true, true);
 		}
-		if (_socket->_recvMsg == "rank2")
+		if (msg == "rank2")
 		{
 			log("rank2");
 			_gameState = GAME_STATE_NORMAL;

@@ -52,7 +52,7 @@ void MyLayer2::onEnter()
 	auto s = Director::getInstance()->getWinSize();
 	
 	//test
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/battle.mp3",true);
+	//SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/battle.mp3",true);
 	//SimpleAudioEngine::getInstance()->playEffect("bgm/battle.mp3",true);
 	
 

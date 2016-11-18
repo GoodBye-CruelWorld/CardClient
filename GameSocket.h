@@ -19,8 +19,9 @@ public:
 	bool sendMsg(std::string message);  //向服务器发送信息
 	void recvMsg(); //接受信息
 	std::string getMsg();
-public:
+
 	bool _recv;
+private:
 	bool _send;
 	std::string _recvMsg;
 private:

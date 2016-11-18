@@ -498,7 +498,9 @@ void GameBoard::adjustPool(int CardPool,int camp,int delay)
 		{
 			float angle, x, y;
 			auto card = _cardPools[CardPool + camp * 4].at(i);
+			card->setScale(1.2);
 			card->calculatePosAndAngle(i, size, angle, x, y, camp);
+
 			auto a = card->getRotation3D();
 			card->runAction(Sequence::create(
 				DelayTime::create(delay),
@@ -513,6 +515,7 @@ void GameBoard::adjustPool(int CardPool,int camp,int delay)
 		for (int i = 0; i < size; i++)
 		{
 			auto card = _cardPools[CardPool + camp * 4].at(i);
+			//card->setScale(1.2);
 			int place = (card->getPositionX() + 155.2) / 82.5+0.5;
 			card->runAction(MoveTo::create(0.1f, Vec2(-155.2 + place*82.5, -61 + 122 * camp)));
 			if (card->_cardside)
@@ -591,8 +594,11 @@ void GameBoard::addCardCallBack(CCard &card, int cardPool, int num, int camp)
 		BCard->setPosition3D(Vec3(285, -45 + 95 * camp, pool->size() % 30 * 1.5));
 		break;
 	case POOL_HAND:
+		BCard->turnSide();
+		adjustPool(POOL_HAND, camp, 0);
 		break;
 	case POOL_BATTLE:
+		adjustPool(POOL_BATTLE, camp, 0);
 		break;
 	case POOL_CEME:
 		break;

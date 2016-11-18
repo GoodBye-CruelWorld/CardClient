@@ -237,6 +237,7 @@ void BoardCard::setCurrentArmor(int CurArmor)
 //*卡牌翻面,动画长度为1s
 void BoardCard::turnSide()
 {
+
 	this->runAction(Sequence::create(RotateBy::create(0.5f, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardCard::turnSideCallback, this)), RotateBy::create(0.5f, Vec3(0, 90, 0)), NULL));
 }
 

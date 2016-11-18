@@ -154,12 +154,12 @@ void HelloWorld::loginEvent(Ref*pSender, TouchEventType type)
 				return;
 			}
 
-
-			if (!_socket->connect())
-			{
-				log("connect failed!");
-				//return;  //为了测试test
-			}
+			//测试
+			//if (!_socket->connect())
+			//{
+			//	log("connect failed!");
+			//	//return;  //为了测试test
+			//}
 
 
 		//	std::string b = "username:" + a;
