@@ -28,7 +28,8 @@ void CCard::cardCreate(int num)
 
 	std::string _name = "Name", _desc = "Desc";
 
-
+	vector<char*> relust;
+	relust = _gSql.selectCardData(CARD_SPELL_4, "4");
 
 	if (num / 1000 == 0)
 	{

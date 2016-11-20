@@ -643,6 +643,44 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		}
 		break;
 	}
+	case 300:
+		for (int i = 0; i < _enemy->_cardPool[POOL_BATTLE].size(); i++){
+			if (_enemy->_cardPool[POOL_BATTLE][i]._healthBattle < _enemy->_cardPool[POOL_BATTLE][i].get_healthMax()){
+				_enemy->_cardPool[POOL_BATTLE][i].damaged(_enemy->_cardPool[POOL_BATTLE][i]._healthBattle);
+			}
+		}
+		_enemy->checkDead();
+		break;
+	case 301:
+		actionChange(-2);
+		break;
+	case 302:
+		if (spellCard.get_canAttack()) drawCard();
+		break;
+	case 303:
+		for (int i = 0; i < _cardPool[POOL_BATTLE].size(); i++){
+			_cardPool[POOL_BATTLE][i].heal(2);
+		}
+		break;
+	case 304:
+		auto i = _battleID % 10;
+		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
+		if (i < 0) break;
+		Buff buff(1, 2);
+		buff._times = 7;
+		_enemy->_cardPool[POOL_BATTLE][i].addBuff(buff);
+		_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
+		_gameboard->setCardProperties(POOL_BATTLE, i, !_camp, _enemy->_cardPool[POOL_BATTLE][i].getFinalHealth(), 2);
+		if (_enemy->_cardPool[POOL_BATTLE][i].isDead()){
+			_enemy->cardDead(i);
+		}
+		break;
+	case 305:
+		for (int i = 0; i < _enemy->_cardPool[POOL_BATTLE].size(); i++){
+			_enemy->_cardPool[POOL_BATTLE][i]._attackBattle = 1;
+			_enemy->_cardPool[POOL_BATTLE][i]._healthBattle = 1;
+		}
+		break;
 	case 400:{
 		CCard ncard;
 		//无中生有
