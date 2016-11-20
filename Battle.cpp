@@ -1138,7 +1138,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 	{
 		_hero->setHealthData(_hero->getHealthData() + 10);
 		_hero->setArmor(_hero->getArmor() + 2);
-		_hero->setAttackSkill(3);
+		_hero->setAttack(_hero->getAttack()+3);
 
 	}
 

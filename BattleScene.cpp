@@ -71,7 +71,7 @@ void MyLayer2::onEnter()
 		armorId[i] = rand() % 8 + 10000;
 		warriorId[i] = rand() % 8;
 	}
-	armorId[29] = 0;
+	/*armorId[29] = 0;
 	armorId[29] = 0;
 	armorId[29] = 0;
 	armorId[29] = 0;
@@ -80,7 +80,7 @@ void MyLayer2::onEnter()
 	warriorId[28] = 2001;
 	warriorId[27] = 3000;
 	warriorId[26] = 3001;
-	warriorId[25] = 1002;
+	warriorId[25] = 1002;*/
 	/*初始化牌库完毕*/
 
 	/*先后手顺序*/
