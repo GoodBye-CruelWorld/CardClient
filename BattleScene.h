@@ -26,6 +26,7 @@ public:
 	CREATE_FUNC(MyLayer2);
 	GameSocket *_socket;
 	bool _mode;
+	bool _boss;
 	bool _firstHand;
 private:
 	GameBoard *_gameBoard;
