@@ -14,13 +14,21 @@ Sprite* BoardCardBuilder::buildCardInBattle(int cardID)
 Sprite* BoardCardBuilder::buildCardPhote(int cardID)
 {
 	auto c = convertCardIDtoPath(cardID);
-	CCSprite * sprite = CCSprite::create(c.c_str(), CCRectMake(80, 210, 360, 360));
+	CCSprite * sprite = CCSprite::create(c.c_str(), CCRectMake(80,70, 360, 360));
 	sprite->setScale(0.15);
 
 	return sprite;
 }
 
+Sprite* BoardCardBuilder::buildCardInSet(int cardID)
+{
+	auto c = convertCardIDtoPath(cardID);
+	CCSprite * sprite = CCSprite::create(c.c_str(), CCRectMake(80, 60, 159*2, 43*4));
+	sprite->setScaleX(0.5);
+	sprite->setScaleY(0.25);
 
+	return sprite;
+}
 
 std::string BoardCardBuilder::convertCardIDtoPath(int cardID)
 {

@@ -139,14 +139,14 @@ void Book::onEnter()
 	for (int i = 0; i < _curSet; i++)
 	{
 		auto set = Sprite::create("book/cardset0.png");
-		set->setPosition(Vec2(94, 729 - i * 45));
+		set->setPosition(Vec2(94, 700 - i * 45));
 		_cardSetBar->addChild(set);
 		_cardSets.pushBack(set);
 	}
 
 	_newSetBn = Button::create("book/newset.png");
 	_newSetBn->setTouchEnabled(true);
-	_newSetBn->setPosition(Vec2(94, 729 - _curSet * 45));
+	_newSetBn->setPosition(Vec2(94, 700- _curSet * 45));
 	_cardSetBar->addChild(_newSetBn);
 	_newSetBn->addTouchEventListener(this, toucheventselector(Book::newSetEvent));
 
@@ -389,7 +389,7 @@ void Book::onTouchEnded(Touch* touch, Event* event)
 
 			auto id = convertToCardID(i);
 			if (_state)
-				addCardintoArray(_selCardSet, id);
+				addCardintoArray(id);
 			else
 				displayCard(id);
 		}
@@ -397,12 +397,12 @@ void Book::onTouchEnded(Touch* touch, Event* event)
 	//删牌
 	for (int i = 0; i < _curSize; i++)
 	{
-		if (collisionCheck(tp, _frames[i]))
+		/*if (collisionCheck(tp, _frames[i]))
 		{
 			auto id = convertToCardID(i);
 
-			delCardofArray(_selCardSet, id);
-		}
+			delCardofArray( id);
+		}*/
 	}
 
 }
@@ -461,7 +461,7 @@ void Book::initCard()
 bool Book::collisionCheck(Point p, Node *node)
 {
 	auto s = Director::getInstance()->getWinSize();
-	auto a = node->getPosition() + s / 2;
+	auto a = node->getPosition();
 	auto scale = node->getScale();
 	Node*parent = node->getParent();
 	while (parent != this)
@@ -496,39 +496,47 @@ void Book::createCardArray(string cardName, int roleID)//创建卡组，返回cardArray
 	char c[20];
 	sprintf(c, "book/cardset%d.png", roleID);
 	auto set = Sprite::create(c);
-	set->setPosition(Vec2(94, 710 - _cardSets.size() * 100));
+	set->setPosition(Vec2(94, 700 - _cardSets.size() * 100));
 	_cardSetBar->addChild(set);
 	_cardSets.pushBack(set);
-	changeCardArray(_cardSets.size() - 1);
+	_selCardSet = _cardSets.size() - 1;
+	changeCardArray();
 }
-void Book::addCardArray(int cardArrayID)						//增加卡组，添加到数据库
+void Book::addCardArray()						//增加卡组，添加到数据库
 {
-
+	//_user->addCardArray(_selCardSet);
 }
-bool Book::delCardArray(int cardArrayID)						//删除卡组
+bool Book::delCardArray()						//删除卡组
 {
-	return 2;
+//	_user->delCardArray(_selCardSet);
+	_cardSets.at(_selCardSet)->removeFromParent();
+	adjustCardSets();
+	return true;
 }
 int Book::getCardArrayNumber()								//获得所有的卡组数量
 {
-	return 2;
+	return 1;
+	return _user->getCardArrayNumber();
 }
 
-bool Book::addCardintoArray(int cardArrayID, int cardID)		//在卡组中增加卡牌
+bool Book::addCardintoArray(int cardID)		//在卡组中增加卡牌
 {
-
+	Sprite *card = BoardCardBuilder::buildCardInSet(cardID);
+	card->setPosition(94, 700-45-_cardsInSet.size()*45);
+	_cardsInSet.pushBack(card);
+	_cardSetBar->addChild(card);
 	return true;
 }
-bool Book::delCardofArray(int cardArrayID, int cardID)		//删除卡牌
+bool Book::delCardofArray(int cardID)		//删除卡牌
 {
 	return NULL;
 }
-void Book::changeCardArray(int cardArrayID)
+void Book::changeCardArray()
 {
-	_cardSets.at(cardArrayID)->runAction(MoveTo::create(0.4f, Vec2(94, 710)));
+	_cardSets.at(_selCardSet)->runAction(MoveTo::create(0.1f, Vec2(94, 700)));
 	for (int i = 0; i < _cardSets.size(); i++)
 	{
-		if (i != cardArrayID)
+		if (i != _selCardSet)
 			_cardSets.at(i)->setVisible(false);
 	}
 	_newSetBn->setVisible(false);	
@@ -536,7 +544,7 @@ void Book::changeCardArray(int cardArrayID)
 
 bool Book::addUserCard(int ID)								//增加卡牌
 {
-	return NULL;
+	return false;
 }
 
 
@@ -547,9 +555,16 @@ void Book::newSetEvent(Ref*pSender, TouchEventType type)
 	case TOUCH_EVENT_ENDED:
 	{
 		createCardArray("hello",_curRole);
+
 	}
 		break;
 	default:
 		break;
 	}
+}
+
+
+void Book::adjustCardSets()
+{
+
 }

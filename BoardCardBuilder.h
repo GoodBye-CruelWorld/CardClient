@@ -9,7 +9,7 @@ private:
 public:
 
 	static Sprite* buildCardInBattle(int cardID);
-	static Sprite* buildCardInBook(int cardID);
+	static Sprite* buildCardInSet(int cardID);
 	static Sprite* buildCardPhote(int cardID);
 	static Sprite* buildCardBack(int backID);
 };

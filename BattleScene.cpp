@@ -71,12 +71,12 @@ void MyLayer2::onEnter()
 		armorId[i] = rand() % 8 +(_boss?110000:10000);
 		warriorId[i] = rand() % 8;
 	}
-<<<<<<< HEAD
+
 	/*armorId[29] = 0;
-=======
+
 	/*
 	armorId[29] = 0;
->>>>>>> 3a8ef4bb9f5cb516ea4525d96aeb4901fad35365
+
 	armorId[29] = 0;
 	armorId[29] = 0;
 	armorId[29] = 0;

@@ -96,6 +96,7 @@ private:
 	vector<CardArrayInBook> _cardArray;
 	Sprite* _cardSetBar;
 	Vector<Sprite*> _cardSets;
+	Vector<Sprite*> _cardsInSet;
 	int _curRole;
 	int _curNum;
 	int _curType;
@@ -103,17 +104,18 @@ private:
 	//与卡组有关的函数
 public:
 	void createCardArray(string cardName, int roleID);		//创建卡组，返回cardArrayID
-	void addCardArray(int cardArrayID);						//增加卡组，添加到数据库
-	void changeCardArray(int cardArrayID);
-	bool delCardArray(int cardArrayID);						//删除卡组
+	void addCardArray();						//增加卡组，添加到数据库
+	void changeCardArray();
+	bool delCardArray();						//删除卡组
 	int getCardArrayNumber();								//获得所有的卡组数量
 
-	bool addCardintoArray(int cardArrayID, int cardID);		//在卡组中增加卡牌
-	bool delCardofArray(int cardArrayID, int cardID);		//删除卡牌
+	bool addCardintoArray(int cardID);		//在卡组中增加卡牌
+	bool delCardofArray( int cardID);		//删除卡牌
 
 	bool addUserCard(int ID);								//增加卡牌
 
 	void newSetEvent(Ref*pSender, TouchEventType type);
-
-	Button* _newSetBn;
+	void adjustCardSets();
+	Button* _newSetBn; //创建新卡组
+	Button* _completeBn;//完成卡组
 };
