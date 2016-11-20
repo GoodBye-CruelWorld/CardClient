@@ -765,9 +765,9 @@ void BoardRole::reduceWeapon(){
 	for (int i = 0; i < _equip.size(); i++){
 		if (checkWeapon(_equip[i])){
 			_equip[i]._healthBattle--;
-			/*if (_equip[i].get_spellID()[1] == 3){
+			if (_equip[i].get_spellID().size()>0&& _equip[i].get_spellID()[0] == 3){
 				_armor -= 1;
-			}*/
+			}
 			if (_equip[i]._healthBattle == 0){
 				destroy(i);
 				i--;
@@ -788,10 +788,11 @@ void BoardRole::reduceEquip(){
 }
 
 bool BoardRole::checkWBuff(int num){
-	//for (int i = 0; i < _equip.size(); i++){
-	//	if (_equip[i].get_spellID()[1] == num){
-	//		return true;
-	//	}
-	//}
+	for (int i = 0; i < _equip.size(); i++){
+		if (_equip[i].get_spellID().size()>0&&_equip[i].get_spellID()[0] == num){
+			return true;
+		}
+	}
+	
 	return false;
 }

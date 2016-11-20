@@ -14,7 +14,8 @@ void Command::sendCommand(int command, int camp,bool remote)
 		}
 		case 02:					//道具法术装备的使用
 		{
-			int p = command / 1000 % 10;
+			int p =
+				_battles[camp]->_cardPool[POOL_HAND][command / 1000 % 10].get_cardID() / 1000 % 10;
 			auto place = command / 100 % 10;
 			if (p == 1)
 				_battles[camp]->spellLaunch(POOL_HAND, command / 1000 % 10);

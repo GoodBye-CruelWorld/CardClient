@@ -123,10 +123,11 @@ void MainLayer::startAdventureEvent(Ref*pSender, TouchEventType type)
 	{
 	case TOUCH_EVENT_ENDED:
 	{
-		return;
+		//return;
 		Scene* s = new MyScene();
 		auto l = new MyLayer2();
 		l->_mode = 0;
+		l->_boss = true;
 		l->_socket = _socket;
 		s->addChild(l);
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
@@ -151,6 +152,7 @@ void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 		Scene* s = new MyScene();
 		auto l = new MyLayer2();
 		l->_mode = 0;
+		l->_boss = false;
 		l->_socket = _socket;
 		s->addChild(l);
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
