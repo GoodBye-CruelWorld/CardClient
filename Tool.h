@@ -22,7 +22,7 @@ public:
 
 
 	/*本游戏中使用的标题型字体样式*/
-	static Label*createTitleLabel(int fontSize=15);
+	static Label*createTitleLabel(int fontSize=20);
 	/*本游戏中使用的正文型字体样式*/
 	static Label*createTextLabel();
 

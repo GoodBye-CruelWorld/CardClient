@@ -31,6 +31,7 @@ public:
 	
 	virtual void onEnter()override;
 	static GameBoard* getInstance();
+	static GameBoard* getNewInstance();
 private:
 	static GameBoard *_instance;
 	GameBoard();

@@ -2,6 +2,8 @@
 #include"Tool.h"
 #include"HeroBuilder.h"
 #include"GameResource.h"
+#include"audio\include\SimpleAudioEngine.h" //音频
+using namespace CocosDenshion;
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 //RolePhote
@@ -248,9 +250,8 @@ int RoleSkill::getCost()
 void RoleWeapon::onEnter()
 {
 	Node::onEnter();
-	addChild(_weaponFrame, 1);
-	addChild(_face, 1);
-	addChild(_back, 1);
+	//addChild(_weaponFrame, 1);
+
 }
 
 RoleWeapon *RoleWeapon::create(int WeaponID/*,GameLibrary _library */)
@@ -259,15 +260,17 @@ RoleWeapon *RoleWeapon::create(int WeaponID/*,GameLibrary _library */)
 	roleWeapon->_chessID = WeaponID;
 	if (roleWeapon&&roleWeapon->init())
 	{
-
-		//roleWeapon->_face = Sprite::create(_library->getPath1(CARD_TABLE,WeaponID));s
-		roleWeapon->_face = Sprite::create("ChessBoard/chess/a.png");
-		roleWeapon->_weaponFrame = Sprite::create("ChessBoard/chess/a.png");  //装饰用
+		char c[30];
+		sprintf(c, "battleScene/weapon/%d.png", WeaponID);
+		roleWeapon->_face = Sprite::create(c);
+	//	roleWeapon->_weaponFrame = Sprite::create("ChessBoard/chess/a.png");  //装饰用
 		roleWeapon->_back = Sprite::create("ChessBoard/chess/a.png");
 		roleWeapon->_back->setVisible(false);
 		//roleWeapon->_attack = _library->getAttack(CARD_TABLE,WeaponID);
 		//roleWeapon->_useTime = _library->getUseTime(CARD_TABLE,WeaponID);
 		roleWeapon->_isUsed = false;
+		roleWeapon->addChild(roleWeapon->_face, 1);
+		roleWeapon->addChild(roleWeapon->_back, 1);
 
 		//描述
 		roleWeapon->_description = Sprite::create("ChessBoard/chess/b.png");
@@ -284,40 +287,14 @@ RoleWeapon *RoleWeapon::create(int WeaponID/*,GameLibrary _library */)
 
 RoleWeapon *RoleWeapon::create(CCard &card)
 {
-	auto roleWeapon = new (std::nothrow)RoleWeapon();
-	roleWeapon->_chessID = card.get_cardID();
-	if (roleWeapon&&roleWeapon->init())
-	{
-
-		roleWeapon->_face = Sprite::create(card.get_cardPath());
-		roleWeapon->_weaponFrame = Sprite::create("ChessBoard/chess/a.png");//装饰用
-		roleWeapon->_back = Sprite::create("ChessBoard/chess/a.png");
-
-
-		roleWeapon->_back->setVisible(false);
-		//roleWeapon->_attack = card.Attack;
-		//roleWeapon->_useTime = card.UseTime;
-		roleWeapon->_isUsed = false;
-
-		//描述
-		roleWeapon->_description = Sprite::create("ChessBoard/chess/b.png");
-		auto label = Label::create("_library->getDescription(CARD_TABLE,WeaponID)", "Arial", 20);
-		roleWeapon->_description->addChild(label);
-		roleWeapon->_description->setVisible(false);
-	}
-	else
-	{
-		CC_SAFE_DELETE(roleWeapon);
-	}
-	return roleWeapon;
+	return RoleWeapon::create(card.get_cardID());
 }
 
 void RoleWeapon::broken() //使武器损坏，即销毁
-{
-	//一个borken的动画
-	this->runAction(Sequence::create(DelayTime::create(1), CallFunc::create(CC_CALLBACK_0(RoleWeapon::removeFromParent, this)), NULL));
+{	//一个borken的动画
+	if (this)
+		this->runAction(Sequence::create(DelayTime::create(1), CallFunc::create(CC_CALLBACK_0(RoleWeapon::removeFromParent, this)), NULL));
 
-	this->autorelease();
 }
 
 void RoleWeapon::useWeapon()
@@ -387,10 +364,10 @@ RoleEquip *RoleEquip::create(CCard &card)
 	{
 
 		roleEquip->_face = Sprite::create(card.get_cardPath());
-		roleEquip->_equipFrame = Sprite::create("ChessBoard/chess/a.png");//装饰用
+		//roleEquip->_equipFrame = Sprite::create("ChessBoard/chess/a.png");//装饰用
 		roleEquip->_back = Sprite::create("ChessBoard/chess/a.png");
 
-		roleEquip->addChild(roleEquip->_equipFrame, 1);
+		//roleEquip->addChild(roleEquip->_equipFrame, 1);
 		roleEquip->addChild(roleEquip->_face, 1);
 		roleEquip->addChild(roleEquip->_back, 1);
 		roleEquip->_back->setVisible(false);
@@ -603,6 +580,10 @@ void BoardRole::setHealthData(int health)
 
 void BoardRole::setArmor(int armor)
 {
+	if (armor>_armor)
+	{
+		SimpleAudioEngine::getInstance()->playEffect(s_wav_shield);
+	}
 	_armor = armor;
 }
 
@@ -618,14 +599,14 @@ bool BoardRole::addWeapon(int ID)
 	{
 		_roleWeapon->broken();
 		_roleWeapon = RoleWeapon::create(ID);
-		_roleWeapon->setPosition(-200, 0);
+		_roleWeapon->setPosition(-300, 50);
 		addChild(_roleWeapon);
 		return true;
 	}
 	else
 	{
 		_roleWeapon = RoleWeapon::create(ID);
-		_roleWeapon->setPosition(-200, 0);
+		_roleWeapon->setPosition(-300,50);
 		addChild(_roleWeapon);
 		return false;
 	}
@@ -637,14 +618,14 @@ bool BoardRole::addWeapon(CCard &card)
 	{
 		_roleWeapon->broken();
 		_roleWeapon = RoleWeapon::create(card);
-		_roleWeapon->setPosition(-200, 0);
+		_roleWeapon->setPosition(-300, 50);
 		addChild(_roleWeapon);
 		return true;
 	}
 	else
 	{
 		_roleWeapon = RoleWeapon::create(card);
-		_roleWeapon->setPosition(-200, 0);
+		_roleWeapon->setPosition(-300, 50);
 		addChild(_roleWeapon);
 		return false;
 	}
@@ -668,14 +649,14 @@ bool BoardRole::addEquip(int ID, int num)
 	{
 		_roleEquip[num]->broken();
 		_roleEquip[num] = RoleEquip::create(ID);
-		_roleEquip[num]->setPosition(-200, 0);
+		_roleEquip[num]->setPosition(-300+num*50, 50);
 		addChild(_roleEquip[num]);
 		return true;
 	}
 	else
 	{
 		_roleEquip[num] = RoleEquip::create(ID);
-		_roleEquip[num]->setPosition(-200, 0);
+		_roleEquip[num]->setPosition(-300 + num * 50, 50);
 		addChild(_roleEquip[num]);
 		return false;
 	}
@@ -691,14 +672,14 @@ bool BoardRole::addEquip(CCard &card, int num)
 	{
 		_roleEquip[num]->broken();
 		_roleEquip[num] = RoleEquip::create(card);
-		_roleEquip[num]->setPosition(-200, 0);
+		_roleEquip[num]->setPosition(-300 + num * 50, 50);
 		addChild(_roleEquip[num]);
 		return true;
 	}
 
 
 	_roleEquip[num] = RoleEquip::create(card);
-	_roleEquip[num]->setPosition(-200, 0);
+	_roleEquip[num]->setPosition(-300 + num * 50, 50);
 	addChild(_roleEquip[num]);
 	return false;
 
@@ -759,9 +740,10 @@ void BoardRole::realAddWeapon( CCard&card ){
 	if (_equip.size()<3){
 		_equip.push_back(card);
 		_hero._attackBattle += card._attackBattle;
-		if (card.get_spellID()[1] == 3){
+
+	/*	if (card.get_spellID()[1] == 3){
 			_armor += 1;
-		}
+		}*/
 		_hero.canAttack();
 	}
 	link();
@@ -772,15 +754,20 @@ void BoardRole::destroy(int i){
 	link();
 	_hero.canAttack();
 	_equip.erase(_equip.begin() + i);
+	if (this->getWeapon() == NULL)
+		this->getEquip(i)->broken();
+	else
+		this->getWeapon()->broken();
+	
 }
 
 void BoardRole::reduceWeapon(){
 	for (int i = 0; i < _equip.size(); i++){
 		if (checkWeapon(_equip[i])){
 			_equip[i]._healthBattle--;
-			if (_equip[i].get_spellID()[1] == 3){
+			/*if (_equip[i].get_spellID()[1] == 3){
 				_armor -= 1;
-			}
+			}*/
 			if (_equip[i]._healthBattle == 0){
 				destroy(i);
 				i--;
@@ -801,10 +788,10 @@ void BoardRole::reduceEquip(){
 }
 
 bool BoardRole::checkWBuff(int num){
-	for (int i = 0; i < _equip.size(); i++){
-		if (_equip[i].get_spellID()[1] == num){
-			return true;
-		}
-	}
+	//for (int i = 0; i < _equip.size(); i++){
+	//	if (_equip[i].get_spellID()[1] == num){
+	//		return true;
+	//	}
+	//}
 	return false;
 }

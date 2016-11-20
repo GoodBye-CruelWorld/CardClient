@@ -14,6 +14,9 @@ USING_NS_CC;
 #define EFFECT_FROZEN 9
 #define EFFECT_BUFF_BOARD 10
 #define EFFECT_HEAL 11
+#define EFFECT_FOSS 12
+#define EFFECT_ARROW 13
+#define EFFECT_BOMB 14
 /*
 *@BoardEffect
 *brief a union of effects which can  be used in chessboard,including changes of board,effects manifest on the board.
@@ -43,6 +46,7 @@ public:
 	
 private:
 	ParticleSystemQuad* addParticle(std::string fileName, Node* dest, float scale=NULL, float rotation=NULL, Vec2 position=Vec2(0,0));
+	void addAnimation(std::string fileName, std::string fileType, int size,Node* dest);
 	//ParticleSystemQuad* addParticleEffect(std::string fileName,Node* dest);
 	void endCallback(Node* sender); //当特效结束后会调用这个函数
 	Vec3 effects[100];	//x=effectID,y=effectKeyTime,z=effectLastTime

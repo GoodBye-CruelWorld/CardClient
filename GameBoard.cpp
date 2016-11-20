@@ -1,4 +1,5 @@
 #include"GameBoard.h"
+#include"GameResource.h"
 #include"audio\include\SimpleAudioEngine.h"
 using namespace CocosDenshion;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,7 +21,15 @@ GameBoard* GameBoard::getInstance()
 		return _instance;
 	}
 }
+GameBoard* GameBoard::getNewInstance()
+{
+	if (_instance != NULL)
+		_instance->removeFromParent();
 
+	_instance = new GameBoard();
+	return _instance;
+	
+}
 
 void GameBoard::onEnter()
 {
@@ -47,7 +56,7 @@ void GameBoard::onEnter()
 
 
 	//创建英雄
-	initRole(1, 0);
+	initRole(0, 0);
 	initRole(1, 1);
 	//_role[0]->setAttack(1);
 	_role[0]->_hero.set_attackBattle(1);
@@ -66,19 +75,19 @@ void GameBoard::onEnter()
 	//addCard(a, POOL_MONSTER, 0, 0, 0);
 	
 	//winbg
-	_winbg = Sprite::create("bg/win.png");
+	_winbg = Sprite::create("battleScene/over/win.jpg");
 	_winbg->setVisible(false);
 	addChild(_winbg, 10);
 
 	//losebg
-	_losebg = Sprite::create("bg/lost.png");
+	_losebg = Sprite::create("battleScene/over/lose.jpg");
 	_losebg->setVisible(false);
 	addChild(_losebg, 10);
 
 	//结束按钮
 	_endTurnButton = Button::create("ChessBoard/start01.png", "", "ChessBoard/start02.png");
 	_endTurnButton->setPosition(Vec2(990-512, -8));
-	addChild(_endTurnButton,10);
+	addChild(_endTurnButton,9);
 
 	_actionQueue = new ActionQueue();
 	addChild(_actionQueue);
@@ -134,7 +143,7 @@ void GameBoard::gameBegin()
 	auto vs = Sprite::create("vs.png");
 	addChild(vs);
 	vs->setOpacity(0);
-	vs->setScale(3);
+	vs->setScale(8);
 	vs->runAction(Sequence::create(
 		Spawn::create(FadeIn::create(0.4f), ScaleTo::create(0.4, 1.f), NULL),
 		DelayTime::create(1.f),
@@ -146,6 +155,7 @@ void GameBoard::gameBegin()
 void GameBoard::gameWin()
 {
 	this->stopAllActions();
+	_actionQueue->dump();
 	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 	SimpleAudioEngine::getInstance()->playEffect("bgm/Pegasus_Stinger_Alliance.mp3");
 	//播放战斗胜利音乐
@@ -158,18 +168,19 @@ void GameBoard::gameWin()
 		ScaleTo::create(0.1f, 0.8),
 		NULL));
 
-	//黑底
-	auto dark = Sprite::create("bg/dark.png");
-	dark->setScaleY(1.5);
-	dark->setOpacity(0);
-	dark->runAction(FadeTo::create(0.3f, 255 * 0.75));
-	addChild(dark);
+	////黑底
+	//auto dark = Sprite::create("bg/dark.png");
+	//dark->setScaleY(1.5);
+	//dark->setOpacity(0);
+	//dark->runAction(FadeTo::create(0.3f, 255 * 0.75));
+	//addChild(dark);
 }
 
 void GameBoard::gameLose()
 {
 	this->stopAllActions();
-
+	_actionQueue->dump();
+	//_actionQueue->disable();
 	//播放音乐
 	//SimpleAudioEngine::getInstance()->playEffect("bgm/LOST.wav");
 	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
@@ -183,12 +194,12 @@ void GameBoard::gameLose()
 		NULL));
 
 	
-	//画面变黑
-	auto dark = Sprite::create("bg/dark.png");
-	dark->setOpacity(0);
-	dark->setPosition(_size / 2);
-	dark->runAction(FadeTo::create(2.f, 255 * 0.75));
-	addChild(dark);
+	////画面变黑
+	//auto dark = Sprite::create("bg/dark.png");
+	//dark->setOpacity(0);
+	//dark->setPosition(_size / 2);
+	//dark->runAction(FadeTo::create(2.f, 255 * 0.75));
+	//addChild(dark);
 
 }
 
@@ -642,15 +653,22 @@ void GameBoard::cardTransferCallBack(int SrcPool, int DestPool, int SrcNum, int 
 	SrcCPool->erase(SrcNum);
 
 	/*必要动画*/
+	//从牌库到手牌
 	if (SrcPool == 0 && DestPool == 1)
 	{
 		auto delay = DestCPool->at(DestNum)->transFromDeckToHand(DestNum, DestCPool->size(), camp);
 		adjustPool(SrcPool, camp, delay);
 		adjustPool(DestPool, camp, delay);
 	}
+	//从手牌到战场
 	if (SrcPool == 1 && DestPool == 2)
 	{
 		float delay = 0;
+		if (newCard.get_cardID() == 10005)
+			SimpleAudioEngine::getInstance()->playEffect(s_wav_medusa);// [] = "bgm/Shield.wav";
+		auto card = DestCPool->at(DestNum);
+		card->_laName->enableShadow(Color4B(58, 35, 10, 255 * 0.8), Size(0, -1));
+		//card->_laName->enableOutline(Color4B(0, 0, 0, 255));
 		//ai操作时
 		if (camp!= 0)//当为敌方，会多出一个从手牌移到战场的动画
 		{

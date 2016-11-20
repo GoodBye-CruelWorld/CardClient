@@ -36,6 +36,10 @@ public:
 	/**@remove:删除一个动作
 	*#未开发*/
 	void remove(int place, Action* action, Node* target, float lastTime);
+	/**@disable:使动作无效化*/
+	void disable();
+	/**@disable:使能*/
+	void enable();
 public:
 	/**@getDelayTime:获取总延迟时间.
 	*@return: float*/
@@ -67,4 +71,5 @@ private:
 
 	bool _delayAfter;
 	float _delayAfterTime;
+	bool _enable;
 };
