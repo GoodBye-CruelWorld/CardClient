@@ -9,13 +9,13 @@ extern"C"
 using namespace std;
 
 //数据库的类别
-#define SQL_CARD			0
-#define SQL_USERS			1
-#define SQL_SKILL			2
-#define SQL_ASSIGNMENT		3
-#define SQL_ACHIEVEMENT		4
-#define SQL_DIALOGUE		5
-#define SQL_ACCOUNT			6
+#define SQL_CARD						0
+#define SQL_USERS						1
+#define SQL_LINK_USERCARDARRAY			2
+#define SQL_LINK_USERCARD				3
+#define SQL_CARDARRAY					4
+#define SQL_DIALOGUE					5
+#define SQL_ACCOUNT						6
 
 
 //卡牌数据库
@@ -44,6 +44,12 @@ using namespace std;
 #define	USER_NAME			3
 #define	USER_MONEY			4
 
+//用户卡组的link以及卡组本身信息
+#define ARRAY_ID			0
+#define ARRAY_USERID		1
+#define ARRAY_ROLEID		2
+#define ARRAY_NAME			3
+
 
 //////////////////////////////////////////////////////////////////////////数据库类
 class GameSqlite
@@ -55,10 +61,14 @@ public:
 	static int loadRecord( void * para, int n_column, char ** column_value, char ** column_name);
 	int Sql_Type;
 
-	
+	//通用函数
+	void getBaseDate(int type);
 	//设置数据
 	void SetData();
 	void SetUsersData();
+	void SetCardArrayData();
+	void SetLinkUserCardData();
+	void SetLinkUserCardArrayData();
 	//获得字条数据
 	//获得卡牌的数据（单个）
 	char*			getCardData(int ID,int Type);	
@@ -68,28 +78,57 @@ public:
 	char*			getUsersData(string ID, int type);
 	char*			getUsersID(string Account);
 
+	/****************************************************/
+	//用户和卡组的link操作
+	//返回卡组ID
+	vector<int>		getUserAllArray(int UserID);
+	//获得卡组ID
+	int				getArrayID(string ArrayName);
+	//获得卡组的相关数组
+	char*			getArrayData(int ID, int Type);
+	//更新
+	void			upDateArrayData(int ID, int type, string src);
+	//增加
+	void			addCardArray(int UserID, int RoleID, string CardArrayName);	
+	//删除
+	void			delCardArray(int ID);
+
+	/**********************************************************/
+	//用户和卡牌的link操作
+	//获得用户的所有卡牌和数量×+ID
+	vector<int>		getUserAllCard(int UserID);	
+	//增加用户的卡牌
+	void			addUserCard(int CardID, int UserID);
+
+	/*********************************************************/
+	//卡组
+	//获得卡组中的所有卡，以及数量
+	vector<int>		getArrayAllCard(int ArrayID);
+	//在卡组中增加卡牌
+	void			addArrayCard(int ArrayID, int CardID);
+	//在卡组中删除卡牌
+	void			delArrayCard(int ArrayID, int CardID);
 
 
+	////插入字条
+	//void SetData(int SQL_Type, int ID, string CardName, int Cost, int Health, int Attack, string CardDescribe, int Quality, string GraphPath1, string GraphPath2, int Spell0 = 0, int Spell1 = 0, int Spell2 = 0, int Spell3 = 0);
+	////删除字条
+	//void DeleteData(int SQL_Type, int ID);
+	////卡牌
+	/////随从
+	//void GetData(int SQL_Type, int ID, string CardName, int Cost, int Health, int Attack, string CardDescribe, int Quality, int Spell0, int Spell1, int Spell2, int Spell3, string GraphPath1, string GraphPath2);
+	/////法术
+	//void GetData(int SQL_Type, int ID, string CardName, int Cost, string CardDescribe, int Quality, int Effect1, int Effect2, int Effect3, string GraphPath1, string GraphPath2);
+	/////装备
+	//void GetData(int SQL_Type, int ID, string CardName, int Health, int Attack, int Cost, string CardDescribe, int Quality, int Effect1, int Effect2, int Effect3, string GraphPath1, string GraphPath2);
 
-	//插入字条
-	void SetData(int SQL_Type, int ID, string CardName, int Cost, int Health, int Attack, string CardDescribe, int Quality, string GraphPath1, string GraphPath2, int Spell0 = 0, int Spell1 = 0, int Spell2 = 0, int Spell3 = 0);
-	//删除字条
-	void DeleteData(int SQL_Type, int ID);
-	//卡牌
-	///随从
-	void GetData(int SQL_Type, int ID, string CardName, int Cost, int Health, int Attack, string CardDescribe, int Quality, int Spell0, int Spell1, int Spell2, int Spell3, string GraphPath1, string GraphPath2);
-	///法术
-	void GetData(int SQL_Type, int ID, string CardName, int Cost, string CardDescribe, int Quality, int Effect1, int Effect2, int Effect3, string GraphPath1, string GraphPath2);
-	///装备
-	void GetData(int SQL_Type, int ID, string CardName, int Health, int Attack, int Cost, string CardDescribe, int Quality, int Effect1, int Effect2, int Effect3, string GraphPath1, string GraphPath2);
 
+	////英雄
+	//void GetData(int SQL_Type, int ID, string CharacterNmae, int SkillID1, int SkillID2, int SkillID3, string CharacterDescribe, string GraphPath);
+	////技能
+	//void GetData(int SQL_Type, int ID, string SkillName, int Cost, string SkillDiscrible, string GraphPath);
 
-	//英雄
-	void GetData(int SQL_Type, int ID, string CharacterNmae, int SkillID1, int SkillID2, int SkillID3, string CharacterDescribe, string GraphPath);
-	//技能
-	void GetData(int SQL_Type, int ID, string SkillName, int Cost, string SkillDiscrible, string GraphPath);
-
-	void GetData(int ID);
+	//void GetData(int ID);
 
 
 
