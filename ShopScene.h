@@ -25,7 +25,8 @@ public:
 	void startDrawEvent(Ref*pSender, TouchEventType type);//≥È≈∆
 
 
-
+	//∂Øª≠
+	void cummonAnime(int id);
 
 
 

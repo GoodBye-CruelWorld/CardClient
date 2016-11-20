@@ -1,5 +1,6 @@
 #include "MainScene.h"
 #include"BattleScene.h"
+#include"BookScene.h"
 USING_NS_CC;
 
 
@@ -229,7 +230,15 @@ void MainLayer::startBookEvent(Ref*pSender, TouchEventType type)
 	{
 	case TOUCH_EVENT_ENDED:
 	{
+		Scene* s = new Scene();
+		auto l = new Book();
+		l->_mode = 0;
+		l->_socket = _socket;
+		s->addChild(l);
+		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
 
+		s->release();
+		l->release();
 
 
 	}

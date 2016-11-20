@@ -5,11 +5,12 @@ USING_NS_CC;
 class BoardCardBuilder
 {
 private:
+	static std::string convertCardIDtoPath(int cardID);
 public:
 
 	static Sprite* buildCardInBattle(int cardID);
 	static Sprite* buildCardInBook(int cardID);
-	static Sprite*	buildCardPhote(int cardID);
+	static Sprite* buildCardPhote(int cardID);
 	static Sprite* buildCardBack(int backID);
 };
 

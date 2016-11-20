@@ -7,11 +7,18 @@
 //_cardTypeID 0,1,2,3 随从,法术,武器,装备
 //_cardOrder 顺序
 
+struct CardArrayInBook
+{
+	int RoleID;
+	int CardNumber[4];
+};
+
+#define CARD_SIZE 3
 class Book :public Layer
 {
 public:
 	virtual void onEnter() override;
-private:
+
 	GameSocket *_socket;
 	int _mode;
 public:
@@ -20,38 +27,41 @@ public:
 	void open();
 	void close();
 	void turnPage(int delta);
-	void scroll(bool direction);//true=上滑,false=下滑
-	void upMEQuality(int id);
+	void scroll(bool direction);//true=上滑,false=下滑 order
+
 	void leftEvent(Ref* sender, TouchEventType type);
 	void rightEvent(Ref* sender, TouchEventType type);
 	//使魔图鉴功能
 
-	void addNewME();  //增加使魔
-	void displayME(int num); //展示使魔
+	//void addNewCard();  //增加使魔
+	void displayCard(int num); //展示使魔
 	void undisplay();
-	void describeEvent();
-	void showText(int num);
-	void addStone(int MEID, int num);
-	Sprite*createMEPhote(int num);
-	void introEvent(Ref* sender, TouchEventType type);
-	void attriEvent(Ref* sender, TouchEventType type);
-	void skillEvent(Ref* sender, TouchEventType type);
-	void returnEvent(Ref* sender, TouchEventType type);
+	void initCard();
 
 
-	void initME();
 
-
-	void MEIntro();
-	void MEAttri();
-	void MESkill();
 
 	//设置图鉴状态
 	void setState(int state);
 
-	//动画
-	void cummonAnime(int id);
+	//组卡功能
+	void initCardArray();
+	void createCardSet();
+	void removeCard();
+	void addCard();
+	void chooseCardSet(int num);
+public:
+	/**@onTouchBegan:当触摸开始
+	*/
+	bool onTouchBegan(Touch* touch, Event* event);
+	/**@onTouchBegan:当触摸移动
+	*/
+	void onTouchMoved(Touch* touch, Event* event);
+	/**@onTouchBegan:当触摸结束
+	*/
+	void onTouchEnded(Touch* touch, Event* event);
 
+	bool collisionCheck(Point p, Node *node);
 public:
 	int curPage;
 	Sprite *_line;
@@ -60,26 +70,50 @@ public:
 	bool _scr;
 	//使魔图鉴
 	std::string _describe;
-	Sprite* _bgs[3], *_frames[8], *_frames2[34], *_frames3[20];
-	BoardCard *_BoardCards[8];
-	Button *_upbuttons[8];
-	Sprite* _MEs[8];
-	Sprite* _stars[8][3];
-	int _selectedME;
-	Sprite*_MEcard;
-	Sprite *_MEdetail;
-	Label*_desLb;
-	Button* _MEButtons[8];
-	Label *_stoneLbs[8];
-	int _stoneNeeds[4];
+	Sprite* _bgs[3], *_frames[CARD_SIZE];
+	Sprite *_cards[CARD_SIZE];
+	Button *_upbuttons[CARD_SIZE];
 
-	//道具图鉴
-	Sprite*_items[34];
-	Label*_reactions[20];
-	bool _own[34];
-	bool _own3[20];
-	bool _guide[2];
-	bool _state;
-	bool _new;
-	bool _initME;
+
+	BoardCard * _cardSel;
+	Sprite *_carddetail;
+	Label*_desLb;
+
+	Label *_stoneLbs[CARD_SIZE];
+
+
+	bool _state;  //判断点击效果
+	bool _initCard;
+private:
+	int convertToCardID(int num);
+	std::vector<CCard> _cardsData;
+	int _curSize;
+	int _selectedCard;
+	int _selCardSet;
+	User *_user;
+	Button *_createSet;
+	Button *_changeSet;
+	vector<CardArrayInBook> _cardArray;
+	Sprite* _cardSetBar;
+	Vector<Sprite*> _cardSets;
+	int _curRole;
+	int _curNum;
+	int _curType;
+	int _curSet;
+	//与卡组有关的函数
+public:
+	void createCardArray(string cardName, int roleID);		//创建卡组，返回cardArrayID
+	void addCardArray(int cardArrayID);						//增加卡组，添加到数据库
+	void changeCardArray(int cardArrayID);
+	bool delCardArray(int cardArrayID);						//删除卡组
+	int getCardArrayNumber();								//获得所有的卡组数量
+
+	bool addCardintoArray(int cardArrayID, int cardID);		//在卡组中增加卡牌
+	bool delCardofArray(int cardArrayID, int cardID);		//删除卡牌
+
+	bool addUserCard(int ID);								//增加卡牌
+
+	void newSetEvent(Ref*pSender, TouchEventType type);
+
+	Button* _newSetBn;
 };

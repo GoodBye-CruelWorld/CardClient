@@ -3,6 +3,27 @@
 Sprite* BoardCardBuilder::buildCardInBattle(int cardID)
 {
 	//011
+	
+	auto c = convertCardIDtoPath(cardID);
+	CCSprite * sprite = CCSprite::create(c.c_str(), CCRectMake(55, 111, 414,627));
+	sprite->setScale(0.17);
+
+	return sprite;
+}
+
+Sprite* BoardCardBuilder::buildCardPhote(int cardID)
+{
+	auto c = convertCardIDtoPath(cardID);
+	CCSprite * sprite = CCSprite::create(c.c_str(), CCRectMake(80, 210, 360, 360));
+	sprite->setScale(0.15);
+
+	return sprite;
+}
+
+
+
+std::string BoardCardBuilder::convertCardIDtoPath(int cardID)
+{
 	char c[40];
 	int a = cardID % 100;//1,2,,10
 	int b = cardID / 10000;//0,1,10,11
@@ -10,7 +31,7 @@ Sprite* BoardCardBuilder::buildCardInBattle(int cardID)
 	switch (num)
 	{
 	case 0:
-		if (b>=10)
+		if (b >= 10)
 			sprintf(c, "battleScene/card/0%d%d.png", b, a);
 		else
 			sprintf(c, "battleScene/card/%d%d.png", b, a);
@@ -27,9 +48,5 @@ Sprite* BoardCardBuilder::buildCardInBattle(int cardID)
 	default:
 		break;
 	}
-	
-	CCSprite * sprite = CCSprite::create(c, CCRectMake(55, 752-571-70, 414, 752-130+5));
-	sprite->setScale(0.17);
-
-	return sprite;
+	return c;
 }
