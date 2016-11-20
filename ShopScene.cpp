@@ -57,7 +57,7 @@ void ShopLayer::DrawCard()
 		return;
 	auto fs = Director::getInstance()->getWinSize();
 
-	int x, y, z;
+	int x, y, z;//x=Ó¢ÐÛ,y=¿¨ÅÆÖÖÀà,z=¿¨ÅÆÐòºÅ
 	while (true)
 	{
 		//Ó¢ÐÛËæ»ú

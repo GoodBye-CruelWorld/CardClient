@@ -24,7 +24,15 @@ Sprite* HeroBuilder::buildHeroSkill(int skillID)
 	case 12:
 		reflect = 20;
 		break;
-	
+	case 110:
+		reflect = 12;
+		break;
+	case 111:
+		reflect = 11;
+		break;
+	case 112:
+		reflect = 13;
+		break;
 	default:
 		break;
 	}

@@ -437,7 +437,8 @@ void CBattle::cardDead(int num){
 		{
 			CCard ncard;
 			//无中生有
-			ncard.cardCreate(6);
+			int id = rand() % 6;
+			ncard.cardCreate(id);
 			CBattle *run;
 			if (_wild->_gameState = GAME_RUN) run = _wild; else run = _enemy;
 			//run->_cardPool[POOL_DECK].insert(_cardPool[POOL_DECK].begin(), ncard);
