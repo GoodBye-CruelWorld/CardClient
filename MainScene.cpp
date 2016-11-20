@@ -123,7 +123,7 @@ void MainLayer::startAdventureEvent(Ref*pSender, TouchEventType type)
 	{
 	case TOUCH_EVENT_ENDED:
 	{
-		return;
+		
 		Scene* s = new MyScene();
 		auto l = new MyLayer2();
 		l->_mode = 0;
