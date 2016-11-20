@@ -610,8 +610,8 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		//»ñµÃ»¤¼×
 	case 001:{
 		spellCard.set_armor(spellCard.get_armor() + numX);
-		_gameboard->setCardProperties(srcPool, srcNum, _camp, spellCard.get_armor(),3);
-		break; 
+		_gameboard->setCardProperties(srcPool, srcNum, _camp, spellCard.get_armor(), 3);
+		break;
 	}
 		//
 	case 002:
@@ -663,7 +663,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		}
 		break;
 	case 304:
-		auto i = _battleID % 10;
+	{	auto i = _battleID % 10;
 		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
 		if (i < 0) break;
 		Buff buff(1, 2);
@@ -674,6 +674,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		if (_enemy->_cardPool[POOL_BATTLE][i].isDead()){
 			_enemy->cardDead(i);
 		}
+	}
 		break;
 	case 305:
 		for (int i = 0; i < _enemy->_cardPool[POOL_BATTLE].size(); i++){
