@@ -12,10 +12,12 @@ GameSqlite::GameSqlite()
 	Sql_group[6] = "";
 	
 	
-	//sqlite3_open("D://xx//cocos//Dcg_database_Card", &sql[0]);
+	//sqlite3_open("D://xx//cocos//CardGame//Resources//sql//Dcg_database_Card", &sql[0]);
+	//sqlite3_open("D://xx//cocos//CardGame//Resources//sql//Dcg_database_Users", &sql[1]);
 	sqlite3_open("sql/Dcg_database_Card", &sql[0]);
-	sqlite3_open("sql/Dcg_database_Character", &sql[1]);
-	sqlite3_open("sql/Dcg_database_Skill", &sql[2]);
+	sqlite3_open("sql/Dcg_database_Users", &sql[1]);
+	//sqlite3_open("sql/Dcg_database_Character", &sql[1]);
+	//sqlite3_open("sql/Dcg_database_Skill", &sql[2]);
 	//SetData();
 }
 
@@ -24,7 +26,8 @@ GameSqlite::~GameSqlite()
 {}
 
 //接口函数
-
+/********************************************************/
+//卡牌
 char*	GameSqlite::getCardData(int ID, int Type)
 {
 	int i = WITCHCRAFT;
@@ -83,16 +86,16 @@ vector<char *>	GameSqlite::selectCardData(int Type, string number)
 		sqlstr = "select * from sqlTable where Quality=" + number;
 		break;
 	case	CARD_SPELL_1:
-		sqlstr = "select * from sqlTable where Spell1=" + number;
+		sqlstr = "select * from sqlTable where Spell0=" + number;
 		break;
 	case	CARD_SPELL_2:
-		sqlstr = "select * from sqlTable where Spell2=" + number;
+		sqlstr = "select * from sqlTable where Spell1=" + number;
 		break;
 	case	CARD_SPELL_3:
-		sqlstr = "select * from sqlTable where Spell3=" + number;
+		sqlstr = "select * from sqlTable where Spell2=" + number;
 		break;
 	case	CARD_SPELL_4:
-		sqlstr = "select * from sqlTable where Spell4=" + number;
+		sqlstr = "select * from sqlTable where Spell3=" + number;
 		break;
 	
 		default:
@@ -125,8 +128,87 @@ vector<char *>	GameSqlite::selectCardData(int Type, string number)
 }
 
 
+/*********************************************************/
+//用户
+char* GameSqlite::getUsersID(string Account)
+{
+	char **errmsg = NULL;
 
 
+	string sqlstr;
+	//获得SQL指令
+	sqlstr = "select * from sqlTable where Account='" + Account+"'";
+
+	Sql_Type = SQL_USERS;
+
+	//获得相应ID的字段，并存入Column_Value中
+	char** Column_Value = { '\0' };
+	int count, r, c;
+	sqlite3_get_table(sql[Sql_Type], sqlstr.c_str(), &Column_Value, &r, &c, NULL);
+
+	//将Column_Value中的每个值分别存入相应的参数中
+	return Column_Value[c + CARD_ID];
+}
+
+char* GameSqlite::getUsersData(string ID, int type)
+{
+	
+	char **errmsg = NULL;
+
+	string sqlstr;
+	sqlstr = "select * from sqlTable where ID=" + ID;
+	
+	Sql_Type = SQL_USERS;
+
+
+	//获得相应ID的字段，并存入Column_Value中
+	char** Column_Value = { '\0' };
+	int count, r, c;
+	sqlite3_get_table(sql[Sql_Type], sqlstr.c_str(), &Column_Value, &r, &c, NULL);
+
+	//将Column_Value中的每个值分别存入相应的参数中
+	return Column_Value[c + type];
+
+}
+
+void GameSqlite::upDateUserData(string ID, int type, string src)
+{
+	char **errmsg = NULL;
+
+	string sqlstr;
+	switch (type)
+	{
+	case	USER_ID:
+		sqlstr = "update sqlTable set ID=" + src + " where ID=" + ID;
+		break;
+	case	USER_ACCOUNT:
+		sqlstr = "update sqlTable set Account='" + src + "' where ID=" + ID;
+		break;
+	case	USER_PASSWORD:
+		sqlstr = "update sqlTable set PassWord='" + src + "' where ID=" + ID;
+		break;
+	case	USER_NAME:
+		sqlstr = "update sqlTable set UserName='" + src + "' where ID=" + ID;
+		break;
+	case	USER_MONEY:
+		sqlstr = "update sqlTable set Money=" + src + " where ID=" + ID;
+		break;	
+
+	default:
+		break;
+	}
+
+	Sql_Type = SQL_USERS;
+
+
+	//获得相应ID的字段，并存入Column_Value中
+	char** Column_Value = { '\0' };
+	int count, r, c;
+	sqlite3_get_table(sql[Sql_Type], sqlstr.c_str(), &Column_Value, &r, &c, NULL);
+}
+
+//设置数据
+/******************************************************/
 void GameSqlite::SetData()
 {
 	//char **errmsg = NULL;
@@ -217,6 +299,22 @@ void GameSqlite::SetData()
 
 }
 /***********************************************************************************/
+//用户
+void GameSqlite::SetUsersData()
+{
+	char **errmsg = NULL;
+	sqlite3_exec(sql[1], "create table sqlTable( ID integer ,Account nvarchar(32), PassWord nvarchar(32),UserName nvarchar(32), Money integer)", NULL, NULL, errmsg);
+
+	sqlite3_exec(sql[1], "insert into sqlTable( ID ,Account, PassWord ,UserName , Money) values(0,'test1','test1','yanyiji',1000)", NULL, NULL, errmsg);
+	sqlite3_exec(sql[1], "insert into sqlTable( ID ,Account, PassWord ,UserName , Money) values(1,'test2','test2','yanyiji2',1000)", NULL, NULL, errmsg);
+
+	sqlite3_exec(sql[1], "select * from sqlTable ", GameSqlite::loadRecord, NULL, errmsg);
+}
+
+
+
+
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////

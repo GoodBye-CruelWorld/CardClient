@@ -1,5 +1,6 @@
 #pragma once
 #include"HelloWorldScene.h"
+#include"ShopScene.h"
 
 class MainLayer :public Layer
 {

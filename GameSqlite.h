@@ -9,7 +9,7 @@ using namespace std;
 
 //数据库的类别
 #define SQL_CARD			0
-#define SQL_CHARACTER		1
+#define SQL_USERS			1
 #define SQL_SKILL			2
 #define SQL_ASSIGNMENT		3
 #define SQL_ACHIEVEMENT		4
@@ -36,6 +36,13 @@ using namespace std;
 #define	CARD_GRAPHPATH_1	11
 #define	CARD_GRAPHPATH_2	12
 
+//用户数据库
+#define USER_ID				0
+#define	USER_ACCOUNT		1
+#define	USER_PASSWORD		2
+#define	USER_NAME			3
+#define	USER_MONEY			4
+
 
 //////////////////////////////////////////////////////////////////////////数据库类
 class GameSqlite
@@ -47,24 +54,26 @@ public:
 	static int loadRecord( void * para, int n_column, char ** column_value, char ** column_name);
 	int Sql_Type;
 
-	//插入字条
-	void SetData(int SQL_Type, int ID, string CardName, int Cost,int Health, int Attack, string CardDescribe, int Quality, string GraphPath1, string GraphPath2, int Spell0 = 0, int Spell1 = 0, int Spell2 = 0, int Spell3 = 0);
-	//删除字条
-	void DeleteData(int SQL_Type, int ID);
-
-	void SetData();
 	
+	//设置数据
+	void SetData();
+	void SetUsersData();
 	//获得字条数据
 	//获得卡牌的数据（单个）
-	char*			getCardData(int ID,int Type);
-	
+	char*			getCardData(int ID,int Type);	
 	vector<char*>	selectCardData(int Type, string number);
-	
+	//用户的相关操作
+	void			upDateUserData(string ID, int type, string src);
+	char*			getUsersData(string ID, int type);
+	char*			getUsersID(string Account);
 
 
 
 
-	
+	//插入字条
+	void SetData(int SQL_Type, int ID, string CardName, int Cost, int Health, int Attack, string CardDescribe, int Quality, string GraphPath1, string GraphPath2, int Spell0 = 0, int Spell1 = 0, int Spell2 = 0, int Spell3 = 0);
+	//删除字条
+	void DeleteData(int SQL_Type, int ID);
 	//卡牌
 	///随从
 	void GetData(int SQL_Type, int ID, string CardName, int Cost, int Health, int Attack, string CardDescribe, int Quality, int Spell0, int Spell1, int Spell2, int Spell3, string GraphPath1, string GraphPath2);

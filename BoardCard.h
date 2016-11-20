@@ -25,10 +25,12 @@ class BoardCard :public BoardChess
 public:
 	void initElement(CCard& card);
 	virtual void onEnter()override;
-private:
+
 	//根据卡牌类的对象来创建对象
 	static BoardCard*create(CCard &card);
-
+	//卡牌翻面
+	virtual void turnSide();
+private:
 	//设置卡牌当前生命
 	void setCurrentHealth(int curhealth);
 
@@ -53,8 +55,7 @@ private:
 	//卡牌死亡,将销毁对象
 	void die();
 
-	//卡牌翻面
-	virtual void turnSide();
+	
 
 	//*从牌库移到手牌里的动画，目前写到2张卡牌的情况
 	//*动画持续1s

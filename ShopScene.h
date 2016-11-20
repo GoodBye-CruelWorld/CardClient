@@ -1,5 +1,18 @@
 #pragma once
 #include"HelloWorldScene.h"
+#include"card.h"
+#include"boardcard.h"
+#include"Users.h"
+
+#include<vector>
+using namespace std;
+
+//CardNumber按顺序分别为随从，法术，武器，装备
+struct CardArray
+{
+	int RoleID;
+	int CardNumber[4];
+};
 
 class ShopLayer :public Layer
 {
@@ -8,26 +21,32 @@ public:
 	//模式选择
 public:
 	//start game
-	void startTrainingEvent(Ref*pSender, TouchEventType type); //练习模式
-	void startAdventureEvent(Ref*pSender, TouchEventType type); //冒险模式
-	void startVersusEvent(Ref*pSender, TouchEventType type); //对战模式
-	void startShopEvent(Ref*pSender, TouchEventType type); //商店模式
-	void startBookEvent(Ref*pSender, TouchEventType type); //图鉴模式
-	void startOptionEvent(Ref*pSender, TouchEventType type); //选项模式
+	
+	void startDrawEvent(Ref*pSender, TouchEventType type);//抽牌
 
-	void startGame(bool mode, bool firstHand); //开始游戏
-	void update(float dt);
 
-	void setGameSocket(GameSocket* socket);
-	void setMode(int mode);
-private:
+
+
+
+
 	GameSocket *_socket;
-	int _gameState;
 	int _mode;
+private:
+	
+	int _gameState;
+	
+	Label * _moneyLabel;
 	Sprite *_bg;
 	Sprite *_frame;
 	Sprite *_modeImg;
-	Button *_buttons[6];
+	Button *_drawBtn;
 	Sprite *_arrow;
 
+
+	User *_user;
+	//卡牌数组，储存每个职业每个种类的卡的数量
+	vector<CardArray> _cardArray;
+
+	void setMoneyLabel(int Money);
+	void DrawCard();//抽牌
 };
