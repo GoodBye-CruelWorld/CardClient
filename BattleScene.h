@@ -36,3 +36,5 @@ private:
 	int _battleID[2];
 	bool _battleState[2];
 };
+
+
