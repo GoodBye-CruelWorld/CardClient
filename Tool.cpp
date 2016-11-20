@@ -64,8 +64,9 @@ int Tool::getGameTime()
 Label*Tool::createTitleLabel(int size)
 {
 	auto label = Label::create("", "fonts/title.ttf", size);
-	label->enableShadow(Color4B(58, 35, 10, 255*0.8), Size(0, -0.5));
-	label->setScale(0.65);
+	label->setColor(Color3B(255, 251, 240));
+
+	label->setScale(0.5);
 
 
 	return label;
@@ -74,7 +75,7 @@ Label*Tool::createTitleLabel(int size)
 Label*Tool::createTextLabel()
 {
 	auto label = Label::create("", "fonts/title.ttf", 15);
-	label->enableShadow(Color4B(58, 35, 10, 255*0.8), Size(-0.25, -0.25));
+	label->enableShadow(Color4B(58, 35, 10, 255*0.8), Size(0, -0.5));
 	label->setColor(Color3B(127, 71, 4));
 	label->setScale(0.5);
 	return label;
@@ -82,9 +83,9 @@ Label*Tool::createTextLabel()
 
 Label*Tool::createEnglishLabel()
 {
-	auto label = Label::create("", "fonts/english.ttf", 10);
-	label->enableShadow(Color4B(58, 35, 10, 255), Size(0, -0.2));
-	label->setScale(0.7);
+	auto label = Label::create("", "fonts/english.ttf", 14);
+	label->enableShadow(Color4B(58, 35, 10, 255), Size(0, -1));
+	label->setScale(0.5);
 	
 	return label;
 }

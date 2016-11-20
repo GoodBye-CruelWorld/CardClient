@@ -96,7 +96,7 @@ void BoardCard::initElement(CCard& card)
 	//_laArmor->setString(c);
 	//setCurrentArmor(1);
 	_laArmor->setPosition(80, 29.5);
-	setCurrentArmor(_card->get_armor());
+	setCurrentArmor(_card->get_armor(),false);
 	
 	this->setContentSize(_frame->getContentSize());
 
@@ -216,8 +216,12 @@ void BoardCard::setCurrentCost(int CurCost)
 		_laCost->setColor(Color3B::WHITE);
 }
 
-void BoardCard::setCurrentArmor(int CurArmor)
+void BoardCard::setCurrentArmor(int CurArmor,bool volume)
 {
+	if (CurArmor>_curArmor&&volume)
+	{
+		SimpleAudioEngine::getInstance()->playEffect(s_wav_shield);
+	}
 	_curArmor = CurArmor;
 	if (CurArmor)
 	{

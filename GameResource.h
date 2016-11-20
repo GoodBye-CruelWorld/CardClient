@@ -43,6 +43,11 @@ static const char s_png_battle_attack[] = "battleScene/icon/attack.png";
 //技能
 
 //卡牌
+
+
+//音乐
+static const char s_wav_shield[] = "bgm/Shield.wav";
+static const char s_wav_medusa[] = "bgm/famaleDarkMagic.wav";
 /*
 static const char s_pathDragon_mod[] = "character/dra/dragon.c3b";   //带飞行动画的龙的模型
 static const char s_pathOrc_mod[] = "character/orc/orc.c3b";         //带动画的兽人模型

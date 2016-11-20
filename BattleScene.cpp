@@ -57,7 +57,7 @@ void MyLayer2::onEnter()
 	
 
 	/*初始化棋盘*/
-	_gameBoard = GameBoard::getInstance();
+	_gameBoard = GameBoard::getNewInstance();
 	_gameBoard->setPosition(Vec2(s.width / 2, s.height / 2));
 	addChild(_gameBoard);
 	/*初始化棋盘完毕*/
@@ -71,8 +71,16 @@ void MyLayer2::onEnter()
 		armorId[i] = rand() % 8 + 10000;
 		warriorId[i] = rand() % 8;
 	}
-	armorId[0] = 0;
-	warriorId[0] = 0;
+	armorId[29] = 0;
+	armorId[29] = 0;
+	armorId[29] = 0;
+	armorId[29] = 0;
+	armorId[29] = 0;
+	warriorId[29] = 2000;
+	warriorId[28] = 2001;
+	warriorId[27] = 3000;
+	warriorId[26] = 3001;
+	warriorId[25] = 1002;
 	/*初始化牌库完毕*/
 
 	/*先后手顺序*/
@@ -89,7 +97,7 @@ void MyLayer2::onEnter()
 	for (int i = 0; i < 2; i++)
 	{
 		if (i==0)
-			_battles[i] = new CBattle(_gameBoard,armorId, i,_socket,_mode,firstHand[i]);
+			_battles[i] = new CBattle(_gameBoard,warriorId, i,_socket,_mode,firstHand[i]);
 		else
 			_battles[i] = new CBattle(_gameBoard, armorId, i, _socket, _mode, firstHand[i]);
 		this->addChild(_battles[i]);	
@@ -136,6 +144,7 @@ void MyLayer2::backToMain(){
 	Scene* s = new Scene();
 	auto l = new MainLayer();
 	l->setGameSocket(_socket);
+	l->setMode(_mode);
 	s->addChild(l);
 	Director::getInstance()->replaceScene(s);
 	s->release();

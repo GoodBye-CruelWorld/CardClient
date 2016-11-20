@@ -6,6 +6,7 @@ ActionQueue::ActionQueue()
 	_curActionNum = -1;
 	_delayAfter = false;
 	_delayAfterTime = 0;
+	_enable = true;
 }
 
 void ActionQueue::push(Action* action,Node* target, float lastTime)
@@ -78,7 +79,7 @@ void ActionQueue::dump(bool stopCurAction )
 		_actions.erase(i);
 		_delays.erase(_delays.begin() + i);//¿ÉÄÜ´í
 	}
-	_delayTime = _delays[_curActionNum];
+	_delayTime =0;
 }
 
 void ActionQueue::insert(int place, Action* action, Node* target, float lastTime)

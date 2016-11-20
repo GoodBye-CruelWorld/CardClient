@@ -607,17 +607,20 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 	int numX = spell_num / 1000000, numID = spell_num % 1000000 / 1000, numChoose = spell_num / 100 % 10;
 	switch (numID)
 	{
+		//获得护甲
 	case 001:{
 		spellCard.set_armor(spellCard.get_armor() + numX);
 		_gameboard->setCardProperties(srcPool, srcNum, _camp, spellCard.get_armor(),3);
 		break; 
 	}
+		//
 	case 002:
 		spellCard.get_buffID().push_back(0000);
 		break;
 	case 003:
 		spellCard.damaged(numX);
 		break;
+		//治愈
 	case 004:
 		if (numX == 0){
 			numX = 9999;
@@ -767,20 +770,28 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		spellCard.addBuff(buff);
 		break;
 	}
-	case 703:{
+	case 703:
+	{
 		int k = _enemy->_cardPool[POOL_BATTLE].size();
 		
 		//
 		int ran = rand_wrapped() % (k + 1);
+		
 		if (ran == k)
+		{
+			_gameboard->addEffect(EFFECT_BOMB, 0, srcPool, srcNum, srcCamp, _enemy->_hero);
 			_enemy->_hero->setHealth(_enemy->_hero->getHealth() - 3);
-		else{
+		}
+		else
+			{
+			_gameboard->addEffect(EFFECT_BOMB, 0, srcPool, srcNum, srcCamp, POOL_BATTLE, ran, !_camp);
 			_enemy->_cardPool[POOL_BATTLE][ran].damaged(3);
 			if (_enemy->_cardPool[POOL_BATTLE][ran].isDead()){
 				//CCard *card = &(_enemy->_cardPool[POOL_BATTLE][ran]);
 				_enemy->cardDead(ran);
-			}
+			}	
 		}
+	
 		break;
 	}
 	case 705:{
@@ -835,6 +846,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		Buff buff(1, 2);
 		buff._times = 7;
 		_enemy->_cardPool[POOL_BATTLE][i].addBuff(buff);
+		_gameboard->addEffect(EFFECT_FOSS, 0, NULL, POOL_BATTLE, i, !_camp);
 		break;
 	}
 	case 712:{
@@ -915,6 +927,7 @@ void CBattle::spelling(int spell_num,int srcPool,int srcNum,int srcCamp){
 		if (_camp == 1 && _gameMode == 0) i = ai->chooseCardofMaxAtk(true);
 		if (i < 0) break;
 		_enemy->_cardPool[POOL_BATTLE][i].damaged(2);
+		_gameboard->addEffect(EFFECT_ARROW, 0, srcPool,srcNum,srcCamp, POOL_BATTLE, i, !_camp);
 		_gameboard->setCardProperties(POOL_BATTLE, i, !_camp, _enemy->_cardPool[POOL_BATTLE][i].getFinalHealth(), 2);
 		if (_enemy->_cardPool[POOL_BATTLE][i].isDead()){
 			//CCard *card = &(_enemy->_cardPool[POOL_BATTLE][ran]);

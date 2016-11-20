@@ -27,6 +27,9 @@ void BoardEffect::initEffectsInfo()
 	effects[EFFECT_FIREBALL].z = 1.f;
 	effects[EFFECT_FIRE_FLASH].y = 0.8f;
 	effects[EFFECT_FIRE_FLASH].z = 1.f;
+	effects[EFFECT_BIT].z = 0.8f;
+	effects[EFFECT_BOMB].z = 1.8f;
+	effects[EFFECT_BOMB].y = 1.8f;
 }
 float BoardEffect::getKeyTimeOfEffect(int effectID)
 {
@@ -100,27 +103,28 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 		break;
 	case EFFECT_BIT:
 	{
-		Animation *animation = Animation::create();
-		auto node = Sprite::create();
-		for (int i = 0; i < 4; i++)
-		{
-			char szName[50] = { 0 };
-			sprintf(szName, "effects/png/%d.png", i);
-			animation->addSpriteFrameWithFile(szName);
-		}
-		// should last 2.8 seconds. And there are 14 frames.
-		animation->setDelayPerUnit(0.2f / 4.0f);
-		animation->setRestoreOriginalFrame(true);
+		addAnimation("effects/png/bit/", ".png", 4, dest);
+		//Animation *animation = Animation::create();
+		//auto node = Sprite::create();
+		//for (int i = 0; i < 4; i++)
+		//{
+		//	char szName[50] = { 0 };
+		//	sprintf(szName, "effects/png/%d.png", i);
+		//	animation->addSpriteFrameWithFile(szName);
+		//}
+		//// should last 2.8 seconds. And there are 14 frames.
+		//animation->setDelayPerUnit(0.2f / 4.0f);
+		//animation->setRestoreOriginalFrame(true);
 
-		auto action = Animate::create(animation);
-		action->retain();
-		node->runAction(Sequence::create(
-			//DelayTime::create(delay),
-			action,
-			CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, node)),
-			NULL));
-		node->setScale(0.7);
-		dest->addChild(node);
+		//auto action = Animate::create(animation);
+		//action->retain();
+		//node->runAction(Sequence::create(
+		//	//DelayTime::create(delay),
+		//	action,
+		//	CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, node)),
+		//	NULL));
+		//node->setScale(0.7);
+		//dest->addChild(node);
 	}
 		break;
 		//卡牌增益时的特效
@@ -162,6 +166,22 @@ void BoardEffect::addEffect(int effectID, float lastTime, Node *src, Node*dest)
 
 	}
 		break;
+	case EFFECT_FOSS:
+	{
+		auto d = (BoardCard*)dest;
+		d->_frame->setColor(Color3B(213, 193, 119));
+	}
+		break;
+	case EFFECT_BOMB:
+	{
+		addAnimation("effects/png/fireBomb/BOMB300", ".png", 9, dest);
+	}
+		break;
+	case EFFECT_ARROW:
+	{
+		addAnimation("effects/png/fireBomb/BOMB300", ".png", 9, dest);
+	}
+		break;
 	default:
 		break;
 	}
@@ -193,4 +213,29 @@ ParticleSystemQuad* BoardEffect::addParticle(std::string fileName, Node* dest, f
 
 	GameBoard::getInstance()->addChild(par, EFFECT_LAYER);
 	return par;
+}
+
+void BoardEffect::addAnimation(std::string fileName, std::string fileType, int size, Node* dest)
+{
+	Animation *animation = Animation::create();
+	auto node = Sprite::create();
+	for (int i = 0; i < size; i++)
+	{
+		char szName[50] = { 0 };
+		sprintf(szName, "%s%d%s",fileName.c_str(),i,fileType.c_str());
+		animation->addSpriteFrameWithFile(szName);
+	}
+	
+	animation->setDelayPerUnit(0.2f / 4.0f);
+	animation->setRestoreOriginalFrame(true);
+
+	auto action = Animate::create(animation);
+	action->retain();
+	node->runAction(Sequence::create(
+		//DelayTime::create(delay),
+		action,
+		CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, node)),
+		NULL));
+	//node->setScale(0.7);
+	dest->addChild(node);
 }

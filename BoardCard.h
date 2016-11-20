@@ -39,7 +39,7 @@ private:
 	void setCurrentCost(int curcost);  
 	
 	//设置卡牌当前护甲
-	void setCurrentArmor(int curArmor);
+	void setCurrentArmor(int curArmor,bool volume=true);
 
 	//获取卡牌当前护甲
 	int getCurrentArmor();
@@ -81,9 +81,10 @@ private:
 
 	CCard *_card;
 	bool _cardside;
+public:
 	Sprite *_frame;
 
-//private:
+private:
 	void calculatePosAndAngle(int place,int size,float &angle,float &x,float &y,int camp=0);
 private:
 	
