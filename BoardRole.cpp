@@ -450,22 +450,24 @@ BoardRole *BoardRole::create(int RoleID)
 
 		role->_roleWeapon = NULL;
 		role->_attackFrame = Sprite::create(s_png_battle_attack);
-		role->_attackFrame->setPosition(-45, -30);
+		role->_attackFrame->setPosition(-65, 0);
 		role->_attackFrame->setScale(0.5);
+		role->_attackFrame->setVisible(false);
 		role->_rolePhote->addChild(role->_attackFrame);
 
 		role->_healthFrame = Sprite::create(s_png_battle_health);
-		role->_healthFrame->setPosition(45, -30);
+		role->_healthFrame->setPosition(65, 0);
 		role->_healthFrame->setScale(0.5);
 		role->_rolePhote->addChild(role->_healthFrame);
 
 		role->_attackLb = Tool::createTitleLabel(45);
-		role->_attackLb->setPosition(-45, -30);
+		role->_attackLb->setPosition(-65, 0);
 		role->_attackLb->setScale(0.5);
+		role->_attackLb->setVisible(false);
 		role->_rolePhote->addChild(role->_attackLb);
 
 		role->_healthLb = Tool::createTitleLabel(45);
-		role->_healthLb->setPosition(45, -30);
+		role->_healthLb->setPosition(65, 0);
 		role->_healthLb->setScale(0.5);
 		
 		role->_rolePhote->addChild(role->_healthLb);
@@ -516,13 +518,17 @@ int BoardRole::getAttack()
 
 void BoardRole::setAttack(int attack)
 {
+	_attackFrame->setVisible(true);
 	_attackLb->setVisible(true);
 	_attack = attack;
 	char c[10];
 	sprintf(c, "%d", _attack);
 	_attackLb->setString(c);
 	if (_attack == 0)
+	{
 		_attackLb->setVisible(false);
+		_attackFrame->setVisible(false);
+	}
 }
 
 

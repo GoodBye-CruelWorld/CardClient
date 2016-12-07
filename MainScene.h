@@ -22,6 +22,8 @@ public:
 	void setGameSocket(GameSocket* socket);
 	void setMode(int mode);
 	void setAccount(std::string);
+
+	User *_user;
 private:
 	GameSocket *_socket;
 	int _gameState;

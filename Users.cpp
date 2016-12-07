@@ -76,14 +76,14 @@ void User::setData(string Account)
 }
 
 
-int			User::createCardArray(string cardName, int roleID)		//创建卡组，返回cardArrayID即在数组中的位置
+int	User::createCardArray(string cardName, int roleID)		//创建卡组，返回cardArrayID即在数组中的位置
 {
 	USERCardArray array;
 	array._arrayName = cardName;
 	array._roleID = roleID;
 	array._cardNumber = 0;
 	_cardArraySet.push_back(array);
-	return _cardArraySet.size();
+	return _cardArraySet.size()-1;
 }
 void		User::addCardArray(int cardArrayID)						//增加卡组，添加到数据库
 {
@@ -102,15 +102,19 @@ bool		User::delCardArray(int cardArrayID)						//删除卡组
 	_sql.delCardArray(_cardArrayID);
 	return true;
 }
-int			User::getCardArrayNumber()								//获得所有的卡组数量
+int	User::getCardArrayNumber()								//获得所有的卡组数量
 {
+
+	
 	return _cardArraySet.size();
 }
+
+
 vector<int> User::getCardformArray(int cardArrayID)					//获得当前卡组的所有卡
 {
 	return _cardArraySet.at(cardArrayID)._cardID;
 }
-bool		User::addCardintoArray(int cardArrayID, int cardID)		//在卡组中增加卡牌
+bool User::addCardintoArray(int cardArrayID, int cardID)		//在卡组中增加卡牌
 {
 	if (_cardArraySet.at(cardArrayID)._cardNumber >= _cardArraySet.at(cardArrayID)._cardNumberMax)
 		return false;

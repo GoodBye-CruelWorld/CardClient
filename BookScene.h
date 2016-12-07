@@ -13,7 +13,7 @@ struct CardArrayInBook
 	int CardNumber[4];
 };
 
-#define CARD_SIZE 3
+#define CARD_SIZE 30
 class Book :public Layer
 {
 public:
@@ -38,8 +38,8 @@ public:
 	void undisplay();
 	void initCard();
 
-
-
+	void clearCurPage();
+	void showPage();
 
 	//设置图鉴状态
 	void setState(int state);
@@ -62,6 +62,7 @@ public:
 	void onTouchEnded(Touch* touch, Event* event);
 
 	bool collisionCheck(Point p, Node *node);
+	void backEvent(Ref*pSender, TouchEventType type);
 public:
 	int curPage;
 	Sprite *_line;
@@ -90,9 +91,10 @@ private:
 	int _curSize;
 	int _selectedCard;
 	int _selCardSet;
-	User *_user;
+
 	Button *_createSet;
 	Button *_changeSet;
+	Button *_finishSet;
 	vector<CardArrayInBook> _cardArray;
 	Sprite* _cardSetBar;
 	Vector<Sprite*> _cardSets;
@@ -103,19 +105,22 @@ private:
 	int _curSet;
 	//与卡组有关的函数
 public:
+	User *_user;
 	void createCardArray(string cardName, int roleID);		//创建卡组，返回cardArrayID
 	void addCardArray();						//增加卡组，添加到数据库
 	void changeCardArray();
 	bool delCardArray();						//删除卡组
 	int getCardArrayNumber();								//获得所有的卡组数量
 
-	bool addCardintoArray(int cardID);		//在卡组中增加卡牌
+	bool addCardintoArray(int cardID,bool sql=false);		//在卡组中增加卡牌
 	bool delCardofArray( int cardID);		//删除卡牌
 
 	bool addUserCard(int ID);								//增加卡牌
-
+	void finishSet();
 	void newSetEvent(Ref*pSender, TouchEventType type);
+	void finishSetEvent(Ref*pSender, TouchEventType type);
 	void adjustCardSets();
 	Button* _newSetBn; //创建新卡组
 	Button* _completeBn;//完成卡组
+	Button* _undisplayBn;
 };

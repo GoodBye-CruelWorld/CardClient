@@ -1,6 +1,6 @@
 #include"ShopScene.h"
-
-
+#include"Tool.h"
+#include"MainScene.h"
 
 
 
@@ -8,7 +8,7 @@ void ShopLayer::onEnter()
 {
 	Layer::onEnter();
 
-	auto fs = Director::getInstance()->getWinSize();
+	auto s = Director::getInstance()->getWinSize();
 
 	//初始化卡牌数组
 	CardArray a1 = { 0, { 9, 3, 2, 2 } };
@@ -18,19 +18,60 @@ void ShopLayer::onEnter()
 	_cardArray.push_back(a2);
 	_cardArray.push_back(a3);
 	
+
+	//定义背景
+	auto bg = Sprite::create("book/bg0.jpg");
+	bg->setPosition(s / 2);
+	addChild(bg);
+
+	//黑色蒙版
+	auto dark= Sprite::create("book/dark.png");
+	dark->setPosition(s / 2);
+	addChild(dark);
+
+	//定义卷轴
+	auto div = Sprite::create("book/div.png");
+	div->setPosition(s / 2);
+	div->setScale(0.7);
+	addChild(div);
+
+	auto divSize = div->getContentSize();
+	//定义宝箱
+	_box = Sprite::create("book/box.png");
+	_box->setPosition(Vec2(divSize.width / 2, divSize.height*0.7));
+	div->addChild(_box);
+
+
 	//定义抽牌按钮
-	_drawBtn = Button::create(s_png_main_train, s_png_main_train_bn);
+	_drawBtn = Button::create("book/buy.png");
 	_drawBtn->setTouchEnabled(true);
-	_drawBtn->setPosition(Vec2(fs.width*(0.2), fs.height*(0.5)));
-	addChild(_drawBtn);
+	_drawBtn->setPosition(Vec2(divSize.width / 2, divSize.height*0.3));
+	div->addChild(_drawBtn);
 	_drawBtn->addTouchEventListener(this, toucheventselector(ShopLayer::startDrawEvent));
 
+	//backbutton
+	auto back = Button::create("book/back.png");
+	_drawBtn->setTouchEnabled(true);
+	back->setPosition(Vec2(s.width *0.08, s.height*0.95));
+	back->setScaleX(0.8);
+	addChild(back);
+	back->addTouchEventListener(this, toucheventselector(ShopLayer::backEvent));
+
+	auto money = Sprite::create("book/money.png");
+	money->setPosition(Vec2(s.width*(0.86), s.height*(0.05)));
+
+	addChild(money);
+
+	//money
 	_user = new User("test1");
 	//_user->setData("test1");
-	_user->setMoney(10000);
-	_moneyLabel = Label::create("", "fonts/Marker Felt.ttf", 50);
-	_moneyLabel->setPosition(Vec2(fs.width*(0.2), fs.height*(0.8)));
+
+	_moneyLabel = Tool::createEnglishLabel();
+	_moneyLabel->setScale(1);
 	setMoneyLabel(_user->getMoney());
+	_moneyLabel->setColor(Color3B(194, 84, 26));
+	_moneyLabel->setPosition(Vec2(s.width*(0.95), s.height*(0.05)));
+
 	addChild(_moneyLabel);
 	
 }
@@ -61,23 +102,21 @@ void ShopLayer::DrawCard()
 	while (true)
 	{
 		//英雄随机
-		x = rand() % _cardArray.size();
+		int rand = CCRANDOM_0_1()*100;
+		x =rand% _cardArray.size();
 		//卡牌种类随机
-		y = rand() % 4;
+		y = rand % 4;
 		if (_cardArray.at(x).CardNumber[y] != 0)
 		{
-			z = rand() % _cardArray.at(x).CardNumber[y];
+			z = rand % _cardArray.at(x).CardNumber[y];
 			break;
 		}
 
 	}
 
-	int _cardID = _cardArray.at(x).RoleID * 10000 + y * 1000 + z;
-	CCard _card = CCard(_cardID);
-	BoardCard *_boardCard = BoardCard::create(_card);
-	_boardCard->setPosition(Vec2(fs.width*0.5, fs.height*0.5));
-	addChild(_boardCard);
-	_boardCard->turnSide();
+	int cardID = _cardArray.at(x).RoleID * 10000 + y * 1000 + z;
+	
+	cummonAnime(cardID);
 
 	_user->setMoney(_user->getMoney() - 500);
 	setMoneyLabel(_user->getMoney());
@@ -94,82 +133,118 @@ void ShopLayer::setMoneyLabel(int Money)
 
 void ShopLayer::cummonAnime(int id)
 {
-	//_state = false;
+
+	auto s = Director::getInstance()->getWinSize();
+	_box->runAction(ScaleTo::create(0.1f, 0));
+	_drawBtn->runAction(ScaleTo::create(0.1f, 0));
+	CCard _card = CCard(id);
+	BoardCard *_boardCard = BoardCard::create(_card);
+	_boardCard->setPosition(Vec2(s.width*0.5, s.height*0.7));
+	addChild(_boardCard);
+	//_boardCard->turnSide();
+	_boardCard->setScale(3);
+	_state = false;
 
 
-	//auto bg = Sprite::create("bg/dark.png");
-	////bg->setPosition(_bgs[0]->getContentSize() / 2);
-	//this->addChild(bg, 10);
-	//bg->setOpacity(255 * 0.75);
-
-	//char c[20];
-	//sprintf(c, "ME/%02d.png", id);
-	//auto card = Sprite::create(c);
-	//card->setPosition(bg->getContentSize() / 2);
-	//bg->addChild(card);
-	//card->setScale(0);
-	//card->runAction(Sequence::create(
-	//	DelayTime::create(0.2f),
-	//	Spawn::create(ScaleTo::create(2, 1), RotateBy::create(2, Vec3(0, 3600, 0)), NULL),
-	//	NULL));
 
 
-	////粒子效果
-	//auto particle = ParticleSystemQuad::create("particles/Get.plist");
-	//particle->setPosition(bg->getContentSize() / 2);
-	//particle->setSpeedVar(0.01);
-	//particle->setStartSize(0.6);
-	//bg->addChild(particle);
+	//粒子效果
+	auto particle = ParticleSystemQuad::create("particles/Get.plist");
+	particle->setPosition(Vec2(s.width*0.5, s.height*0.7));
+	particle->setSpeedVar(0.01);
+	particle->setStartSize(0.6);
+	addChild(particle,99);
 
 
-	////卡牌值
-	////名字
-	//auto _laName = Tool::createEnglishLabel();
-	////_laName->setString(_BoardCards[id]->_name);
-	//_laName->setScale(0.5);
-	//_laName->setPosition(Vec2(195, 316 - 32));
 
 
-	////创建攻击label
-
-	////sprintf(c, "%d", _BoardCards[id]->_oAttack);
-	//auto _laAttack = Tool::createEnglishLabel();
-	//_laAttack->setString(c);
-	//_laAttack->setScale(0.5);
-	//_laAttack->setPosition(Vec2(186, 34));
-
-	////创建生命label
-	//char l[5];
-	////sprintf(l, "%d", _BoardCards[id]->_oLife);
-	//auto _laLife = Tool::createEnglishLabel();
-	//_laLife->setString(l);
-	//_laLife->setPosition(Vec2(30, 34));
-	//_laLife->setScale(0.5);
-	//card->addChild(_laAttack);
-	//card->addChild(_laLife);
-	//card->addChild(_laName);
 
 
-	//auto label = Tool::createTitleLabel(75);
-	//Tool::setLabelString(label, "cummon1");
-	//label->setPosition(bg->getContentSize() / 2 + Size(0, 200));
-	//bg->addChild(label);
-	//label->setVisible(false);
-	//label->setScale(1.2);
-	//label->setPositionZ(40);
-	//label->runAction(Sequence::create(
-	//	DelayTime::create(0.2),
-	//	CallFunc::create(CC_CALLBACK_0(Node::setVisible, label, true)),
-	//	ScaleTo::create(0.1f, 0.8f),
-	//	MoveBy::create(0.1f, Vec3(0, 0, -40)),
-	//	NULL));
+
+	auto action = RotateBy::create(1.5f, Vec3(0, 3600, 0));
+	auto easeaction = EaseOut::create(action,2);
+
+	_boardCard->runAction(Sequence::create(
+		DelayTime::create(0.5),
+		easeaction,
+		CallFunc::create(CC_CALLBACK_0(BoardCard::turnSide, _boardCard, 0.25)),
+		DelayTime::create(0.5),
+		CallFunc::create(CC_CALLBACK_0(ShopLayer::addParticle, this, _boardCard)),
+		ScaleTo::create(0.3, 3.5),
+	
+		ScaleTo::create(0.3, 3),
+		DelayTime::create(2),
+		Spawn::create(MoveBy::create(0.5, Vec3(0, 0, 100)),ScaleTo::create(0.5,3),RotateBy::create(0.5,Vec3(0,-90,0)), FadeOut::create(1),NULL),
+		
+		NULL));
+
+	this->runAction(Sequence::create(
+		DelayTime::create(2.2),
+		DelayTime::create(6),
+		CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, _boardCard)),
+		CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, particle)),
+		//CallFunc::create(CC_CALLBACK_0(Node::runAction, _box, ScaleTo::create(0.1f, 1))),
+		CallFunc::create(CC_CALLBACK_0(ShopLayer::setState, this, true)),
+		NULL));
+
+	_box->runAction(Sequence::create(
+		DelayTime::create(5.2),
+		ScaleTo::create(0.1f, 1),
+		NULL));
+	_drawBtn->runAction(Sequence::create(
+		DelayTime::create(5.2),
+		ScaleTo::create(0.1f, 1),
+		NULL));
+
+}
 
 
-	//bg->runAction(Sequence::create(
-	//	DelayTime::create(2.2),
-	//	DelayTime::create(3),
-	//	CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, bg)),
-	//	CallFunc::create(CC_CALLBACK_0(Book::setState, this, true)),
-	//	NULL));
+void ShopLayer::setState(bool state)
+{
+	_state = state;
+}
 
+
+void ShopLayer::backEvent(Ref*pSender, TouchEventType type)
+{
+
+	SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	switch (type)
+	{
+	case TOUCH_EVENT_ENDED:
+	{
+		Scene* s = new Scene();
+		auto l = new MainLayer();
+		l->setGameSocket(_socket);
+		l->_user = _user;
+		s->addChild(l);
+		Director::getInstance()->replaceScene(TransitionFade::create(0.5f, s));
+		s->release();
+		l->release();
+	}
+		break;
+	default:
+		break;
+	}
+
+}
+
+
+void ShopLayer::addParticle(Node*node){
+
+
+	auto emitter = ParticleFlower::create();  //花效果，可换成其他ParticleFire，ParticleExplosion等等
+	emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("effects/particles/stars.png"));//设置贴图
+	emitter->setStartColor(Color4F(0.1, 0.5, 0.5, 0.5));
+	emitter->setEndColor(Color4F(0.7, 0.1, 0.1, 0.0));
+	
+	emitter->setScale(2);
+	emitter->setPosition3D(node->getPosition3D()-Vec3(0,20,0));
+//	emitter->setPosition3D(dest->getPosition3D());
+	addChild(emitter);
+	emitter->runAction(Sequence::create(
+		DelayTime::create(1.3f),
+		FadeOut::create(0.5),
+		CallFunc::create(CC_CALLBACK_0(Node::removeFromParent,emitter)),
+		 NULL));
 }

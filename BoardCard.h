@@ -29,7 +29,8 @@ public:
 	//根据卡牌类的对象来创建对象
 	static BoardCard*create(CCard &card);
 	//卡牌翻面
-	virtual void turnSide();
+	virtual void turnSide(float time=1.f);
+	void turnSideNow();
 private:
 	//设置卡牌当前生命
 	void setCurrentHealth(int curhealth);

@@ -150,6 +150,7 @@ void MyLayer2::backToMain(){
 	auto l = new MainLayer();
 	l->setGameSocket(_socket);
 	l->setMode(_mode);
+	l->_user = _user;
 	s->addChild(l);
 	Director::getInstance()->replaceScene(s);
 	s->release();

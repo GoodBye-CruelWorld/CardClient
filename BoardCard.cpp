@@ -42,7 +42,7 @@ void BoardCard::initElement(CCard& card)
 	2.卡框：包括卡片图画,数值等
 	*/
 	/*建立卡牌框*/
-	_frame = Sprite::create("card/frameMM.png");
+	_frame = Sprite::create("battleScene/card/frameMM.png");
 	_frame->setRotation3D(Vec3(0, 180, 0));
 
 	/*建立卡牌图片*/
@@ -50,7 +50,7 @@ void BoardCard::initElement(CCard& card)
 	_normal->setRotation3D(Vec3(0, 180, 0));
 
 	/*建立卡背*/
-	_cardBack = Sprite::create("card/back.png");
+	_cardBack = Sprite::create("battleScene/card/back.png");
 	_cardBack->setScale(0.25f);
 
 	/*建立护甲*/
@@ -239,10 +239,10 @@ void BoardCard::setCurrentArmor(int CurArmor,bool volume)
 	}
 }
 //*卡牌翻面,动画长度为1s
-void BoardCard::turnSide()
+void BoardCard::turnSide(float time)
 {
 
-	this->runAction(Sequence::create(RotateBy::create(0.5f, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardCard::turnSideCallback, this)), RotateBy::create(0.5f, Vec3(0, 90, 0)), NULL));
+	this->runAction(Sequence::create(RotateBy::create(time/2, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardCard::turnSideCallback, this)), RotateBy::create(time/2, Vec3(0, 90, 0)), NULL));
 }
 
 
@@ -256,7 +256,15 @@ void BoardCard::turnSideCallback()
 		this->_cardBack->setVisible(!this->_cardBack->isVisible());
 	}
 }
-
+void BoardCard::turnSideNow()
+{
+	if (this->_normal&&this->_cardBack)
+	{
+		_cardside = !_cardside;
+		this->_normal->setVisible(!this->_normal->isVisible());
+		this->_cardBack->setVisible(!this->_cardBack->isVisible());
+	}
+}
 
 //*卡牌攻击动画,时长为卡牌中心与目标位置（Position）的距离/400 s.
 //*返回攻击到达的时间

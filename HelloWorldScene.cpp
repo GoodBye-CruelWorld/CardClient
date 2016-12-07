@@ -79,7 +79,7 @@ bool HelloWorld::init()
 	_userName->setPlaceHolder("  Username");
 	_userName->setPlaceholderFontColor(Color3B::GRAY);
 	_userName->setMaxLength(8);
-	_userName->setText("  <TEST>");
+	_userName->setText("  User1");
 	_userName->setReturnType(cocos2d::extension::EditBox::KeyboardReturnType::DONE);
 	_frame->addChild(_userName);
 	//ÃÜÂë¿ò
@@ -90,6 +90,7 @@ bool HelloWorld::init()
 	_userPwd->setPlaceHolder("   Password");
 	_userPwd->setPlaceholderFontColor(Color3B::GRAY);
 	_userPwd->setMaxLength(8);
+	_userPwd->setText("  123456");
 	_userPwd->setReturnType(cocos2d::extension::EditBox::KeyboardReturnType::DONE);
 	//_userPwd->setDelegate(this);
 	_frame->addChild(_userPwd);

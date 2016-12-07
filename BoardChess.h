@@ -20,7 +20,7 @@ public:
 	int getCamp();
 	int getID();
 
-	virtual void turnSide();//·­×ª
+	virtual void turnSide(float time = 1.f);//·­×ª
 	
 	virtual void displayDescription();
 	virtual void hideDescription();

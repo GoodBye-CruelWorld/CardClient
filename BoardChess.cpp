@@ -17,7 +17,7 @@ int BoardChess::getCamp()
 	return _camp;
 }
 
-void BoardChess::turnSide()
+void BoardChess::turnSide(float time )
 {	
 	this->runAction(Sequence::create(RotateBy::create(0.3f, Vec3(0, 90, 0)), CallFunc::create(CC_CALLBACK_0(BoardChess::turnSideCallback, this)), RotateBy::create(0.3f, Vec3(0, 90, 0)), NULL));
 }

@@ -18,6 +18,9 @@ void MainLayer::onEnter()
 
 	auto s = Director::getInstance()->getWinSize();
 
+	if (!_user)
+		_user = new User(_account);
+
 	log("init...");
 
 	//元素：背景图,方框，游戏模式，6个按钮，一个arrow
@@ -110,6 +113,7 @@ void MainLayer::startGame(bool mode, bool firstHand)
 	l->_mode = mode;
 	l->_firstHand = firstHand;
 	l->_socket = _socket;
+	l->_user = _user;
 	s->addChild(l);
 	Director::getInstance()->replaceScene(s);
 	s->release();
@@ -130,6 +134,7 @@ void MainLayer::startAdventureEvent(Ref*pSender, TouchEventType type)
 		l->_mode = 0;
 		l->_boss = true;
 		l->_socket = _socket;
+		l->_user = _user;
 		s->addChild(l);
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
 
@@ -155,6 +160,7 @@ void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 		l->_mode = 0;
 		l->_boss = false;
 		l->_socket = _socket;
+		l->_user = _user;
 		s->addChild(l);
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
 
@@ -212,7 +218,7 @@ void MainLayer::startShopEvent(Ref*pSender, TouchEventType type)
 		l->_socket = _socket;
 		s->addChild(l);
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
-
+		l->_user = _user;
 		s->release();
 		l->release();
 	}
@@ -236,7 +242,7 @@ void MainLayer::startBookEvent(Ref*pSender, TouchEventType type)
 		l->_socket = _socket;
 		s->addChild(l);
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
-
+		l->_user = _user;
 		s->release();
 		l->release();
 

@@ -7,6 +7,7 @@
 #include"Tool2D.h"
 #include"Battle.h"
 #include"Command.h"
+#include"Users.h"
 #define CL(__className__) [](){ return __className__::create();}
 
 class MyScene :public cocos2d::Scene
@@ -26,6 +27,7 @@ public:
 	CREATE_FUNC(MyLayer2);
 	GameSocket *_socket;
 	bool _mode;
+	User *_user;
 	bool _boss;
 	bool _firstHand;
 private:

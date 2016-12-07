@@ -24,18 +24,19 @@ public:
 	
 	void startDrawEvent(Ref*pSender, TouchEventType type);//抽牌
 
-
+	void backEvent(Ref*pSender, TouchEventType type);//返回
 	//动画
 	void cummonAnime(int id);
+	void setState(bool state);
 
-
-
+	void addParticle(Node*node);
 	GameSocket *_socket;
 	int _mode;
+	User *_user;
 private:
 	
-	int _gameState;
-	
+	int _state;
+	Sprite *_box;
 	Label * _moneyLabel;
 	Sprite *_bg;
 	Sprite *_frame;
@@ -44,10 +45,11 @@ private:
 	Sprite *_arrow;
 
 
-	User *_user;
+
 	//卡牌数组，储存每个职业每个种类的卡的数量
 	vector<CardArray> _cardArray;
 
 	void setMoneyLabel(int Money);
 	void DrawCard();//抽牌
 };
+

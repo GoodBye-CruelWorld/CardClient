@@ -425,7 +425,7 @@ void GameBoard::selectCard(int cardPool,int num)
 	card->setRotation(0);
 	card->setPositionZ(20);
 
-	auto outLine = Sprite::create("card/frameLine.png");
+	auto outLine = Sprite::create("battleScene/card/frameLine.png");
 	card->addChild(outLine,1,10);
 }
 
