@@ -24,8 +24,8 @@ Sprite* BoardCardBuilder::buildCardInSet(int cardID)
 {
 	auto c = convertCardIDtoPath(cardID);
 	CCSprite * sprite = CCSprite::create(c.c_str(), CCRectMake(80, 80, 159*2, 43*4));
-	sprite->setScaleX(0.5);
-	sprite->setScaleY(0.25);
+	sprite->setScaleX(0.47);
+	sprite->setScaleY(0.19);
 
 	return sprite;
 }

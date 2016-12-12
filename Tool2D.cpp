@@ -1,5 +1,6 @@
 #include "Tool2D.h"
-
+#include"audio\include\SimpleAudioEngine.h"
+using namespace CocosDenshion;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /************************************************************³õÊ¼»¯*******************************************************/
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +58,7 @@ bool BattleTool2D::onTouchBegan(Touch* touch, Event* event)
 	if (_battleMy->_gameState != GAME_RUN)
 		return false;
 	_t_battleID = 0;
-
+	SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 	_mouseDown = true;
 	Point tp = touch->getLocation();
 	_beginID =judgeTouchPoint(tp, 1);//ÇøÓò

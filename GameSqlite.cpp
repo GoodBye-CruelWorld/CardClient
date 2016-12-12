@@ -40,7 +40,7 @@ char*	GameSqlite::getCardData(int ID, int Type)
 	char **errmsg = NULL;
 	//ID的转换int->string
 	char s[10];
-	sprintf_s(s, "%d", ID);
+	sprintf(s, "%d", ID);
 
 	string sqlstr, sqlstr1 = s;
 	//获得SQL指令
@@ -219,7 +219,7 @@ vector<int>		GameSqlite::getUserAllArray(int UserID)			//返回卡组ID
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", UserID);
+	sprintf(s, "%d", UserID);
 	string s_userID = s;
 	string sqlstr;
 	//获得SQL指令
@@ -264,7 +264,7 @@ char*			GameSqlite::getArrayData(int ID, int Type)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", ID);
+	sprintf(s, "%d", ID);
 	string s_ID = s;
 	string sqlstr;
 	//获得SQL指令
@@ -285,7 +285,7 @@ void			GameSqlite::upDateArrayData(int ID, int type, string src)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", ID);
+	sprintf(s, "%d", ID);
 	string s_ID = s;
 	string sqlstr;
 	//获得SQL指令
@@ -317,9 +317,9 @@ void			GameSqlite::addCardArray(int UserID, int RoleID, string CardArrayName)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", UserID);
+	sprintf(s, "%d", UserID);
 	string s_userID = s;
-	sprintf_s(s, "%d", RoleID);
+	sprintf(s, "%d", RoleID);
 	string s_roleID = s;
 
 	string sqlstr;
@@ -331,7 +331,7 @@ void			GameSqlite::delCardArray(int ID)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", ID);
+	sprintf(s, "%d", ID);
 	string s_ID = s;
 	string sqlstr;
 
@@ -364,7 +364,7 @@ vector<int>		GameSqlite::getUserAllCard(int UserID)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", UserID);
+	sprintf(s, "%d", UserID);
 	string s_userID = s;
 	string sqlstr;
 	//获得SQL指令
@@ -391,9 +391,9 @@ void			GameSqlite::addUserCard(int CardID, int UserID)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", UserID);
+	sprintf(s, "%d", UserID);
 	string s_userID = s;
-	sprintf_s(s, "%d", CardID);
+	sprintf(s, "%d", CardID);
 	string s_cardID = s;
 
 	string sqlstr;
@@ -426,7 +426,7 @@ vector<int>		GameSqlite::getArrayAllCard(int ArrayID)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", ArrayID);
+	sprintf(s, "%d", ArrayID);
 	string s_arrayID = s;
 	string sqlstr;
 	//获得SQL指令
@@ -454,9 +454,9 @@ void			GameSqlite::addArrayCard(int ArrayID, int CardID)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", ArrayID);
+	sprintf(s, "%d", ArrayID);
 	string s_arrayID = s;
-	sprintf_s(s, "%d", CardID);
+	sprintf(s, "%d", CardID);
 	string s_cardID = s;
 
 	string sqlstr;
@@ -486,9 +486,9 @@ void			GameSqlite::delArrayCard(int ArrayID, int CardID)
 {
 	char **errmsg = NULL;
 	char s[10];
-	sprintf_s(s, "%d", ArrayID);
+	sprintf(s, "%d", ArrayID);
 	string s_arrayID = s;
-	sprintf_s(s, "%d", CardID);
+	sprintf(s, "%d", CardID);
 	string s_cardID = s;
 
 	string sqlstr;
@@ -711,7 +711,7 @@ int GameSqlite::loadRecord(void * para, int n_column, char ** column_value, char
 //	char **errmsg = NULL;
 //	//ID的转换int->string
 //	char s[10];
-//	sprintf_s(s, "%d", ID);
+//	sprintf(s, "%d", ID);
 //
 //	string sqlstr, sqlstr1 = s;
 //	//获得SQL指令
@@ -746,7 +746,7 @@ int GameSqlite::loadRecord(void * para, int n_column, char ** column_value, char
 //	char **errmsg = NULL;
 //	//ID的转换int->string
 //	char s[10];
-//	sprintf_s(s, "%d", ID);
+//	sprintf(s, "%d", ID);
 //
 //	string sqlstr, sqlstr1 = s;
 //	//获得SQL指令
@@ -782,7 +782,7 @@ int GameSqlite::loadRecord(void * para, int n_column, char ** column_value, char
 //	char **errmsg = NULL;
 //	//ID的转换int->string
 //	char s[10];
-//	sprintf_s(s, "%d", ID);
+//	sprintf(s, "%d", ID);
 //
 //	string sqlstr, sqlstr1 = s;
 //	//获得SQL指令
@@ -820,7 +820,7 @@ int GameSqlite::loadRecord(void * para, int n_column, char ** column_value, char
 //	char **errmsg = NULL;
 //	//ID的转换int->string
 //	char s[10];
-//	sprintf_s(s, "%d", ID);
+//	sprintf(s, "%d", ID);
 //
 //	string sqlstr, sqlstr1 = s;
 //	//获得SQL指令
@@ -852,7 +852,7 @@ int GameSqlite::loadRecord(void * para, int n_column, char ** column_value, char
 //	char **errmsg = NULL;
 //	//ID的转换int->string
 //	char s[10];
-//	sprintf_s(s, "%d", ID);
+//	sprintf(s, "%d", ID);
 //	
 //	string sqlstr, sqlstr1 = s;
 //	//获得SQL指令
@@ -884,7 +884,7 @@ int GameSqlite::loadRecord(void * para, int n_column, char ** column_value, char
 //	int result;
 //	char **errmsg = NULL;
 //	char s[10];
-//	sprintf_s(s, "%d", ID);
+//	sprintf(s, "%d", ID);
 //	
 //	string sqlstr, sqlstr1 = s;
 //

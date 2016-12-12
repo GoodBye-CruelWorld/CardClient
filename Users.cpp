@@ -13,6 +13,24 @@ User::User(string Account)
 	_passWord = _sql.getUsersData(_ID, USER_PASSWORD);
 	_userName = _sql.getUsersData(_ID, USER_NAME);
 	_money = atoi(_sql.getUsersData(_ID, USER_MONEY));
+
+
+	vector<int> result = _sql.getUserAllArray(ID);
+	for (int i = 0; i < result.size(); i++)
+	{
+
+
+		USERCardArray array;
+		array._arrayName = _sql.getArrayData(result.at(i), ARRAY_NAME);
+		array._roleID = atoi(_sql.getArrayData(result.at(i), ARRAY_ROLEID));
+		array._cardNumber = 0;
+		array._cardID = _sql.getArrayAllCard(result.at(i));
+		for (int j = 0; j < array._cardID.size(); j++)
+		{
+			array._cardNumber += array._cardID.at(j) / 10000000;
+		}
+		_cardArraySet.push_back(array);
+	}
 }
 
 int User::getID()
@@ -123,8 +141,10 @@ bool User::addCardintoArray(int cardArrayID, int cardID)		//在卡组中增加卡牌
 	{
 		int	num = _cardArraySet.at(cardArrayID)._cardID.at(i) % 10000000;
 		if (cardID == num)
-			_cardArraySet.at(cardArrayID)._cardID.at(i) += 10000000;		
-		break;
+		{		
+			_cardArraySet.at(cardArrayID)._cardID.at(i) += 10000000;
+			break;
+		}
 	}
 	if (i >= _cardArraySet.at(cardArrayID)._cardID.size())
 		_cardArraySet.at(cardArrayID)._cardID.push_back(10000000 + cardID);

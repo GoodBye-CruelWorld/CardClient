@@ -51,8 +51,10 @@ void MyLayer2::onEnter()
 	Layer::onEnter();
 	auto s = Director::getInstance()->getWinSize();
 	
-	//test
-	//SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/battle.mp3",true);
+	if (!_boss)
+		SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/battle0.mp3",true);
+	else
+		SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/battle1.mp3", true);
 	//SimpleAudioEngine::getInstance()->playEffect("bgm/battle.mp3",true);
 	
 
@@ -63,52 +65,62 @@ void MyLayer2::onEnter()
 	/*初始化棋盘完毕*/
 
 	/*初始化牌库*/
+	
+	int mySet[30];
+	int enemySet[30];
 
-	int armorId[30];
-	int warriorId[30];
 	for (int i = 0; i < 30; i++)
 	{
-		armorId[i] = rand() % 8 +(_boss?110000:10000);
-		warriorId[i] = rand() % 8;
+		mySet[i] = rand() % 8 ;
+		enemySet[i] = rand() % 8 + (_boss ? 110000 : 10000);
+
 	}
-
-	/*armorId[29] = 0;
-
-	/*
-	armorId[29] = 0;
-
-	armorId[29] = 0;
-	armorId[29] = 0;
-	armorId[29] = 0;
-	armorId[29] = 0;
-	warriorId[29] = 2000;
-	warriorId[28] = 2001;
-	warriorId[27] = 3000;
-	warriorId[26] = 3001;
-	warriorId[25] = 1002;*/
+	int myNum = 0;
+	auto cards = _user->getCardformArray(0);
+	for (int i = 0; i < cards.size(); i++)
+	{
+		int num = cards[i] / 10000000;
+		auto id = cards[i] % 10000000;
+		for (int j = 0; j < num; j++)
+		{
+			mySet[myNum] = id;
+			myNum++;
+		}
+	}
+	for (int i = 0; i < cards.size(); i++)
+	{
+		int num = cards[i] / 10000000;
+		auto id = cards[i] % 10000000;
+		for (int j = 0; j < num; j++)
+		{
+			mySet[myNum] = id;
+			myNum++;
+		}
+	}
+	/*armorId[29] = 0;*/
 	/*初始化牌库完毕*/
 
 	/*先后手顺序*/
 	bool firstHand[2];
 	firstHand[0] = false;
 	firstHand[1] = true;
-	if (_firstHand)
-	{
-		firstHand[0] = true;
-		firstHand[1] = false;
-	}
+	//if (_firstHand)
+	//{
+	//	firstHand[0] = true;
+	//	firstHand[1] = false;
+	//}
 
 	/*初始化Battle*/
 	for (int i = 0; i < 2; i++)
 	{
 		if (i==0)
-			_battles[i] = new CBattle(_gameBoard,warriorId, i,_socket,_mode,firstHand[i]);
+			_battles[i] = new CBattle(_gameBoard,mySet, i,_socket,_mode,firstHand[i]);
 		else
-			_battles[i] = new CBattle(_gameBoard, armorId, i, _socket, _mode, firstHand[i]);
+			_battles[i] = new CBattle(_gameBoard, enemySet, i, _socket, _mode, firstHand[i]);
 		this->addChild(_battles[i]);	
 	}
 
-	_battles[2] = new CBattle(_gameBoard, warriorId, 2, _socket, _mode, firstHand[1]);
+	_battles[2] = new CBattle(_gameBoard, enemySet, 2, _socket, _mode, firstHand[1]);
 	_battles[2]->setEnemy(_battles[1]);
 	_battles[2]->setWild(_battles[0]);
 	_battles[2]->addWild();
@@ -121,10 +133,7 @@ void MyLayer2::onEnter()
 	_battles[1]->gameStart();
 
 	
-	/*CCard card;
-	card.cardCreate(10001);
-	card.set_pos(0);
-	_battles[2]->_cardPool[POOL_BATTLE].push_back(card); */
+
 	
 	//_gameBoard->addCard(card, POOL_MONSTER, 0, 0, 0);
 

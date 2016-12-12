@@ -111,7 +111,7 @@ void CCard::cardCreate(int num)
 			//_spellID.push_back(5802001);
 		}
 	}
-	_cost = 1;
+
 	relife();
 
 }

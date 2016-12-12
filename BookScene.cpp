@@ -15,8 +15,9 @@ void Book::onEnter()
 	_state = false;
 	//初始化翻页功能
 	curPage = 0;
-	_user = new User("test1");
 
+	_delCard = false;
+	_delSet = false;
 	_scr = true;//图鉴处于上翻状态
 	_curSize = 3;
 	_curNum = 0;
@@ -80,7 +81,8 @@ void Book::onEnter()
 	for (int i = 0; i < 20; i++)
 	{
 		_frames[i] = Sprite::createWithTexture(framebatch->getTexture());
-		_frames[i]->setPosition(260 + i % 2 * 285, 322 - i / 2 * 85);
+		_frames[i]->setPosition(250 + i % 2 * 295, 352 - i / 2 * 85);
+		_frames[i]->setScale(1.2);
 		_bgs[0]->addChild(_frames[i]);
 		_frames[i]->setCascadeOpacityEnabled(true);
 		if (i>7)
@@ -93,16 +95,20 @@ void Book::onEnter()
 
 	for (int i = 0; i < _curSet; i++)
 	{
+		auto setF = Sprite::create("book/frame2.png");
+		setF->setPosition(Vec2(94, 670 - i * 40));
+		_cardSetBar->addChild(setF);
+
 		auto set = Sprite::create("book/cardset1.png");
-		set->setPosition(Vec2(94, 670-i * 45));
-		set->setScale(0.8);
-		_cardSetBar->addChild(set);
-		_cardSets.pushBack(set);
+		set->setPosition(set->getContentSize()/2);
+	
+		setF->addChild(set);
+		_cardSets.pushBack(setF);
 	}
 
 	_newSetBn = Button::create("book/newset3.png");
 	_newSetBn->setTouchEnabled(true);
-	_newSetBn->setPosition(Vec2(94,670- _curSet * 45));
+	_newSetBn->setPosition(Vec2(94,670- _curSet * 40));
 	_cardSetBar->addChild(_newSetBn);
 	_newSetBn->addTouchEventListener(this, toucheventselector(Book::newSetEvent));
 
@@ -156,7 +162,8 @@ void Book::displayCard(int num)
 	auto s = Director::getInstance()->getWinSize();
 
 	//卡牌
-	_cardSel =BoardCard::create(CCard(num));
+	auto a = CCard(num);
+	_cardSel =BoardCard::create(a);
 	_cardSel->setVisible(false);
 	_cardSel->setScale(6.5);
 	_cardSel->setPosition3D(Vec3(212, 380, 40));
@@ -402,6 +409,29 @@ void Book::setState(int state)
 
 bool Book::onTouchBegan(Touch* touch, Event* event)
 {
+	SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
+	Point tp = touch->getLocation();
+	if (_state)
+		for (int i = 0; i <_cardsInSet.size(); i++)
+		{
+		if (collisionCheck(tp, _cardsInSet.at(i)))
+		{
+			//auto id = convertToCardID(i);
+			//_delCard = i;
+			delCardofArray(i);
+			_delCard = true;
+		}
+		}
+	else
+		for (int i = 0; i <_cardSets.size(); i++)
+		{
+		if (collisionCheck(tp, _cardSets.at(i)))
+		{
+			_selCardSet = i;
+			_delSet = true;
+		}
+		}
+
 	return true;
 }
 
@@ -434,6 +464,7 @@ void Book::onTouchEnded(Touch* touch, Event* event)
 			{
 				//auto id = convertToCardID(i);
 				delCardofArray( i);
+				return;
 			}
 		}
 	else
@@ -443,8 +474,16 @@ void Book::onTouchEnded(Touch* touch, Event* event)
 			{
 				_selCardSet = i;
 				changeCardArray();
+				return;
 			}
 		}
+
+	if (_delSet)
+	{
+		delCardArray();
+	}
+	_delSet = false;
+	_delCard = false;
 	
 
 	
@@ -499,19 +538,27 @@ void Book::initCardArray()
 void Book::createCardArray(string cardName, int roleID)//创建卡组，返回cardArrayID
 {
 	_user->createCardArray(cardName, roleID);
+	_newSet = true;
 	char c[20];
+
+	auto setF = Sprite::create("book/frame2.png");	
+	setF->setPosition(Vec2(94, 670 - _cardSets.size() * 40));
+	_cardSetBar->addChild(setF);
+
 	sprintf(c, "book/cardset%d.png", roleID);
 	auto set = Sprite::create(c);
-	set->setPosition(Vec2(94, 670-_cardSets.size() *45));
-	_cardSetBar->addChild(set);
-	_cardSets.pushBack(set);
+	set->setPosition(setF->getContentSize()/2);
+	setF->addChild(set);
+	_cardSets.pushBack(setF);
 	_selCardSet = _cardSets.size() - 1;
 	changeCardArray();
 	_curSize++;
 }
 void Book::addCardArray()						//增加卡组，添加到数据库
 {
-	_user->addCardArray(_selCardSet);
+	if (_newSet)
+		_user->addCardArray(_selCardSet);
+	_newSet = false;
 }
 bool Book::delCardArray()						//删除卡组
 {
@@ -520,6 +567,7 @@ bool Book::delCardArray()						//删除卡组
 	_user->delCardArray(_selCardSet);
 
 	_cardSets.at(_selCardSet)->removeFromParent();
+	_cardSets.erase(_selCardSet);
 	adjustCardSets();
 	return true;
 }
@@ -534,10 +582,16 @@ bool Book::addCardintoArray(int cardID,bool addToSql)		//在卡组中增加卡牌
 	if (addToSql)
 		_user->addCardintoArray(_selCardSet, cardID);
 	log(cardID);
+	auto setF = Sprite::create("book/frame2.png");
+	setF->setPosition(94, 670 - 45 - _cardsInSet.size() * 40);
+	_cardSetBar->addChild(setF);
+
 	Sprite *card = BoardCardBuilder::buildCardInSet(cardID);
-	card->setPosition(94, 700-45-_cardsInSet.size()*45);
-	_cardsInSet.pushBack(card);
-	_cardSetBar->addChild(card);
+	card->setPosition(setF->getContentSize()/2);
+
+	setF->addChild(card);
+	_cardsInSet.pushBack(setF);
+
 	return true;
 }
 bool Book::delCardofArray(int cardID)		//删除卡牌
@@ -548,7 +602,7 @@ void Book::changeCardArray()
 {
 	_state = true;
 	_finishSet->setVisible(true);
-	_cardSets.at(_selCardSet)->runAction(MoveTo::create(0.1f, Vec2(94, 700)));
+	_cardSets.at(_selCardSet)->runAction(MoveTo::create(0.1f, Vec2(94, 670)));
 	for (int i = 0; i < _cardSets.size(); i++)
 	{
 		if (i != _selCardSet)
@@ -558,8 +612,13 @@ void Book::changeCardArray()
 
 	auto cards=_user->getCardformArray(_selCardSet);
 
-	for (int i = 0; i < cards.size();i++)
-		addCardintoArray(cards[i]);
+	for (int i = 0; i < cards.size(); i++)
+	{
+		int num = cards[i] / 10000000;
+		auto id = cards[i] % 10000000;
+		for (int j = 0; j < num;j++)
+			addCardintoArray(id);
+	}
 }
 
 bool Book::addUserCard(int ID)								//增加卡牌
@@ -574,7 +633,7 @@ void Book::newSetEvent(Ref*pSender, TouchEventType type)
 	{
 	case TOUCH_EVENT_ENDED:
 	{
-		createCardArray("hello",_curRole);
+		createCardArray("hello1",_curRole);
 		
 	}
 		break;
@@ -600,7 +659,7 @@ void Book::finishSetEvent(Ref*pSender, TouchEventType type)
 }
 
 void Book::finishSet(){
-	_user->addCardArray(_selCardSet);
+	addCardArray();
 	_finishSet->setVisible(false);
 	for (int i = 0; i < _cardsInSet.size(); i++)
 	{
@@ -619,9 +678,9 @@ void Book::adjustCardSets()
 	for (int i = 0; i < _cardSets.size(); i++)
 	{
 		_cardSets.at(i)->setVisible(true);
-		_cardSets.at(i)->setPosition(Vec2(94, 670-i* 45));
+		_cardSets.at(i)->setPosition(Vec2(94, 670-i* 40));
 	}
-	_newSetBn->setPosition(Vec2(94, 670-_cardSets.size() * 45));
+	_newSetBn->setPosition(Vec2(94, 670-_cardSets.size() * 40));
 }
 
 

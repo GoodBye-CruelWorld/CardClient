@@ -502,7 +502,7 @@ void CBattle::update(float dt)
 			if (msg1 != 6000000)
 			{
 				_gameSocket->recvMsg();
-				log(("recved msg: " + msg).c_str());
+				//log(("recved msg: " + msg).c_str());
 			
 			}
 			//turnOver();
@@ -1133,6 +1133,7 @@ void CBattle::skillSpelling(int spell_num, int destPool, int destNum)
 		Buff _buff(1, 4);
 		_buff._times = 1;
 		_cardPool[POOL_BATTLE].at(destNum).addBuff(_buff);
+		_gameboard->setCardProperties(POOL_BATTLE, destNum, _camp, _cardPool[POOL_BATTLE].at(destNum).get_armor(), 3);
 	}
 
 	if (skillID == 2)

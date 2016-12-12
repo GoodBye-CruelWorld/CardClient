@@ -21,7 +21,7 @@ typedef int socklen_t ;
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
-typedef intSOCKET;
+//typedef intSOCKET;
  
 //#pragma region define win32 const variable in linux
 #define INVALID_SOCKET-1
@@ -34,7 +34,7 @@ class ODSocket {
  
  
 public:
-ODSocket(SOCKET sock = INVALID_SOCKET);
+ODSocket(int sock = INVALID_SOCKET);
 ~ODSocket();
  
 // Create socket object for snd/recv data
@@ -75,12 +75,12 @@ static int Clean();
 // Domain parse
 static bool DnsParse(const char* domain, char* ip);
  
-ODSocket& operator = (SOCKET s);
+ODSocket& operator = (int s);
  
-operator SOCKET ();
+//operator SOCKET ();
  
 protected:
-SOCKET m_sock;
+int m_sock;
  
  
 };

@@ -9,7 +9,7 @@ struct USERCardArray
 {
 	string _arrayName;
 	int _roleID;				//ID由数量和CardID组成，×+0000000
-	const int _cardNumberMax = 10;
+	const int _cardNumberMax = 15;
 	vector<int> _cardID;
 	int _cardNumber;
 };

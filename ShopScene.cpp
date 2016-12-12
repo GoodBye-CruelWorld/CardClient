@@ -84,6 +84,7 @@ void ShopLayer::startDrawEvent(Ref*pSender, TouchEventType type)
 	{
 	case TOUCH_EVENT_ENDED:
 	{
+		SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 		DrawCard();
 	}
 	break;
@@ -117,7 +118,7 @@ void ShopLayer::DrawCard()
 	int cardID = _cardArray.at(x).RoleID * 10000 + y * 1000 + z;
 	
 	cummonAnime(cardID);
-
+	_user->addUserCard(cardID);
 	_user->setMoney(_user->getMoney() - 500);
 	setMoneyLabel(_user->getMoney());
 }
@@ -125,7 +126,7 @@ void ShopLayer::DrawCard()
 void ShopLayer::setMoneyLabel(int Money)
 {
 	char s[10];
-	sprintf_s(s, "%d", Money);
+	sprintf(s, "%d", Money);
 	string str = s;
 	_moneyLabel->setString(str);
 }
@@ -165,11 +166,12 @@ void ShopLayer::cummonAnime(int id)
 	auto easeaction = EaseOut::create(action,2);
 
 	_boardCard->runAction(Sequence::create(
-		DelayTime::create(0.5),
+		DelayTime::create(1),
+		
 		easeaction,
 		CallFunc::create(CC_CALLBACK_0(BoardCard::turnSide, _boardCard, 0.25)),
+
 		DelayTime::create(0.5),
-		CallFunc::create(CC_CALLBACK_0(ShopLayer::addParticle, this, _boardCard)),
 		ScaleTo::create(0.3, 3.5),
 	
 		ScaleTo::create(0.3, 3),
@@ -180,7 +182,8 @@ void ShopLayer::cummonAnime(int id)
 
 	this->runAction(Sequence::create(
 		DelayTime::create(2.2),
-		DelayTime::create(6),
+		CallFunc::create(CC_CALLBACK_0(ShopLayer::addParticle, this, _boardCard)),
+		DelayTime::create(6.5),
 		CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, _boardCard)),
 		CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, particle)),
 		//CallFunc::create(CC_CALLBACK_0(Node::runAction, _box, ScaleTo::create(0.1f, 1))),
@@ -213,6 +216,7 @@ void ShopLayer::backEvent(Ref*pSender, TouchEventType type)
 	{
 	case TOUCH_EVENT_ENDED:
 	{
+		SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 		Scene* s = new Scene();
 		auto l = new MainLayer();
 		l->setGameSocket(_socket);
@@ -231,20 +235,15 @@ void ShopLayer::backEvent(Ref*pSender, TouchEventType type)
 
 
 void ShopLayer::addParticle(Node*node){
-
-
-	auto emitter = ParticleFlower::create();  //花效果，可换成其他ParticleFire，ParticleExplosion等等
-	emitter->setTexture(Director::getInstance()->getTextureCache()->addImage("effects/particles/stars.png"));//设置贴图
-	emitter->setStartColor(Color4F(0.1, 0.5, 0.5, 0.5));
-	emitter->setEndColor(Color4F(0.7, 0.1, 0.1, 0.0));
+	auto par = ParticleSystemQuad::create("particles/getcard.plist");
 	
-	emitter->setScale(2);
-	emitter->setPosition3D(node->getPosition3D()-Vec3(0,20,0));
-//	emitter->setPosition3D(dest->getPosition3D());
-	addChild(emitter);
-	emitter->runAction(Sequence::create(
-		DelayTime::create(1.3f),
-		FadeOut::create(0.5),
-		CallFunc::create(CC_CALLBACK_0(Node::removeFromParent,emitter)),
-		 NULL));
+	par->setPosition(node->getPosition()-Vec2(0,10));
+	addChild(par);
+
+
+
+
+
+
+
 }

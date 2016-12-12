@@ -15,11 +15,11 @@ void MainLayer::onEnter()
 	Layer::onEnter();
 
 
-
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/main.mp3", true);
 	auto s = Director::getInstance()->getWinSize();
 
-	if (!_user)
-		_user = new User(_account);
+	
+		_user = new User("test1");
 
 	log("init...");
 
@@ -127,7 +127,7 @@ void MainLayer::startAdventureEvent(Ref*pSender, TouchEventType type)
 	switch (type)
 	{
 	case TOUCH_EVENT_ENDED:
-	{
+	{	SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 		//return;
 		Scene* s = new MyScene();
 		auto l = new MyLayer2();
@@ -135,6 +135,7 @@ void MainLayer::startAdventureEvent(Ref*pSender, TouchEventType type)
 		l->_boss = true;
 		l->_socket = _socket;
 		l->_user = _user;
+		l->_firstHand = true;
 		s->addChild(l);
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
 
@@ -154,13 +155,14 @@ void MainLayer::startTrainingEvent(Ref*pSender, TouchEventType type)
 	switch (type)
 	{
 	case TOUCH_EVENT_ENDED:
-	{
+	{	SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 		Scene* s = new MyScene();
 		auto l = new MyLayer2();
 		l->_mode = 0;
 		l->_boss = false;
 		l->_socket = _socket;
 		l->_user = _user;
+		l->_firstHand = true;
 		s->addChild(l);
 		Director::getInstance()->replaceScene(TransitionFade::create(1.0f, s));
 
@@ -182,7 +184,7 @@ void MainLayer::startVersusEvent(Ref*pSender, TouchEventType type)
 	switch (type)
 	{
 	case TOUCH_EVENT_ENDED:
-	{
+	{	SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 		//发送对战消息
 		//string a = _userName->getText();
 		//if (a == "")
@@ -211,7 +213,7 @@ void MainLayer::startShopEvent(Ref*pSender, TouchEventType type)
 	switch (type)
 	{
 	case TOUCH_EVENT_ENDED:
-	{
+	{	SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 		Scene* s = new Scene();
 		auto l = new ShopLayer();
 		l->_mode = 0;
@@ -235,7 +237,7 @@ void MainLayer::startBookEvent(Ref*pSender, TouchEventType type)
 	switch (type)
 	{
 	case TOUCH_EVENT_ENDED:
-	{
+	{	SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 		Scene* s = new Scene();
 		auto l = new Book();
 		l->_mode = 0;

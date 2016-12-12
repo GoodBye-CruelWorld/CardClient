@@ -16,7 +16,7 @@ Scene* HelloWorld::createScene()
     // 'layer' is an autorelease object
     auto layer = HelloWorld::create();
 
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/Pegasus_Stinger_Fuse_Timer.mp3",true);
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("bgm/main.mp3",true);
     // add layer as a child to scene
     scene->addChild(layer);
     // return the scene
@@ -147,7 +147,7 @@ void HelloWorld::loginEvent(Ref*pSender, TouchEventType type)
 		{
 		case TOUCH_EVENT_ENDED:
 		{
-			
+			SimpleAudioEngine::getInstance()->playEffect("bgm/Select.mp3");
 			std::string a = _userName->getText();
 			if (a == "")
 			{

@@ -103,6 +103,9 @@ private:
 	int _curNum;
 	int _curType;
 	int _curSet;
+	bool _delCard;
+	bool _delSet;
+	bool _newSet;
 	//与卡组有关的函数
 public:
 	User *_user;

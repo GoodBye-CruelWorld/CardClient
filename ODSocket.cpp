@@ -1,12 +1,12 @@
 ﻿
 #include "ODSocket.h"
-
+#include<errno.h>
 #ifdef WIN32
 #pragma comment(lib, "wsock32")
 #endif
 
 
-ODSocket::ODSocket(SOCKET sock)
+ODSocket::ODSocket(int sock)
 {
 
 	m_sock = sock;
@@ -64,7 +64,7 @@ int ODSocket::Clean()
 
 }
 
-ODSocket& ODSocket::operator = (SOCKET s)
+ODSocket& ODSocket::operator = (int s)
 {
 
 	m_sock = s;
@@ -72,12 +72,12 @@ ODSocket& ODSocket::operator = (SOCKET s)
 
 }
 
-ODSocket::operator SOCKET ()
-{
-
-	return m_sock;
-
-}
+//ODSocket::operator SOCKET ()
+//{
+//
+//	return m_sock;
+//
+//}
 //create a socket object win/lin is the same
 // af:
 bool ODSocket::Create(int af, int type, int protocol)
@@ -150,7 +150,7 @@ bool ODSocket::Accept(ODSocket& s, char* fromip)
 
 	struct sockaddr_in cliaddr;
 	/*socklen_t*/int addrlen = sizeof(cliaddr);
-	SOCKET sock = accept(m_sock, (struct sockaddr*)&cliaddr, &addrlen);
+	int sock = accept(m_sock, (struct sockaddr*)&cliaddr, &addrlen);
 	if (sock == SOCKET_ERROR) {
 
 		return false;
